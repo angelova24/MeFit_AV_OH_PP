@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeFit.API", "MeFit.API\MeFit.API.csproj", "{F60355DB-0232-480D-9103-01D0FED4D212}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeFit.API", "MeFit.API\MeFit.API.csproj", "{F60355DB-0232-480D-9103-01D0FED4D212}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeFit.DAL", "MeFit.DAL\MeFit.DAL.csproj", "{5CCBEEA8-25EC-4F38-A1EF-208A6FAE4B2E}"
-EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "mefit.fe", "MeFit.FE\mefit.fe.esproj", "{F6EB98EA-4648-49CF-A19C-DD36EE7CA399}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeFit.DAL", "MeFit.DAL\MeFit.DAL.csproj", "{5CCBEEA8-25EC-4F38-A1EF-208A6FAE4B2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,12 +21,6 @@ Global
 		{5CCBEEA8-25EC-4F38-A1EF-208A6FAE4B2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CCBEEA8-25EC-4F38-A1EF-208A6FAE4B2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CCBEEA8-25EC-4F38-A1EF-208A6FAE4B2E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F6EB98EA-4648-49CF-A19C-DD36EE7CA399}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F6EB98EA-4648-49CF-A19C-DD36EE7CA399}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F6EB98EA-4648-49CF-A19C-DD36EE7CA399}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{F6EB98EA-4648-49CF-A19C-DD36EE7CA399}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F6EB98EA-4648-49CF-A19C-DD36EE7CA399}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F6EB98EA-4648-49CF-A19C-DD36EE7CA399}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
