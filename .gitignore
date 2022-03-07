@@ -19,7 +19,6 @@ pnpm-debug.log*
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
 *.sw?
 
 ## Ignore Visual Studio temporary files, build results, and
