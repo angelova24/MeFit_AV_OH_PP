@@ -1,8 +1,8 @@
-﻿using MeFitAPI.DAL.Models.Domain;
+﻿using MeFit.DAL.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
 
-namespace MeFitAPI.DAL.Models.Data
+namespace MeFit.DAL.Models.Data
 {
     public class MeFitDbContext : DbContext
     {

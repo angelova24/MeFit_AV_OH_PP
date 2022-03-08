@@ -1,11 +1,11 @@
-﻿using MeFitAPI.DAL.Models.Domain;
+﻿using MeFit.DAL.Models.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeFitAPI.DAL.Models.Domain
+namespace MeFit.DAL.Models.Domain
 {
     public class GoalWorkout
     {

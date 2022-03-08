@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace MeFitAPI.DAL.Models.Domain
+namespace MeFit.DAL.Models.Domain
 {
     public class Profile
     {
