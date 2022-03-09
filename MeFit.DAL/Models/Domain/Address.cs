@@ -16,7 +16,7 @@ namespace MeFit.DAL.Models.Domain
         [Required, MaxLength(70)]
         public string Country { get; set; }
         //FK and navigation property
-        public int ProfileId { get; set; }
+        public int? ProfileId { get; set; }
         public Profile Profile { get; set; }
 
     }
