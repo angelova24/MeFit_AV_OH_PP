@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MeFit.DAL.Models.DTOs
+namespace MeFit.DAL.Models.DTOs.UserDTOs
 {
     public class UserCreateDTO
     {
