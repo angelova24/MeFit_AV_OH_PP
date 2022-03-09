@@ -29,7 +29,7 @@ namespace MeFit.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ExerciseReadDTO>>> GetExercises()
         {
-            return _mapper.Map<List<ExerciseReadDTO>>(await _context.Exercises.ToListAsync());
+            return _mapper.Map<List<ExerciseReadDTO>>(await _context.Exercises.OrderBy(e => e.TargetMuscleGroup).ToListAsync());
         }
 
         // GET: api/Exercises/5
@@ -46,10 +46,9 @@ namespace MeFit.API.Controllers
             return _mapper.Map<ExerciseReadDTO>(exercise);
         }
 
-        // PUT: api/Exercises/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // PUT: api/Exercises/5 -------------CONTRIBUTOR ONLY!!!!! -------------
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateExercise(int id, ExerciseReadDTO exercise)
+        public async Task<IActionResult> UpdateExercise(int id, [FromBody] ExerciseReadDTO exercise)
         {
             if (id != exercise.Id)
             {
@@ -79,10 +78,9 @@ namespace MeFit.API.Controllers
             return NoContent();
         }
 
-        // POST: api/Exercises
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST: api/Exercises -------------CONTRIBUTOR ONLY!!!!! -------------
         [HttpPost]
-        public async Task<ActionResult<ExerciseReadDTO>> PostExercise(ExerciseCreateDTO newExercise)
+        public async Task<ActionResult<ExerciseReadDTO>> PostExercise([FromBody] ExerciseCreateDTO newExercise)
         {
             var domainExercise = _mapper.Map<Exercise>(newExercise);
             _context.Exercises.Add(domainExercise);
@@ -91,7 +89,7 @@ namespace MeFit.API.Controllers
             return CreatedAtAction("GetExerciseById", new { id = domainExercise.Id }, newExercise);
         }
 
-        // DELETE: api/Exercises/5
+        // DELETE: api/Exercises/5 ------------- CONTRIBUTOR ONLY!!!!! -------------
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteExercise(int id)
         {
