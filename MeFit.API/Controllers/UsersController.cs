@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MeFit.DAL.Models.Data;
 using MeFit.DAL.Models.Domain;
+using MeFit.DAL.Models.DTOs.UserDTOs;
+using AutoMapper;
 
 namespace MeFit.API.Controllers
 {
@@ -15,22 +17,24 @@ namespace MeFit.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly MeFitDbContext _context;
+        private readonly IMapper _mapper;
 
-        public UsersController(MeFitDbContext context)
+        public UsersController(MeFitDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        // GET: api/Users
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
-        {
-            return await _context.Users.ToListAsync();
-        }
-
+        
+        /// <summary>
+        /// Get user by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>User</returns>
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        [ProducesResponseType(StatusCodes.Status303SeeOther)]
+        public async Task<ActionResult<UserReadDTO>> GetUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
 
@@ -38,8 +42,8 @@ namespace MeFit.API.Controllers
             {
                 return NotFound();
             }
-
-            return user;
+            var userReadDTO = _mapper.Map<UserReadDTO>(user);
+            return userReadDTO;
         }
 
         // PUT: api/Users/5
