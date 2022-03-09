@@ -46,17 +46,25 @@ namespace MeFit.API.Controllers
             return userReadDTO;
         }
 
+        /// <summary>
+        /// Update user info
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public async Task<IActionResult> PutUser(int id,[FromHeader] UserUpdateDTO user)
         {
+           
             if (id != user.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            var domainUser = _mapper.Map<User>(user);
+            _context.Entry(domainUser).State = EntityState.Modified;
 
             try
             {
@@ -76,16 +84,20 @@ namespace MeFit.API.Controllers
 
             return NoContent();
         }
-
+        /// <summary>
+        /// Create a new user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         // POST: api/Users
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<IActionResult> PostUser(UserCreateDTO user)
         {
-            _context.Users.Add(user);
+            var domainUser = _mapper.Map<User>(user);
+            _context.Users.Add(domainUser);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return CreatedAtAction("GetUser", new { id = domainUser.Id }, _mapper.Map<UserReadDTO>(domainUser));
         }
 
         // DELETE: api/Users/5
