@@ -52,7 +52,7 @@ namespace MeFit.API.Controllers
         // PATCH: api/Profiles/profile_id
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
-        [Consumes("application/json")]
+        //[Consumes("application/json")]
         public async Task<IActionResult> PutProfile(int id, ProfileUpdateDTO profile)
         {
             if (id != profile.Id)
@@ -89,7 +89,7 @@ namespace MeFit.API.Controllers
         // POST: api/Profiles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Consumes("application/json")]
+        //[Consumes("application/json")]
         public async Task<IActionResult> PostProfile(ProfileCreateDTO newProfile)
         {
             var domainProfile = _mapper.Map<MeFit.DAL.Models.Domain.Profile>(newProfile);
