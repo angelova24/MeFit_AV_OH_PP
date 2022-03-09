@@ -1,13 +1,22 @@
 <script setup>
   import TheHeader from "./components/TheHeader.vue";
   import TheFooter from "./components/TheFooter.vue";
+  import { useStore } from "vuex";
+  import { onMounted } from "vue";
+  
+  const store = useStore();
+  
+  onMounted(() => {
+    store.dispatch("fetchExcercises");
+  })
 </script>
 
 <template>
   <div>
-    <img alt="Vue logo" src="./assets/logo.png" />
     <TheHeader></TheHeader>
+    <hr />
     <router-view></router-view>
+    <hr />
     <TheFooter></TheFooter>
   </div>
 </template>

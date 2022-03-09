@@ -18,7 +18,6 @@
 
 <template>
     <div>
-        <hr />
         Hello from Dashboard!
         {{message}}
         <input type="text" v-bind:placeholder="message">

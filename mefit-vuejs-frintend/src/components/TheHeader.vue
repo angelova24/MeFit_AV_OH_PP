@@ -6,6 +6,15 @@
     <div>
         <nav>
             Navigation Bar
+            <router-link to="/dashboard" active-class="active">
+                Dashboard
+            </router-link>
+            <router-link to="/goals" active-class="active">
+                Goals
+            </router-link>
+            <router-link to="/exercises" active-class="active">
+                Exercises
+            </router-link>
         </nav>
     </div>
 </template>
