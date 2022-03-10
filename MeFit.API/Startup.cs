@@ -45,6 +45,10 @@ namespace MeFitAPI
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
+            services.AddCors(options => options.AddPolicy("allowedOrigins", builder =>
+            {
+                builder.AllowAnyOrigin();
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +64,8 @@ namespace MeFitAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("allowedOrigins");
 
             app.UseAuthorization();
 
