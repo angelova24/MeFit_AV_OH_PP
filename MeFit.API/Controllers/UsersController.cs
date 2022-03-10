@@ -25,7 +25,9 @@ namespace MeFit.API.Controllers
             _mapper = mapper;
         }
 
-        
+
+        //We need a get from header after Keyloack
+
         /// <summary>
         /// Get user by ID
         /// </summary>
@@ -34,7 +36,7 @@ namespace MeFit.API.Controllers
         // GET: api/Users/5
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status303SeeOther)]
-        public async Task<ActionResult<UserReadDTO>> GetUser(int id)
+        public async Task<ActionResult<UserReadDTO>> GetUser([FromHeader] int id)
         {
             var user = await _context.Users.FindAsync(id);
 
@@ -44,19 +46,35 @@ namespace MeFit.API.Controllers
             }
             var userReadDTO = _mapper.Map<UserReadDTO>(user);
             return userReadDTO;
+
         }
 
-        // PUT: api/Users/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        /// <summary>
+        /// Makes a partial update to the user object
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        // PATCH: api/Users/:user_id     
+        [HttpPatch("{id}")]
+        //[Consumes("application/json")]
+        public async Task<ActionResult<UserUpdateDTO>> PutUser(int id, UserUpdateDTO user)
         {
+
+            //Returns true or false, if passwords are the same returns true
+            //var isSamePassword = _context.Users.Any(e => e.Password == user.Password);
+            //if (isSamePassword)
+            //{
+            //    return BadRequest(400);
+            //}
+
+            var domainUser = _mapper.Map<MeFit.DAL.Models.Domain.User>(user);
             if (id != user.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(domainUser).State = EntityState.Modified;
 
             try
             {
@@ -66,7 +84,7 @@ namespace MeFit.API.Controllers
             {
                 if (!UserExists(id))
                 {
-                    return NotFound();
+                    return BadRequest(400);
                 }
                 else
                 {
@@ -74,25 +92,74 @@ namespace MeFit.API.Controllers
                 }
             }
 
-            return NoContent();
+            var userUpdateDTO = _mapper.Map<UserUpdateDTO>(user);
+            return userUpdateDTO;
         }
-
+       /// <summary>
+       /// Creates a new user
+       /// </summary>
+       /// <param name="newUser"></param>
+       /// <returns></returns>
         // POST: api/Users
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        //[Consumes("application/json")]
+        public async Task<ActionResult<UserCreateDTO>> PostUser(UserCreateDTO newUser)
         {
-            _context.Users.Add(user);
+            var domainnewUser = _mapper.Map<MeFit.DAL.Models.Domain.User>(newUser);
+            _context.Users.Add(domainnewUser);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return CreatedAtAction("GetUser", new { id = domainnewUser.Id }, newUser);
         }
 
-        // DELETE: api/Users/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+
+        //------------------------------------------Self only Admin-----------------
+        // POST: api/Users/user_id/update_password
+        [HttpPatch]
+        //[Consumes("application/json")]
+        public async Task<IActionResult> PutUPostUserWithPasswordser(int id, UserUpdatePasswordDTO user)
         {
-            var user = await _context.Users.FindAsync(id);
+
+            var domainUser = _mapper.Map<User>(user);
+            if (id != user.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(domainUser).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UserExists(id))
+                {
+                    return BadRequest(400);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return BadRequest(400);
+        }
+
+        /// <summary>
+        /// Deletes user (cascade - user's profile)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        // --------------SELF  AND ADMIN-------------
+        // DELETE: api/Users/:user_id
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<UserDeleteDTO>> DeleteUser(int id)
+        {
+            //cascade delete user with profile of user
+
+            var user = await _context.Users.Include(p => p.Profile).FirstOrDefaultAsync();
             if (user == null)
             {
                 return NotFound();

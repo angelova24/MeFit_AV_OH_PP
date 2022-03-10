@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MeFit.DAL.Models.Data;
 using MeFit.DAL.Models.Domain;
+using AutoMapper;
+using MeFit.DAL.Models.DTOs.ProfileDTO;
 
 namespace MeFit.API.Controllers
 {
@@ -15,37 +17,43 @@ namespace MeFit.API.Controllers
     public class ProfilesController : ControllerBase
     {
         private readonly MeFitDbContext _context;
-
-        public ProfilesController(MeFitDbContext context)
+        private readonly IMapper _mapper;
+        public ProfilesController(MeFitDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        // GET: api/Profiles
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Profile>>> GetProfiles()
-        {
-            return await _context.Profiles.ToListAsync();
-        }
-
-        // GET: api/Profiles/5
+        /// <summary>
+        /// Returns detail about current state of the users profile
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        // GET: api/Profiles/profile_id
         [HttpGet("{id}")]
-        public async Task<ActionResult<Profile>> GetProfile(int id)
+        public async Task<ActionResult<ProfileReadDTO>> GetProfile(int id)
         {
-            var profile = await _context.Profiles.FindAsync(id);
+            var profile = await _context.Users.FirstOrDefaultAsync(u => u.ProfileId == id);
 
             if (profile == null)
             {
                 return NotFound();
             }
-
-            return profile;
+            var profileReadDTO = _mapper.Map<ProfileReadDTO>(profile);
+            return profileReadDTO;
         }
 
-        // PUT: api/Profiles/5
+        /// <summary>
+        /// Executes partial update of the corresponding profile_id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="profile"></param>
+        /// <returns></returns>
+        // PATCH: api/Profiles/profile_id
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProfile(int id, Profile profile)
+        [HttpPatch("{id}")]
+        //[Consumes("application/json")]
+        public async Task<IActionResult> PutProfile(int id, ProfileUpdateDTO profile)
         {
             if (id != profile.Id)
             {
@@ -73,17 +81,29 @@ namespace MeFit.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Creates a new profile. Accepts appropriate parameters in the profile body as application/json
+        /// </summary>
+        /// <param name="newProfile"></param>
+        /// <returns></returns>
         // POST: api/Profiles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Profile>> PostProfile(Profile profile)
+        [Consumes("application/json")]
+        public async Task<ActionResult<ProfileReadDTO>> PostProfile([FromBody]ProfileCreateDTO newProfile)
         {
-            _context.Profiles.Add(profile);
+            var domainProfile = _mapper.Map<MeFit.DAL.Models.Domain.Profile>(newProfile);
+            _context.Profiles.Add(domainProfile);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProfile", new { id = profile.Id }, profile);
+            return CreatedAtAction("GetProfile", new { id = domainProfile.Id }, newProfile);
         }
 
+        /// <summary>
+        /// Deletes a profile
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // DELETE: api/Profiles/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProfile(int id)
