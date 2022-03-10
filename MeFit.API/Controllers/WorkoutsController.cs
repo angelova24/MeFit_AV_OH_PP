@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MeFit.DAL.Models.Data;
 using MeFit.DAL.Models.Domain;
+using AutoMapper;
+using MeFit.DAL.Models.DTOs.Workout;
 
 namespace MeFit.API.Controllers
 {
@@ -15,35 +17,52 @@ namespace MeFit.API.Controllers
     public class WorkoutsController : ControllerBase
     {
         private readonly MeFitDbContext _context;
+        private readonly IMapper _mapper;
 
-        public WorkoutsController(MeFitDbContext context)
+        public WorkoutsController(MeFitDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Workouts
+        /// <summary>
+        /// Gets all workouts with IDs to Sets, Programs and Goals
+        /// </summary>
+        /// <returns>List of all workouts</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Workout>>> GetWorkouts()
+        public async Task<ActionResult<IEnumerable<WorkoutReadDTO>>> GetWorkouts()
         {
-            return await _context.Workouts.ToListAsync();
+            var workouts = _mapper.Map<List<WorkoutReadDTO>>(await _context.Workouts.Include(w => w.Sets).Include(w => w.Programs).Include(w => w.Goals).ToListAsync());
+
+            if (workouts.Count == 0)
+            {
+                return NoContent();
+            }
+
+            return Ok(workouts);
         }
 
         // GET: api/Workouts/5
+        /// <summary>
+        /// Gets a workout by ID
+        /// </summary>
+        /// <param name="id">ID of a workout</param>
+        /// <returns>Workout</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Workout>> GetWorkout(int id)
+        public async Task<ActionResult<WorkoutReadDTO>> GetWorkout([FromRoute] int id)
         {
-            var workout = await _context.Workouts.FindAsync(id);
+            var workout = await _context.Workouts.Include(w => w.Sets).Include(w => w.Programs).Include(w => w.Goals).FirstOrDefaultAsync(w => w.Id == id);
 
             if (workout == null)
             {
                 return NotFound();
             }
 
-            return workout;
+            return _mapper.Map<WorkoutReadDTO>(workout);
         }
 
         // PUT: api/Workouts/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutWorkout(int id, Workout workout)
         {
