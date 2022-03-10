@@ -9,7 +9,7 @@ namespace MeFit.DAL.Models.Domain
         [Required, MaxLength(70)]
         public string Name { get; set; }
         public string Type { get; set; }
-        public bool Complete { get; set; }
+
         //navigation properties
         public ICollection<Set> Sets { get; set; } = new HashSet<Set>();
         public ICollection<Program> Programs { get; set; } = new HashSet<Program>();
