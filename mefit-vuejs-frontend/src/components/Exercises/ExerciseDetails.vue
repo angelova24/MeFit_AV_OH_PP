@@ -2,13 +2,13 @@
     const props = defineProps({
         exercise: {
             type: Object,
-            required: false
+            required: true
         }
     });
 </script>
 
 <template>
-    <div v-if="exercise !== undefined">
+    <div>
         <header>
             <b>{{ exercise.name }}</b>
         </header>
@@ -20,7 +20,8 @@
                 <b>Target muscle group:</b> {{ exercise.targetMuscleGroup }}
             </section>
             <section title="image">
-                <img v-bind:src="exercise.imageURL" />
+                <img v-if="exercise.imageURL !== null" v-bind:src="exercise.imageURL" />
+                <div v-if="exercise.imageURL === null">no image available...</div>
             </section>
             <section title="video">
                 <a v-bind:href="exercise.videoURL">

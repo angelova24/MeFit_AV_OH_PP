@@ -4,7 +4,7 @@ import LoginPage from "../UserProfiles/LoginPage.vue";
 import GoalsPage from "../Goals/GoalsPage.vue";
 import ExercisesPage from "../Exercises/ExercisesPage.vue";
 import WorkoutPage from "../Workouts/WorkoutsPage.vue";
-import ProgramPage from "../Programs/ProgramsPage.vue";
+import ProgramsPage from "../Programs/ProgramsPage.vue";
 
 const routes = [
     {
@@ -29,7 +29,7 @@ const routes = [
     },
     {
         path: "/programs",
-        component: ProgramPage
+        component: ProgramsPage
     }
 ];
 

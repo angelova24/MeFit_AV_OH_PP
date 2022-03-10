@@ -25,12 +25,16 @@
             Workout Page
         </header>
         <main>
-            <section title="workoutList">
+            <section v-if="JSON.stringify(workouts) !== '[]'" title="workoutList">
                 <WorkoutList v-bind:workouts="workouts"></WorkoutList>
             </section>
-            <section title="workoutDetails">
+            <section v-if="JSON.stringify(workouts) !== '[]'" title="workoutDetails">
                 Details of workout:
                 <WorkoutDetails v-bind:workout="workout"></WorkoutDetails>
+            </section>
+            <section v-if="JSON.stringify(workouts) === '[]'">
+                We are sorry, but currently no workouts are available.<br />
+                Please try again later...
             </section>
         </main>
     </div>

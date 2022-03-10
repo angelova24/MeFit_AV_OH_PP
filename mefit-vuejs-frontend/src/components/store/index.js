@@ -35,7 +35,7 @@ const store = createStore({
         },
         addPrograms: (state, payload) => {
             for (const program of payload) {
-                state.workouts.push(program);    
+                state.programs.push(program);    
             }
         },
         setProgramDetailsId: (state, payload) => {
@@ -57,9 +57,16 @@ const store = createStore({
         },
         async fetchPrograms(state) {
             const response = await fetch("https://localhost:44390/api/Programs");
-            const programs = await response.json();
-            state.commit("addPrograms", programs);
-            console.log("FetchPrograms from Db done...");
+            if(!response.ok)
+            { 
+                console.log(`fetchPrograms from Db failed...!!!`);
+            }
+            else
+            {
+                const programs = await response.json();
+                state.commit("addPrograms", programs);
+                console.log("FetchPrograms from Db done...");
+            }
         }
     },
     getters: {

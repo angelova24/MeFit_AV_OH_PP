@@ -2,11 +2,9 @@
     const props = defineProps({
         workout: {
             type: Object,
-            required: false
+            required: true
         }
     });
-
-    const exerciseSets = 
 
 </script>
 

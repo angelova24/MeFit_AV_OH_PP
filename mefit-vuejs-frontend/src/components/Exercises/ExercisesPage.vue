@@ -25,12 +25,16 @@
             Exercise Page
         </header>
         <main>
-            <section title="exerciseList">
+            <section v-if="JSON.stringify(exercises) !== '[]'" title="exerciseList">
                 <ExerciseList v-bind:exercises="exercises"></ExerciseList>
             </section>
-            <section title="exerciseDetails">
+            <section v-if="JSON.stringify(exercises) !== '[]'" title="exerciseDetails">
                 Details of exercise:
                 <ExerciseDetails v-bind:exercise="exercise"></ExerciseDetails>
+            </section>
+            <section v-if="JSON.stringify(exercises) === '[]'">
+                We are sorry, but currently no exercises are available.<br />
+                Please try again later...
             </section>
         </main>
     </div>
