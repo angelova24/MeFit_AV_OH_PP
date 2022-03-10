@@ -58,17 +58,17 @@ namespace MeFit.API.Controllers
         // PATCH: api/Users/:user_id     
         [HttpPatch("{id}")]
         //[Consumes("application/json")]
-        public async Task<IActionResult> PutUser(int id, UserUpdateDTO user)
+        public async Task<ActionResult<UserUpdateDTO>> PutUser(int id, UserUpdateDTO user)
         {
 
             //Returns true or false, if passwords are the same returns true
-            // var isSamePassword = _context.Users.Any(e => e.Password == user.Password);
-            //if (!isSamePassword)
+            //var isSamePassword = _context.Users.Any(e => e.Password == user.Password);
+            //if (isSamePassword)
             //{
             //    return BadRequest(400);
             //}
 
-            var domainUser = _mapper.Map<User>(user);
+            var domainUser = _mapper.Map<MeFit.DAL.Models.Domain.User>(user);
             if (id != user.Id)
             {
                 return BadRequest();
@@ -92,7 +92,8 @@ namespace MeFit.API.Controllers
                 }
             }
 
-            return BadRequest(400);
+            var userUpdateDTO = _mapper.Map<UserUpdateDTO>(user);
+            return userUpdateDTO;
         }
        /// <summary>
        /// Creates a new user
