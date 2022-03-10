@@ -6,9 +6,9 @@ namespace MeFit.DAL.Models.Domain
     public class Profile
     {
         public int Id { get; set; }
-        [MaxLength(10)]
+        
         public double Weight { get; set; }
-        [MaxLength(10)]
+       
         public double Height { get; set; }
         [MaxLength(100)]        
         public string MedicalConditions { get; set; }

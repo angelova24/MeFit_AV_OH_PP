@@ -94,26 +94,27 @@ namespace MeFit.API.Controllers
 
             return BadRequest(400);
         }
-        /// <summary>
-        /// Create a new user
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
+       /// <summary>
+       /// Creates a new user
+       /// </summary>
+       /// <param name="newUser"></param>
+       /// <returns></returns>
         // POST: api/Users
-        //[HttpPost]        
-        //public async Task<IActionResult> PostUser(UserCreateDTO user)
-        //{
-        //    var domainUser = _mapper.Map<User>(user);
-        //    _context.Users.Add(domainUser);
-        //    await _context.SaveChangesAsync();
+        [HttpPost]
+        //[Consumes("application/json")]
+        public async Task<ActionResult<UserCreateDTO>> PostUser(UserCreateDTO newUser)
+        {
+            var domainnewUser = _mapper.Map<MeFit.DAL.Models.Domain.User>(newUser);
+            _context.Users.Add(domainnewUser);
+            await _context.SaveChangesAsync();
 
-        //    return CreatedAtAction("GetUser", new { id = domainUser.Id }, user);
-        //}
+            return CreatedAtAction("GetProfile", new { id = domainnewUser.Id }, newUser);
+        }
 
 
         //------------------------------------------Self only Admin-----------------
         // POST: api/Users/user_id/update_password
-        [HttpPost]
+        [HttpPatch]
         //[Consumes("application/json")]
         public async Task<IActionResult> PutUPostUserWithPasswordser(int id, UserUpdatePasswordDTO user)
         {
@@ -145,21 +146,25 @@ namespace MeFit.API.Controllers
             return BadRequest(400);
         }
 
-
+        /// <summary>
+        /// Deletes user (cascade - user's profile)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // --------------SELF  AND ADMIN-------------
         // DELETE: api/Users/:user_id
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<ActionResult<UserDeleteDTO>> DeleteUser(int id)
         {
             //cascade delete user with profile of user
 
-            var user = await _context.Profiles.Where(p => p.UserId == id).Include(upr => upr.User).FirstAsync();
+            var user = await _context.Users.Include(p => p.Profile).FirstOrDefaultAsync();
             if (user == null)
             {
                 return NotFound();
             }
 
-            _context.Profiles.Remove(user);
+            _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
             return NoContent();
