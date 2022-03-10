@@ -44,21 +44,25 @@ namespace MeFit.API.Controllers
         }
 
         // GET: api/Workouts/5
+        /// <summary>
+        /// Gets a workout by ID
+        /// </summary>
+        /// <param name="id">ID of a workout</param>
+        /// <returns>Workout</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Workout>> GetWorkout(int id)
+        public async Task<ActionResult<WorkoutReadDTO>> GetWorkout([FromRoute] int id)
         {
-            var workout = await _context.Workouts.FindAsync(id);
+            var workout = await _context.Workouts.Include(w => w.Sets).Include(w => w.Programs).Include(w => w.Goals).FirstOrDefaultAsync(w => w.Id == id);
 
             if (workout == null)
             {
                 return NotFound();
             }
 
-            return workout;
+            return _mapper.Map<WorkoutReadDTO>(workout);
         }
 
         // PUT: api/Workouts/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutWorkout(int id, Workout workout)
         {
