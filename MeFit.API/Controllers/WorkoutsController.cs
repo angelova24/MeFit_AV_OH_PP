@@ -50,7 +50,7 @@ namespace MeFit.API.Controllers
         /// <param name="id">ID of a workout</param>
         /// <returns>Workout</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<WorkoutReadDTO>> GetWorkout([FromRoute] int id)
+        public async Task<ActionResult<WorkoutReadDTO>> GetWorkoutById([FromRoute] int id)
         {
             var workout = await _context.Workouts.Include(w => w.Sets).Include(w => w.Programs).Include(w => w.Goals).FirstOrDefaultAsync(w => w.Id == id);
 
@@ -62,16 +62,34 @@ namespace MeFit.API.Controllers
             return _mapper.Map<WorkoutReadDTO>(workout);
         }
 
-        // PUT: api/Workouts/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutWorkout(int id, Workout workout)
+        // PUT: api/Workouts/5/AddSets -------------CONTRIBUTOR ONLY!!!!! -------------
+        /// <summary>
+        /// Adds sets to a workout
+        /// </summary>
+        /// <param name="id">ID of a workout</param>
+        /// <param name="sets">List of sets IDs to be added</param>
+        /// <returns></returns>
+        [HttpPatch("{id}/AddSets")]
+        public async Task<IActionResult> AddSets([FromRoute] int id, [FromBody] List<int> sets)
         {
-            if (id != workout.Id)
+            var workout = await _context.Workouts.Include(w => w.Sets).FirstOrDefaultAsync(w => w.Id == id);
+
+            if (workout == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(workout).State = EntityState.Modified;
+            foreach (var setId in sets)
+            {
+                var set = await _context.Sets.FirstOrDefaultAsync(s => s.Id == setId);
+                if (set != null)
+                {
+                    workout.Sets.Add(set);
+                }
+            }
+            var domainWorkout = _mapper.Map<Workout>(workout);
+
+            _context.Entry(domainWorkout).State = EntityState.Modified;
 
             try
             {
@@ -92,20 +110,30 @@ namespace MeFit.API.Controllers
             return NoContent();
         }
 
-        // POST: api/Workouts
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST: api/Workouts -------------CONTRIBUTOR ONLY!!!!! -------------
+        /// <summary>
+        /// Creates new workout
+        /// </summary>
+        /// <param name="newWorkout">New workout object</param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<Workout>> PostWorkout(Workout workout)
+        public async Task<ActionResult<Workout>> PostWorkout([FromBody] WorkoutCreatDTO newWorkout)
         {
-            _context.Workouts.Add(workout);
+            var domainWorkout = _mapper.Map<Workout>(newWorkout);
+            _context.Workouts.Add(domainWorkout);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetWorkout", new { id = workout.Id }, workout);
+            return CreatedAtAction("GetWorkoutById", new { id = domainWorkout.Id }, newWorkout);
         }
 
-        // DELETE: api/Workouts/5
+        // DELETE: api/Workouts/5 -------------CONTRIBUTOR ONLY!!!!! -------------
+        /// <summary>
+        /// Deletes a workout
+        /// </summary>
+        /// <param name="id">ID of a workout</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteWorkout(int id)
+        public async Task<IActionResult> DeleteWorkout([FromRoute] int id)
         {
             var workout = await _context.Workouts.FindAsync(id);
             if (workout == null)
