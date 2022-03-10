@@ -26,15 +26,49 @@ namespace MeFit.API.Controllers
         }
 
         // GET: api/Exercises
+        /// <summary>
+        /// Gets all exercises
+        /// </summary>
+        /// <returns>List of all exercises</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ExerciseReadDTO>>> GetExercises()
         {
-            return _mapper.Map<List<ExerciseReadDTO>>(await _context.Exercises.OrderBy(e => e.TargetMuscleGroup).ToListAsync());
+            var exercises = _mapper.Map<List<ExerciseReadDTO>>(await _context.Exercises.ToListAsync());
+
+            if (exercises.Count == 0)
+            {
+                return NoContent();
+            }
+
+            return exercises;
+        }
+
+        // GET: api/Exercises/TargetMuscleGroup
+        /// <summary>
+        /// Gets all exercises sorted by Target muscle group
+        /// </summary>
+        /// <returns>List of all exercises sorted by Target muscle group</returns>
+        [HttpGet("TargetMuscleGroup")]
+        public async Task<ActionResult<IEnumerable<ExerciseReadDTO>>> GetExercisesByTargetMuscleGroup()
+        {
+            var exercises = _mapper.Map<List<ExerciseReadDTO>>(await _context.Exercises.OrderBy(e => e.TargetMuscleGroup).ToListAsync());
+
+            if (exercises.Count == 0)
+            {
+                return NoContent();
+            }
+
+            return exercises;
         }
 
         // GET: api/Exercises/5
+        /// <summary>
+        /// Gets exercise by ID
+        /// </summary>
+        /// <param name="id">ID of an exercise</param>
+        /// <returns>Exercise</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<ExerciseReadDTO>> GetExerciseById(int id)
+        public async Task<ActionResult<ExerciseReadDTO>> GetExerciseById([FromRoute] int id)
         {
             var exercise = await _context.Exercises.FindAsync(id);
 
@@ -47,8 +81,14 @@ namespace MeFit.API.Controllers
         }
 
         // PUT: api/Exercises/5 -------------CONTRIBUTOR ONLY!!!!! -------------
+        /// <summary>
+        /// Updates exercises info
+        /// </summary>
+        /// <param name="id">ID of an exercise</param>
+        /// <param name="exercise">Exercises new info</param>
+        /// <returns></returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateExercise(int id, [FromBody] ExerciseReadDTO exercise)
+        public async Task<IActionResult> UpdateExercise([FromRoute] int id, [FromBody] ExerciseReadDTO exercise)
         {
             if (id != exercise.Id)
             {
@@ -79,6 +119,11 @@ namespace MeFit.API.Controllers
         }
 
         // POST: api/Exercises -------------CONTRIBUTOR ONLY!!!!! -------------
+        /// <summary>
+        /// Adds new exercise to DB
+        /// </summary>
+        /// <param name="newExercise">Exercises info</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult<ExerciseReadDTO>> PostExercise([FromBody] ExerciseCreateDTO newExercise)
         {
@@ -90,8 +135,13 @@ namespace MeFit.API.Controllers
         }
 
         // DELETE: api/Exercises/5 ------------- CONTRIBUTOR ONLY!!!!! -------------
+        /// <summary>
+        /// Deletes exercise from DB
+        /// </summary>
+        /// <param name="id">ID of an exercise</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteExercise(int id)
+        public async Task<IActionResult> DeleteExercise([FromRoute] int id)
         {
             var exercise = await _context.Exercises.FindAsync(id);
             if (exercise == null)

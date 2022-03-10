@@ -12,7 +12,9 @@ const store = createStore({
         exercises: [],
         exerciseDetailsId: 0,
         workouts: [],
-        workoutDetailsId: 0
+        workoutDetailsId: 0,
+        programs: [],
+        programDetailsId: 0
     },
     mutations: {
         addExercises: (state, payload) => {
@@ -30,6 +32,14 @@ const store = createStore({
         },
         setWorkoutDetailsId: (state, payload) => {
             state.workoutDetailsId = payload;
+        },
+        addPrograms: (state, payload) => {
+            for (const program of payload) {
+                state.workouts.push(program);    
+            }
+        },
+        setProgramDetailsId: (state, payload) => {
+            state.programDetailsId = payload;
         }
     },
     actions: {
@@ -44,6 +54,12 @@ const store = createStore({
             const workouts = await response.json();
             state.commit("addWorkouts", workouts);
             console.log("FetchWorkouts from Db done...");
+        },
+        async fetchPrograms(state) {
+            const response = await fetch("https://localhost:44390/api/Programs");
+            const programs = await response.json();
+            state.commit("addPrograms", programs);
+            console.log("FetchPrograms from Db done...");
         }
     },
     getters: {
@@ -52,6 +68,9 @@ const store = createStore({
         },
         getWorkoutById: state => id => {
             return state.workouts.find(w => w.id === id);
+        },
+        getProgramById: state => id => {
+            return state.programs.find(p => p.id === id);
         }
     }
 });

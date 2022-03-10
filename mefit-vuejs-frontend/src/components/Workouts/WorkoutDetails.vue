@@ -5,6 +5,9 @@
             required: false
         }
     });
+
+    const exerciseSets = 
+
 </script>
 
 <template>
@@ -16,9 +19,13 @@
             <section title="type">
                 <b>Type:</b> {{ workout.type }}
             </section>
+            <section title="exerciseSets">
+
+            </section>
         </main>
     </div>
 </template>
+
 
 <style scoped>
     header {
