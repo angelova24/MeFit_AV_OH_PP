@@ -146,21 +146,25 @@ namespace MeFit.API.Controllers
             return BadRequest(400);
         }
 
-
+        /// <summary>
+        /// Deletes user (cascade - user's profile)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // --------------SELF  AND ADMIN-------------
         // DELETE: api/Users/:user_id
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<ActionResult<UserDeleteDTO>> DeleteUser(int id)
         {
             //cascade delete user with profile of user
 
-            var user = await _context.Profiles.Where(p => p.UserId == id).Include(upr => upr.User).FirstAsync();
+            var user = await _context.Users.Include(p => p.Profile).FirstOrDefaultAsync();
             if (user == null)
             {
                 return NotFound();
             }
 
-            _context.Profiles.Remove(user);
+            _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
             return NoContent();
