@@ -115,37 +115,37 @@ namespace MeFit.API.Controllers
 
         //------------------------------------------Self only Admin-----------------
         // POST: api/Users/user_id/update_password
-        [HttpPatch]
+        //[HttpPatch]
         //[Consumes("application/json")]
-        public async Task<IActionResult> PutUPostUserWithPasswordser(int id, UserUpdatePasswordDTO user)
-        {
+        //public async Task<ActionResult<User>> PutUPostUserWithPasswordser(int id, UserUpdatePasswordDTO user)
+        //{
 
-            var domainUser = _mapper.Map<User>(user);
-            if (id != user.Id)
-            {
-                return BadRequest();
-            }
+        //    var domainUser = _mapper.Map<User>(user);
+        //    if (id != user.Id)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.Entry(domainUser).State = EntityState.Modified;
+        //    _context.Entry(domainUser).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return BadRequest(400);
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!UserExists(id))
+        //        {
+        //            return BadRequest(400);
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return BadRequest(400);
-        }
+        //    return domainUser;
+        //}
 
         /// <summary>
         /// Deletes user (cascade - user's profile)
