@@ -108,7 +108,7 @@ namespace MeFit.API.Controllers
             _context.Users.Add(domainnewUser);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProfile", new { id = domainnewUser.Id }, newUser);
+            return CreatedAtAction("GetUser", new { id = domainnewUser.Id }, newUser);
         }
 
 
