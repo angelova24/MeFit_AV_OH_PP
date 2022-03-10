@@ -3,6 +3,7 @@ import UserDashboard from "../UserProfiles/UserDashboard.vue";
 import LoginPage from "../UserProfiles/LoginPage.vue";
 import GoalsPage from "../Goals/GoalsPage.vue";
 import ExercisesPage from "../Exercises/ExercisesPage.vue";
+import WorkoutPage from "../Workouts/WorkoutsPage.vue";
 
 const routes = [
     {
@@ -20,6 +21,10 @@ const routes = [
     {
         path: "/exercises",
         component: ExercisesPage
+    },
+    {
+        path: "/workouts",
+        component: WorkoutPage
     }
 ];
 

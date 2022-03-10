@@ -20,10 +20,10 @@
                 <b>Target muscle group:</b> {{ exercise.targetMuscleGroup }}
             </section>
             <section title="image">
-                <img v-bind:src="exercise.imageUrl" />
+                <img v-bind:src="exercise.imageURL" />
             </section>
             <section title="video">
-                <a v-bind:href="exercise.videoUrl">
+                <a v-bind:href="exercise.videoURL">
                     Example-Video
                 </a>
             </section>

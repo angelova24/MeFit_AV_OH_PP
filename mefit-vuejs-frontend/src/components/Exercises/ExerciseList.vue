@@ -14,7 +14,7 @@
     });
 
     const onExerciseListItemClicked = (event, id) => {
-        console.log(`setExerciseDetailsId to ${id}...`)
+        console.log(`ExerciseListItem with id ${id} was clicked...`)
         store.commit("setExerciseDetailsId", id);
     }
 

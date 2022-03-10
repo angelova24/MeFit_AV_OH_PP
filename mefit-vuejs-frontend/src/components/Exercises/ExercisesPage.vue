@@ -2,7 +2,7 @@
     import { useStore } from 'vuex';
     import { computed } from 'vue';
     import ExerciseList from './ExerciseList.vue';
-    import ExerciseDetail from './ExerciseDetail.vue';  
+    import ExerciseDetails from './ExerciseDetails.vue';  
 
     const store = useStore();
 
@@ -30,7 +30,7 @@
             </section>
             <section title="exerciseDetails">
                 Details of exercise:
-                <ExerciseDetail v-bind:exercise="exercise"></ExerciseDetail>
+                <ExerciseDetails v-bind:exercise="exercise"></ExerciseDetails>
             </section>
         </main>
     </div>

@@ -7,7 +7,8 @@
   const store = useStore();
   
   onMounted(() => {
-    //store.dispatch("fetchExcercises");
+    store.dispatch("fetchExcercises");
+    store.dispatch("fetchWorkouts");
   })
 </script>
 

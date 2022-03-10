@@ -9,25 +9,10 @@ const store = createStore({
         profile: {
             
         },
-        exercises: [ 
-            {
-                id: 1,
-                name: "Sit-up",
-                description: "It begins with lying with the back on the floor, typically with the arms across the chest or hands behind the head and the knees and toes bent in an attempt to reduce stress on the back muscles and spine, and then elevating both the upper and lower vertebrae from the floor until everything superior to the buttocks is not touching the ground.",
-                targetMuscleGroup: " abdominal muscles",
-                imageUrl: "https://www.thephysedexpress.com/uploads/3/1/1/1/31119283/sit-up_orig.gif",
-                videoUrl: "https://www.youtube.com/watch?v=jDwoBqPH0jk"
-            },
-            {
-                id: 2,
-                name: "Push-up",
-                description: "A push-up is a common calisthenics exercise beginning from the prone position and then raising and lowering the body using the arms.",
-                targetMuscleGroup: "Biceps, Forearms",
-                imageUrl: "https://www.thephysedexpress.com/uploads/3/1/1/1/31119283/push-up_orig.gif",
-                videoUrl: "https://www.youtube.com/watch?v=t0s5FHbdBmA"
-            }
-        ],
-        exerciseDetailsId: 0
+        exercises: [],
+        exerciseDetailsId: 0,
+        workouts: [],
+        workoutDetailsId: 0
     },
     mutations: {
         addExercises: (state, payload) => {
@@ -37,19 +22,36 @@ const store = createStore({
         },
         setExerciseDetailsId: (state, payload) => {
             state.exerciseDetailsId = payload;
-        }       
+        },
+        addWorkouts: (state, payload) => {
+            for (const workout of payload) {
+                state.workouts.push(workout);    
+            }
+        },
+        setWorkoutDetailsId: (state, payload) => {
+            state.workoutDetailsId = payload;
+        }
     },
     actions: {
         async fetchExcercises(state) {
-            const response = await fetch("http://acnhapi.com/v1/fish/1");
+            const response = await fetch("https://localhost:44390/api/Exercises");
             const exercises = await response.json();
             state.commit("addExercises", exercises);
-            console.log("FetchUser done...");
+            console.log("FetchExercises from Db done...");
+        },
+        async fetchWorkouts(state) {
+            const response = await fetch("https://localhost:44390/api/Workouts");
+            const workouts = await response.json();
+            state.commit("addWorkouts", workouts);
+            console.log("FetchWorkouts from Db done...");
         }
     },
     getters: {
         getExerciseById: state => id => {
             return state.exercises.find(ex => ex.id === id);
+        },
+        getWorkoutById: state => id => {
+            return state.workouts.find(w => w.id === id);
         }
     }
 });
