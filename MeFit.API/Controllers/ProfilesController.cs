@@ -89,8 +89,8 @@ namespace MeFit.API.Controllers
         // POST: api/Profiles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        //[Consumes("application/json")]
-        public async Task<IActionResult> PostProfile(ProfileCreateDTO newProfile)
+        [Consumes("application/json")]
+        public async Task<ActionResult<ProfileReadDTO>> PostProfile([FromBody]ProfileCreateDTO newProfile)
         {
             var domainProfile = _mapper.Map<MeFit.DAL.Models.Domain.Profile>(newProfile);
             _context.Profiles.Add(domainProfile);
