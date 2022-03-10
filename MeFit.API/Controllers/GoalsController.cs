@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MeFit.DAL.Models.Data;
 using MeFit.DAL.Models.Domain;
+using MeFit.DAL.Models.DTOs.GoalsDTO;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MeFit.API.Controllers
 {
@@ -15,86 +18,105 @@ namespace MeFit.API.Controllers
     public class GoalsController : ControllerBase
     {
         private readonly MeFitDbContext _context;
+        private readonly IMapper _mapper;
 
-        public GoalsController(MeFitDbContext context)
+        public GoalsController(MeFitDbContext context, IMapper mapper)
         {
+            _mapper = mapper;
             _context = context;
         }
-
+        /// <summary>
+        /// Gets list of all goals with workouts in it
+        /// </summary>
+        /// <returns>List of goals</returns>
         // GET: api/Goals
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Goal>>> GetGoals()
+        public async Task<ActionResult<IEnumerable<GoalReadDTO>>> GetGoals()
         {
-            return await _context.Goals.ToListAsync();
+            var goalReadDTO = _mapper.Map<List<GoalReadDTO>>(await _context.Goals.Include(w => w.Workouts).ToListAsync());
+            return goalReadDTO;
         }
 
-        // GET: api/Goals/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Goal>> GetGoal(int id)
+        /// <summary>
+        /// Executes a partial update of the corresponding goal_id Achived with true or false
+        /// </summary>
+        /// <param name="id">GoalId</param>       
+        /// <param name="profId">ProfileID</param>
+        /// <returns></returns>
+        // PATCH: api/Goals/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateGoal(int profId,int id)
         {
-            var goal = await _context.Goals.FindAsync(id);
-
-            if (goal == null)
+            var gol = await _context.Goals.FindAsync(id);
+            var profile = await _context.Profiles.Include(p => p.Goals).FirstOrDefaultAsync(pi => pi.Id == profId);
+            
+            if (profile == null)
             {
                 return NotFound();
             }
-
-            return goal;
-        }
-
-        // PUT: api/Goals/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutGoal(int id, Goal goal)
-        {
-            if (id != goal.Id)
+            if(profile.Goals.Any(i => i.Id== id))
             {
-                return BadRequest();
-            }
+                profile.Goals.FirstOrDefault(g => g.Id == id).Achieved = true; 
 
-            _context.Entry(goal).State = EntityState.Modified;
+            }
+            
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GoalExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
-
+        /// <summary>
+        /// Create new goal in profile
+        /// </summary>
+        /// <param name="id">ProfileID</param>
+        /// <param name="goals">GoalsID to be added</param>
+        /// <returns></returns>
         // POST: api/Goals
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Goal>> PostGoal(Goal goal)
+        [HttpPost]        
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> CreateGoal(int id, List<int> goals)
         {
-            _context.Goals.Add(goal);
+
+            var profile = await _context.Profiles.Include(p => p.Goals).FirstOrDefaultAsync(pi => pi.Id == id);
+
+
+            if (profile == null)
+            {
+                return NotFound();
+            }
+
+            foreach (var goalid in goals)
+            {
+                var tempGoal = await _context.Goals.FirstOrDefaultAsync(g => g.Id == goalid);
+                if (tempGoal != null)
+                {
+                    profile.Goals.Add(tempGoal);
+                }
+
+            }
+
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetGoal", new { id = goal.Id }, goal);
+            return NoContent();
         }
-
+        /// <summary>
+        /// Delete a goal by Id
+        /// </summary>
+        /// <param name="id">GoalID</param>
+        /// <returns></returns>
         // DELETE: api/Goals/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteGoal(int id)
+        public async Task<ActionResult<GoalDeleteDTO>> DeleteGoal(int id)
         {
             var goal = await _context.Goals.FindAsync(id);
             if (goal == null)
             {
                 return NotFound();
             }
-
-            _context.Goals.Remove(goal);
+            var goalDeleteDTO = _mapper.Map<Goal>(goal);
+            _context.Goals.Remove(goalDeleteDTO);
             await _context.SaveChangesAsync();
 
             return NoContent();
