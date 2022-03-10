@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MeFit.DAL.Models.Data;
 using MeFit.DAL.Models.Domain;
+using AutoMapper;
+using MeFit.DAL.Models.DTOs.Workout;
 
 namespace MeFit.API.Controllers
 {
@@ -15,17 +17,30 @@ namespace MeFit.API.Controllers
     public class WorkoutsController : ControllerBase
     {
         private readonly MeFitDbContext _context;
+        private readonly IMapper _mapper;
 
-        public WorkoutsController(MeFitDbContext context)
+        public WorkoutsController(MeFitDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Workouts
+        /// <summary>
+        /// Gets all workouts with IDs to Sets, Programs and Goals
+        /// </summary>
+        /// <returns>List of all workouts</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Workout>>> GetWorkouts()
+        public async Task<ActionResult<IEnumerable<WorkoutReadDTO>>> GetWorkouts()
         {
-            return await _context.Workouts.ToListAsync();
+            var workouts = _mapper.Map<List<WorkoutReadDTO>>(await _context.Workouts.Include(w => w.Sets).Include(w => w.Programs).Include(w => w.Goals).ToListAsync());
+
+            if (workouts.Count == 0)
+            {
+                return NoContent();
+            }
+
+            return Ok(workouts);
         }
 
         // GET: api/Workouts/5
