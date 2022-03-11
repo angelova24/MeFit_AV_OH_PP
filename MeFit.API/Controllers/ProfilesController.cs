@@ -55,6 +55,7 @@ namespace MeFit.API.Controllers
         //[Consumes("application/json")]
         public async Task<IActionResult> PutProfile(int id, ProfileUpdateDTO profile)
         {
+
             if (id != profile.Id)
             {
                 return BadRequest();
