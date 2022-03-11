@@ -9,6 +9,7 @@ using MeFit.DAL.Models.Data;
 using MeFit.DAL.Models.Domain;
 using AutoMapper;
 using MeFit.DAL.Models.DTOs.Exercise;
+using System.Net.Mime;
 
 namespace MeFit.API.Controllers
 {
@@ -31,6 +32,9 @@ namespace MeFit.API.Controllers
         /// </summary>
         /// <returns>List of all exercises</returns>
         [HttpGet]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult<IEnumerable<ExerciseReadDTO>>> GetExercises()
         {
             var exercises = _mapper.Map<List<ExerciseReadDTO>>(await _context.Exercises.ToListAsync());
@@ -40,7 +44,7 @@ namespace MeFit.API.Controllers
                 return NoContent();
             }
 
-            return exercises;
+            return Ok(exercises);
         }
 
         // GET: api/Exercises/TargetMuscleGroup
@@ -49,6 +53,9 @@ namespace MeFit.API.Controllers
         /// </summary>
         /// <returns>List of all exercises sorted by Target muscle group</returns>
         [HttpGet("TargetMuscleGroup")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult<IEnumerable<ExerciseReadDTO>>> GetExercisesByTargetMuscleGroup()
         {
             var exercises = _mapper.Map<List<ExerciseReadDTO>>(await _context.Exercises.OrderBy(e => e.TargetMuscleGroup).ToListAsync());
@@ -58,7 +65,7 @@ namespace MeFit.API.Controllers
                 return NoContent();
             }
 
-            return exercises;
+            return Ok(exercises);
         }
 
         // GET: api/Exercises/5
@@ -68,6 +75,9 @@ namespace MeFit.API.Controllers
         /// <param name="id">ID of an exercise</param>
         /// <returns>Exercise</returns>
         [HttpGet("{id}")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ExerciseReadDTO>> GetExerciseById([FromRoute] int id)
         {
             var exercise = await _context.Exercises.FindAsync(id);
@@ -77,7 +87,7 @@ namespace MeFit.API.Controllers
                 return NotFound();
             }
 
-            return _mapper.Map<ExerciseReadDTO>(exercise);
+            return Ok(_mapper.Map<ExerciseReadDTO>(exercise));
         }
 
         // PUT: api/Exercises/5 -------------CONTRIBUTOR ONLY!!!!! -------------
@@ -88,6 +98,10 @@ namespace MeFit.API.Controllers
         /// <param name="exercise">Exercises new info</param>
         /// <returns></returns>
         [HttpPut("{id}")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UpdateExercise([FromRoute] int id, [FromBody] ExerciseReadDTO exercise)
         {
             if (id != exercise.Id)
@@ -125,6 +139,8 @@ namespace MeFit.API.Controllers
         /// <param name="newExercise">Exercises info</param>
         /// <returns></returns>
         [HttpPost]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<ExerciseReadDTO>> PostExercise([FromBody] ExerciseCreateDTO newExercise)
         {
             var domainExercise = _mapper.Map<Exercise>(newExercise);
@@ -141,6 +157,9 @@ namespace MeFit.API.Controllers
         /// <param name="id">ID of an exercise</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteExercise([FromRoute] int id)
         {
             var exercise = await _context.Exercises.FindAsync(id);
