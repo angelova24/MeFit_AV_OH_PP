@@ -57,7 +57,7 @@ namespace MeFit.API.Controllers
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ProgramReadDTO>> GetProgram(int id)
+        public async Task<ActionResult<ProgramReadDTO>> GetProgramById([FromRoute] int id)
         {
             var program = await _context.Programs.Include(p=> p.Workouts).FirstOrDefaultAsync(p => p.Id == id);
 
@@ -69,16 +69,34 @@ namespace MeFit.API.Controllers
             return Ok(_mapper.Map<ProgramReadDTO>(program));
         }
 
-        // PUT: api/Programs/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProgram(int id, Program program)
+        // PUT: api/Programs/5/AddWorkouts
+        /// <summary>
+        /// Add workouts to program
+        /// </summary>
+        /// <param name="id">ID of a program</param>
+        /// <param name="workoutIds">List of workouts IDs to be added</param>
+        /// <returns></returns>
+        [HttpPatch("{id}/AddWorkouts")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> PutProgram([FromRoute] int id, [FromBody] List<int> workoutIds)
         {
-            if (id != program.Id)
+            var program = await _context.Programs.Include(p => p.Workouts).FirstOrDefaultAsync(p => p.Id == id);
+
+            if (program == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
+            foreach (var workoutId in workoutIds)
+            {
+                var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutId);
+                if (workout != null)
+                {
+                    program.Workouts.Add(workout);
+                }
+            }
+            var domainProgram = _mapper.Map<Program>(program);
             _context.Entry(program).State = EntityState.Modified;
 
             try
@@ -101,19 +119,33 @@ namespace MeFit.API.Controllers
         }
 
         // POST: api/Programs
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Creates new program
+        /// </summary>
+        /// <param name="newProgram">New program object</param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<Program>> PostProgram(Program program)
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<ProgramReadDTO>> PostProgram([FromBody] ProgramCreateDTO newProgram)
         {
-            _context.Programs.Add(program);
+            var domainProgram = _mapper.Map<Program>(newProgram);
+            _context.Programs.Add(domainProgram);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProgram", new { id = program.Id }, program);
+            return CreatedAtAction("GetProgramById", new { id = domainProgram.Id }, newProgram);
         }
 
         // DELETE: api/Programs/5
+        /// <summary>
+        /// Deletes program from DB
+        /// </summary>
+        /// <param name="id">ID of program</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProgram(int id)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> DeleteProgram([FromRoute] int id)
         {
             var program = await _context.Programs.FindAsync(id);
             if (program == null)
