@@ -9,6 +9,8 @@ namespace MeFit.API.Profiles
         {
             CreateMap<Set, SetReadDTO>()
                    .ReverseMap();
+            CreateMap<Set, SetReadWithIdDTO>()
+                   .ReverseMap();
         }
     }
 }
