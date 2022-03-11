@@ -62,6 +62,25 @@ namespace MeFit.API.Controllers
             return _mapper.Map<WorkoutReadDTO>(workout);
         }
 
+        // GET: api/Workouts/5/Sets
+        /// <summary>
+        /// Gets a workout with all sets in it
+        /// </summary>
+        /// <param name="id">ID of a workout</param>
+        /// <returns>Workout</returns>
+        [HttpGet("{id}/Sets")]
+        public async Task<ActionResult<WorkoutSetDTO>> GetWorkoutWithSets([FromRoute] int id)
+        {
+            var workout = await _context.Workouts.Include(w => w.Sets).FirstOrDefaultAsync(w => w.Id == id);
+
+            if (workout == null)
+            {
+                return NotFound();
+            }
+
+            return _mapper.Map<WorkoutSetDTO>(workout);
+        }
+
         // PUT: api/Workouts/5/AddSets -------------CONTRIBUTOR ONLY!!!!! -------------
         /// <summary>
         /// Adds sets to a workout
