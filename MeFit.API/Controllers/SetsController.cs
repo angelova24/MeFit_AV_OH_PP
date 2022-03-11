@@ -26,18 +26,18 @@ namespace MeFit.API.Controllers
 
         // GET: api/Sets
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SetReadDTO>>> GetSets()
+        public async Task<ActionResult<IEnumerable<SetReadWithIdDTO>>> GetSets()
         {
-            var sets = _mapper.Map<List<SetReadDTO>>(await _context.Sets.ToListAsync());
+            var sets = _mapper.Map<List<SetReadWithIdDTO>>(await _context.Sets.ToListAsync());
             return sets;
         }
 
         // GET: api/Sets/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<SetReadDTO>> GetSet(int id)
+        public async Task<ActionResult<SetReadWithIdDTO>> GetSet(int id)
         {
             
-            var sets = _mapper.Map<SetReadDTO>(await _context.Sets.FindAsync(id));
+            var sets = _mapper.Map<SetReadWithIdDTO>(await _context.Sets.FindAsync(id));
 
             if (sets == null)
             {
