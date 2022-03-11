@@ -75,7 +75,7 @@ namespace MeFit.API.Controllers
         // POST: api/Goals
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]        
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status201Created)]        
         public async Task<IActionResult> CreateGoal(int id, List<int> goals)
         {
 

@@ -9,6 +9,7 @@ using MeFit.DAL.Models.Data;
 using MeFit.DAL.Models.Domain;
 using MeFit.DAL.Models.DTOs.UserDTOs;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MeFit.API.Controllers
 {
@@ -95,9 +96,11 @@ namespace MeFit.API.Controllers
        /// <returns></returns>
         // POST: api/Users
         [HttpPost]
-        //[Consumes("application/json")]
+        //[Authorize]
+        [Consumes("application/json")]
         public async Task<ActionResult<UserCreateDTO>> PostUser(UserCreateDTO newUser)
         {
+            
             var domainnewUser = _mapper.Map<MeFit.DAL.Models.Domain.User>(newUser);
             _context.Users.Add(domainnewUser);
             await _context.SaveChangesAsync();
