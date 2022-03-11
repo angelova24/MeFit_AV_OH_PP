@@ -1,9 +1,30 @@
 <script setup>
+    import { toRefs, computed } from 'vue';
+    import { useStore } from 'vuex';
+    import WorkoutList from '../Workouts/WorkoutList.vue';
+
     const props = defineProps({
         program: {
             type: Object,
             required: false
         }
+    });
+
+    const { program } = toRefs(props);
+
+    const store = useStore();
+
+    const workouts = computed(() => {
+        console.log("Workouts", program.value.workouts);
+        const tempWorkouts = [];
+        for (const workoutId of program.value.workouts) {
+            console.log("workoutId:", workoutId);
+            const tempWorkout = computed(() => store.getters.getWorkoutById(workoutId));
+            console.log("tempWorkout:", tempWorkout.value);
+            tempWorkouts.push(tempWorkout.value);
+        }
+        console.log(tempWorkouts);
+        return tempWorkouts;
     });
 </script>
 
@@ -15,6 +36,10 @@
         <main>
             <section title="category">
                 <b>Category:</b> {{ program.category }}
+            </section>
+            <section title="workouts">
+                This program comprises the following wokouts:
+                <WorkoutList v-if="workouts[0] !== undefined" v-bind:workouts="workouts"></WorkoutList>
             </section>
         </main>
     </div>

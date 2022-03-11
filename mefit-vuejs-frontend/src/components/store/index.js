@@ -12,60 +12,82 @@ const store = createStore({
         exercises: [],
         exerciseDetailsId: 0,
         sets: [
-            {
-                id: 1,
-                exerciseRepetitions: 10,
-                exerciseId: 1
-            },
-            {
-                id: 2,
-                exerciseRepetitions: 10,
-                exerciseId: 2
-            },
-            {
-                id: 3,
-                exerciseRepetitions: 10,
-                exerciseId: 3
-            },
-            {
-                id: 4,
-                exerciseRepetitions: 10,
-                exerciseId: 4
-            },
-            {
-                id: 5,
-                exerciseRepetitions: 10,
-                exerciseId: 5
-            },
-            {
-                id: 6,
-                exerciseRepetitions: 15,
-                exerciseId: 1
-            },
-            {
-                id: 7,
-                exerciseRepetitions: 15,
-                exerciseId: 2
-            },
-            {
-                id: 8,
-                exerciseRepetitions: 15,
-                exerciseId: 3
-            },
-            {
-                id: 9,
-                exerciseRepetitions: 15,
-                exerciseId: 4
-            },
-            {
-                id: 10,
-                exerciseRepetitions: 15,
-                exerciseId: 5
-            }
+            //#region some test data
+            // {
+            //     id: 1,
+            //     exerciseRepetitions: 10,
+            //     exerciseId: 1
+            // },
+            // {
+            //     id: 2,
+            //     exerciseRepetitions: 10,
+            //     exerciseId: 2
+            // },
+            // {
+            //     id: 3,
+            //     exerciseRepetitions: 10,
+            //     exerciseId: 3
+            // },
+            // {
+            //     id: 4,
+            //     exerciseRepetitions: 10,
+            //     exerciseId: 4
+            // },
+            // {
+            //     id: 5,
+            //     exerciseRepetitions: 10,
+            //     exerciseId: 5
+            // },
+            // {
+            //     id: 6,
+            //     exerciseRepetitions: 15,
+            //     exerciseId: 1
+            // },
+            // {
+            //     id: 7,
+            //     exerciseRepetitions: 15,
+            //     exerciseId: 2
+            // },
+            // {
+            //     id: 8,
+            //     exerciseRepetitions: 15,
+            //     exerciseId: 3
+            // },
+            // {
+            //     id: 9,
+            //     exerciseRepetitions: 15,
+            //     exerciseId: 4
+            // },
+            // {
+            //     id: 10,
+            //     exerciseRepetitions: 15,
+            //     exerciseId: 5
+            // }
+            //#endregion
         ],
         workouts: [],
         workoutDetailsId: 0,
-        programs: [],
+        programs: [
+            //#region some test data only until API endpoint is available
+            // {
+            //     id: 1,
+            //     name: "Get in summer shape",
+            //     category: "loose fat",
+            //     workouts: [1, 2]
+            // },
+            // {
+            //     id: 2,
+            //     name: "Covid - do not leave home",
+            //     category: "no gym",
+            //     workouts: [3]
+            // },
+            // {
+            //     id: 3,
+            //     name: "Conquer my weaker self",
+            //     category: "beginner"
+            // }
+            //#endregion
+        ],
         programDetailsId: 0
     },
     mutations: {
@@ -115,8 +137,9 @@ const store = createStore({
             else
             {
                 const sets = await response.json();
-                state.commit("addsets", sets);
+                state.commit("addSets", sets);
                 console.log("FetchSets from Db done...");
+                console.log("Sets received:", sets);
             }
         },
         async fetchWorkouts(state) {

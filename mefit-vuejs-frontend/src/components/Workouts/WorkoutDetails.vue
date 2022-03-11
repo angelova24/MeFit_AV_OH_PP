@@ -18,9 +18,12 @@
         console.log("WorkoutSets", workout.value.sets);
         const tempSets = [];
         for (const setId of workout.value.sets) {
-            const tempset = computed(() => store.getters.getSetById(setId));
-            tempSets.push(tempset.value);
+            console.log("setId:", setId);
+            const tempSet = computed(() => store.getters.getSetById(setId));
+            console.log("tempSet:", tempSet.value);
+            tempSets.push(tempSet.value);
         }
+        console.log(tempSets);
         return tempSets;
     });
     
@@ -37,7 +40,7 @@
             </section>
             <section title="exerciseSets">
                 This workout comprises the following sets of exercises:
-                <SetList v-bind:sets="sets"></SetList>
+                <SetList v-if="sets[0] !== undefined" v-bind:sets="sets"></SetList>
             </section>
         </main>
     </div>

@@ -27,7 +27,7 @@
         <main>
             <ProgramListItem 
                 v-for="program in programs" 
-                v-bind:workout="program"
+                v-bind:program="program"
                 v-bind:key="program.id"
                 v-on:click="onProgramListItemClicked($event, program.id)">
             </ProgramListItem>

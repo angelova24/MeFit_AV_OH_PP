@@ -28,7 +28,7 @@
             <section v-if="JSON.stringify(programs) !== '[]'" title="programList">
                 <ProgramList v-bind:programs="programs"></ProgramList>
             </section>
-            <section v-if="JSON.stringify(programs) !== '[]'" title="programDetails">
+            <section v-if="program !== undefined" title="programDetails">
                 Details of program:
                 <ProgramDetails v-bind:program="program"></ProgramDetails>
             </section>
