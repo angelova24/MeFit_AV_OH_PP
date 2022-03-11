@@ -9,6 +9,7 @@ using MeFit.DAL.Models.Data;
 using MeFit.DAL.Models.Domain;
 using MeFit.DAL.Models.DTOs.Program;
 using AutoMapper;
+using System.Net.Mime;
 
 namespace MeFit.API.Controllers
 {
@@ -26,10 +27,17 @@ namespace MeFit.API.Controllers
         }
 
         // GET: api/Programs
+        /// <summary>
+        /// Gets all programs
+        /// </summary>
+        /// <returns>List of all programs</returns>
         [HttpGet]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult<IEnumerable<ProgramReadDTO>>> GetPrograms()
         {
-            var programs = _mapper.Map<List<ProgramReadDTO>>(await _context.Programs.ToListAsync());
+            var programs = _mapper.Map<List<ProgramReadDTO>>(await _context.Programs.Include(p => p.Workouts).ToListAsync());
 
             if (programs.Count == 0)
             {
@@ -40,17 +48,25 @@ namespace MeFit.API.Controllers
         }
 
         // GET: api/Programs/5
+        /// <summary>
+        /// Gets program by ID
+        /// </summary>
+        /// <param name="id">ID of a program</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Program>> GetProgram(int id)
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ProgramReadDTO>> GetProgram(int id)
         {
-            var program = await _context.Programs.FindAsync(id);
+            var program = await _context.Programs.Include(p=> p.Workouts).FirstOrDefaultAsync(p => p.Id == id);
 
             if (program == null)
             {
                 return NotFound();
             }
 
-            return program;
+            return Ok(_mapper.Map<ProgramReadDTO>(program));
         }
 
         // PUT: api/Programs/5
