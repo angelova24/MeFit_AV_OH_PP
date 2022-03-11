@@ -97,7 +97,7 @@ namespace MeFit.API.Controllers
         // POST: api/Users
         [HttpPost]
         //[Authorize]
-        //[Consumes("application/json")]
+        [Consumes("application/json")]
         public async Task<ActionResult<UserCreateDTO>> PostUser(UserCreateDTO newUser)
         {
             
