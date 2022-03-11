@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MeFit.DAL.Models.Domain;
+using MeFit.DAL.Models.DTOs.Set;
 using MeFit.DAL.Models.DTOs.Workout;
 using System.Linq;
 
@@ -19,6 +20,11 @@ namespace MeFit.API.Profiles
                .ReverseMap();
 
             CreateMap<Workout, WorkoutCreatDTO>()
+                .ReverseMap();
+
+            CreateMap<Workout, WorkoutSetDTO>()
+                .ForMember(wdto => wdto.Sets, opt =>
+                opt.MapFrom(w => w.Sets))
                 .ReverseMap();
         }
     }
