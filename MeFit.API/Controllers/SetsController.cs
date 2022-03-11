@@ -34,10 +34,10 @@ namespace MeFit.API.Controllers
 
         // GET: api/Sets/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<SetReadDTO>> GetSet(int id)
+        public async Task<ActionResult<SetReadWithIdDTO>> GetSet(int id)
         {
             
-            var sets = _mapper.Map<SetReadDTO>(await _context.Sets.FindAsync(id));
+            var sets = _mapper.Map<SetReadWithIdDTO>(await _context.Sets.FindAsync(id));
 
             if (sets == null)
             {
