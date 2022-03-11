@@ -12,6 +12,9 @@ namespace MeFit.API.Profiles
                .ForMember(pdto => pdto.Workouts, opt =>
              opt.MapFrom(p => p.Workouts.Select(w => w.Id).ToArray()))
                .ReverseMap();
+
+            CreateMap<Program, ProgramCreateDTO>()
+               .ReverseMap();
         }
     }
 }
