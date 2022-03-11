@@ -9,7 +9,7 @@ using MeFit.DAL.Models.Data;
 using MeFit.DAL.Models.Domain;
 using MeFit.DAL.Models.DTOs.GoalsDTO;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+using System.Net.Mime;
 
 namespace MeFit.API.Controllers
 {
@@ -29,58 +29,114 @@ namespace MeFit.API.Controllers
         /// Gets list of all goals with workouts in it
         /// </summary>
         /// <returns>List of goals</returns>
+        /// <response code="200">Returns all goals</response>
+        /// <response code="204">No goals found</response>
         // GET: api/Goals
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<GoalReadDTO>>> GetGoals()
         {
             var goalReadDTO = _mapper.Map<List<GoalReadDTO>>(await _context.Goals.Include(w => w.Workouts).ToListAsync());
-            return goalReadDTO;
+
+            if (goalReadDTO.Count == 0)
+            {
+                return NoContent();
+            }
+
+            return Ok(goalReadDTO);
+        }
+
+        // GET: api/Goals/5
+        /// <summary>
+        /// Gets goal by ID
+        /// </summary>
+        /// <param name="id">ID of a goal</param>
+        /// <returns>Goal</returns>
+        /// <response code="200">Returns a goal</response>
+        /// <response code="404">No goal found</response>
+        [HttpGet("{id}")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<GoalReadDTO>> GetGoalById([FromRoute] int id)
+        {
+            var goal = await _context.Goals.FindAsync(id);
+
+            if (goal == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<GoalReadDTO>(goal));
         }
 
         /// <summary>
-        /// Executes a partial update of the corresponding goal_id Achived with true or false
+        /// Updates the corresponding goal to achieved
         /// </summary>
-        /// <param name="id">GoalId</param>       
-        /// <param name="profId">ProfileID</param>
-        /// <returns></returns>
-        // PATCH: api/Goals/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateGoal(int profId,int id)
+        /// <param name="id">ID of a goal</param>       
+        /// <param name="profId">ID of a profile</param>
+        /// <response code="204">Successfully changed goal to achieved</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="404">No goal/profile found</response>
+        // PATCH: api/Goals/5/SetAchieved
+        [HttpPatch("{id}/SetAchieved")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> UpdateGoalAchieved([FromBody] int profId, [FromRoute] int id)
         {
-            var gol = await _context.Goals.FindAsync(id);
+            var goal = await _context.Goals.FindAsync(id);
             var profile = await _context.Profiles.Include(p => p.Goals).FirstOrDefaultAsync(pi => pi.Id == profId);
-            
+
             if (profile == null)
             {
                 return NotFound();
             }
-            if(profile.Goals.Any(i => i.Id== id))
+            else if (goal == null)
             {
-                profile.Goals.FirstOrDefault(g => g.Id == id).Achieved = true; 
-
+                return NotFound();
             }
-            
+            else if (!profile.Goals.Any(p => p.Id == id))
+            {
+                return BadRequest();
+            }
 
+            profile.Goals.FirstOrDefault(g => g.Id == id).Achieved = true;
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
+
+        // POST: api/Goals
         /// <summary>
-        /// Create new goal in profile
+        /// Creates a goal
+        /// </summary>
+        /// <param name="newGoal">Goals info</param>
+        /// <returns>A newly created goal</returns>
+        /// <response code="201">Successfully created goal</response>
+        [HttpPost]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<GoalReadDTO>> PostExercise([FromBody] GoalCreateDTO newGoal)
+        {
+            var domainGoal = _mapper.Map<Goal>(newGoal);
+            _context.Goals.Add(domainGoal);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetExerciseById", new { id = domainGoal.Id }, _mapper.Map<GoalReadDTO>(domainGoal));
+        }
+
+        /// <summary>
+        /// Adds list of goals in profile
         /// </summary>
         /// <param name="id">ProfileID</param>
-        /// <param name="goals">GoalsID to be added</param>
-        /// <returns></returns>
-        // POST: api/Goals
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]        
-        [ProducesResponseType(StatusCodes.Status201Created)]        
-        public async Task<IActionResult> CreateGoal(int id, List<int> goals)
+        /// <param name="goals">GoalsIDs to be added</param>
+        /// <response code="204">Successfully added goals to profile</response>
+        /// <response code="404">No profile found</response>
+        // POST: api/Goals/AddToProfile5
+        // Vily: little bit confused about this endpoint
+        [HttpPost("AddToProfile{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> CreateGoal([FromRoute] int id, [FromBody] List<int> goals)
         {
-
             var profile = await _context.Profiles.Include(p => p.Goals).FirstOrDefaultAsync(pi => pi.Id == id);
-
 
             if (profile == null)
             {
@@ -101,22 +157,24 @@ namespace MeFit.API.Controllers
 
             return NoContent();
         }
+
         /// <summary>
-        /// Delete a goal by Id
+        /// Deletes a goal by ID
         /// </summary>
-        /// <param name="id">GoalID</param>
-        /// <returns></returns>
+        /// <param name="id">ID of a goal</param>
+        /// <response code="204">Successfully deleted goal</response>
+        /// <response code="404">No goal found</response>
         // DELETE: api/Goals/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<GoalDeleteDTO>> DeleteGoal(int id)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<ActionResult> DeleteGoal(int id)
         {
             var goal = await _context.Goals.FindAsync(id);
             if (goal == null)
             {
                 return NotFound();
             }
-            var goalDeleteDTO = _mapper.Map<Goal>(goal);
-            _context.Goals.Remove(goalDeleteDTO);
+            _context.Goals.Remove(goal);
             await _context.SaveChangesAsync();
 
             return NoContent();
