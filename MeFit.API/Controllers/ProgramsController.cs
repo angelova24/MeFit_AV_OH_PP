@@ -28,13 +28,14 @@ namespace MeFit.API.Controllers
 
         // GET: api/Programs
         /// <summary>
-        /// Gets all programs
+        /// Gets all programs with workouts IDs
         /// </summary>
-        /// <returns>List of all programs</returns>
+        /// <returns>List of all programs with workouts IDs</returns>
+        /// <response code="200">Returns all programs</response>
+        /// <response code="204">No programs found</response>
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult<IEnumerable<ProgramReadDTO>>> GetPrograms()
         {
             var programs = _mapper.Map<List<ProgramReadDTO>>(await _context.Programs.Include(p => p.Workouts).ToListAsync());
@@ -52,11 +53,12 @@ namespace MeFit.API.Controllers
         /// Gets program by ID
         /// </summary>
         /// <param name="id">ID of a program</param>
-        /// <returns></returns>
+        /// <returns>Program with workouts IDs</returns>
+        /// <response code="200">Returns a program</response>
+        /// <response code="404">No program found</response>
         [HttpGet("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProgramReadDTO>> GetProgramById([FromRoute] int id)
         {
             var program = await _context.Programs.Include(p=> p.Workouts).FirstOrDefaultAsync(p => p.Id == id);
@@ -69,15 +71,15 @@ namespace MeFit.API.Controllers
             return Ok(_mapper.Map<ProgramReadDTO>(program));
         }
 
-        // PUT: api/Programs/5/AddWorkouts
+        // PUT: api/Programs/5/AddWorkouts -------------CONTRIBUTOR ONLY!!!!! -------------
         /// <summary>
         /// Add workouts to program
         /// </summary>
         /// <param name="id">ID of a program</param>
         /// <param name="workoutIds">List of workouts IDs to be added</param>
-        /// <returns></returns>
+        /// <response code="204">Successfully added workouts to program</response>
+        /// <response code="404">No program found</response>
         [HttpPatch("{id}/AddWorkouts")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> PutProgram([FromRoute] int id, [FromBody] List<int> workoutIds)
         {
@@ -118,12 +120,13 @@ namespace MeFit.API.Controllers
             return NoContent();
         }
 
-        // POST: api/Programs
+        // POST: api/Programs -------------CONTRIBUTOR ONLY!!!!! -------------
         /// <summary>
         /// Creates new program
         /// </summary>
-        /// <param name="newProgram">New program object</param>
-        /// <returns></returns>
+        /// <param name="newProgram">New program info</param>
+        /// <returns>A newly created program</returns>
+        /// <response code="201">Successfully created program</response>
         [HttpPost]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -133,18 +136,18 @@ namespace MeFit.API.Controllers
             _context.Programs.Add(domainProgram);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProgramById", new { id = domainProgram.Id }, newProgram);
+            return CreatedAtAction("GetProgramById", new { id = domainProgram.Id }, _mapper.Map <ProgramReadDTO>(newProgram));
         }
 
-        // DELETE: api/Programs/5
+        // DELETE: api/Programs/5 ------------- CONTRIBUTOR ONLY!!!!! -------------
         /// <summary>
-        /// Deletes program from DB
+        /// Deletes a program
         /// </summary>
-        /// <param name="id">ID of program</param>
-        /// <returns></returns>
+        /// <param name="id">ID of a program</param>
+        /// <response code="204">Successfully deleted program</response>
+        /// <response code="404">No program found</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteProgram([FromRoute] int id)
         {
             var program = await _context.Programs.FindAsync(id);
