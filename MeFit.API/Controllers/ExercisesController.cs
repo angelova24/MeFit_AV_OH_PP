@@ -31,10 +31,12 @@ namespace MeFit.API.Controllers
         /// Gets all exercises
         /// </summary>
         /// <returns>List of all exercises</returns>
+        /// <response code="200">Returns all exercises</response>
+        /// <response code="204">No exercises found</response>
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        //[ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult<IEnumerable<ExerciseReadDTO>>> GetExercises()
         {
             var exercises = _mapper.Map<List<ExerciseReadDTO>>(await _context.Exercises.ToListAsync());
@@ -49,13 +51,15 @@ namespace MeFit.API.Controllers
 
         // GET: api/Exercises/TargetMuscleGroup
         /// <summary>
-        /// Gets all exercises sorted by Target muscle group
+        /// Gets all exercises ordered by target muscle group
         /// </summary>
-        /// <returns>List of all exercises sorted by Target muscle group</returns>
+        /// <returns>List of all exercises ordered by target muscle group</returns>
+        /// <response code="200">Returns all exercises ordered by target muscle group</response>
+        /// <response code="204">No exercises found</response>
         [HttpGet("TargetMuscleGroup")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        //[ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult<IEnumerable<ExerciseReadDTO>>> GetExercisesByTargetMuscleGroup()
         {
             var exercises = _mapper.Map<List<ExerciseReadDTO>>(await _context.Exercises.OrderBy(e => e.TargetMuscleGroup).ToListAsync());
@@ -74,10 +78,11 @@ namespace MeFit.API.Controllers
         /// </summary>
         /// <param name="id">ID of an exercise</param>
         /// <returns>Exercise</returns>
+        /// <response code="200">Returns an exercise</response>
+        /// <response code="404">No exercise found</response>
         [HttpGet("{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ExerciseReadDTO>> GetExerciseById([FromRoute] int id)
         {
             var exercise = await _context.Exercises.FindAsync(id);
@@ -96,11 +101,10 @@ namespace MeFit.API.Controllers
         /// </summary>
         /// <param name="id">ID of an exercise</param>
         /// <param name="exercise">Exercises new info</param>
-        /// <returns></returns>
+        /// <response code="204">Successfully changed exercise</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="404">No exercise found</response>
         [HttpPut("{id}")]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UpdateExercise([FromRoute] int id, [FromBody] ExerciseReadDTO exercise)
         {
@@ -134,10 +138,11 @@ namespace MeFit.API.Controllers
 
         // POST: api/Exercises -------------CONTRIBUTOR ONLY!!!!! -------------
         /// <summary>
-        /// Adds new exercise to DB
+        /// Creates an exercise
         /// </summary>
         /// <param name="newExercise">Exercises info</param>
-        /// <returns></returns>
+        /// <returns>A newly created exercise</returns>
+        /// <response code="201">Successfully created exercise</response>
         [HttpPost]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -147,18 +152,17 @@ namespace MeFit.API.Controllers
             _context.Exercises.Add(domainExercise);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetExerciseById", new { id = domainExercise.Id }, newExercise);
+            return CreatedAtAction("GetExerciseById", new { id = domainExercise.Id }, _mapper.Map<ExerciseReadDTO>(domainExercise));
         }
 
         // DELETE: api/Exercises/5 ------------- CONTRIBUTOR ONLY!!!!! -------------
         /// <summary>
-        /// Deletes exercise from DB
+        /// Deletes a specific exercise
         /// </summary>
         /// <param name="id">ID of an exercise</param>
-        /// <returns></returns>
+        /// <response code="204">Successfully deleted exercise</response>
+        /// <response code="404">No exercise found</response>
         [HttpDelete("{id}")]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteExercise([FromRoute] int id)
         {
