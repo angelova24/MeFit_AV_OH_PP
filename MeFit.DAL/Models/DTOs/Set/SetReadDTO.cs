@@ -2,6 +2,7 @@
 {
     public class SetReadDTO
     {
+       
         public int ExerciseId { get; set; }
         public int ExerciseRepetitions { get; set; }
     }
