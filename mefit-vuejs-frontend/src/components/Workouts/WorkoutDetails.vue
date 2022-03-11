@@ -1,11 +1,29 @@
 <script setup>
+    import { ref, toRefs, computed } from 'vue';
+    import { useStore } from 'vuex';
+
+    import SetList from "../Sets/SetList.vue";
+
     const props = defineProps({
         workout: {
             type: Object,
             required: true
         }
     });
+    const { workout } = toRefs(props);
 
+    const store = useStore();
+
+    const sets = computed(() => {
+        console.log("WorkoutSets", workout.value.sets);
+        const tempSets = [];
+        for (const setId of workout.value.sets) {
+            const tempset = computed(() => store.getters.getSetById(setId));
+            tempSets.push(tempset.value);
+        }
+        return tempSets;
+    });
+    
 </script>
 
 <template>
@@ -18,7 +36,8 @@
                 <b>Type:</b> {{ workout.type }}
             </section>
             <section title="exerciseSets">
-
+                This workout comprises the following sets of exercises:
+                <SetList v-bind:sets="sets"></SetList>
             </section>
         </main>
     </div>

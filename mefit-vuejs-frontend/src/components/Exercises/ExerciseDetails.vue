@@ -24,9 +24,10 @@
                 <div v-if="exercise.imageURL === null">no image available...</div>
             </section>
             <section title="video">
-                <a v-bind:href="exercise.videoURL">
+                <a v-if="!exercise.videoURL.toLowerCase().endsWith('.gif')" v-bind:href="exercise.videoURL">
                     Example-Video
                 </a>
+                <img v-if="exercise.videoURL.toLowerCase().endsWith('.gif')" v-bind:src="exercise.videoURL" />
             </section>
         </main>
     </div>

@@ -8,6 +8,7 @@
   
   onMounted(() => {
     store.dispatch("fetchExcercises");
+    store.dispatch("fetchSets");
     store.dispatch("fetchWorkouts");
     store.dispatch("fetchPrograms");
   })

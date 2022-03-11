@@ -81,6 +81,19 @@ namespace MeFit.DAL.Models.Data
                          new { SetsId = 5, WorkoutsId = 2 },
                          new { SetsId = 8, WorkoutsId = 3 },
                          new { SetsId = 9, WorkoutsId = 3 });
+
+            //Program seeding
+            modelBuilder.Entity<Program>().HasData(
+                         new Program { Id = 1, Name = "Get in summer shape", Category = "loose fat" },
+                         new Program { Id = 2, Name = "Covid - do not leave home", Category = "no gym" },
+                         new Program { Id = 3, Name = "Conquer one's weaker self", Category = "beginner" }
+                         );
+
+            //ProgramWorkout seeding
+            modelBuilder.Entity("ProgramWorkout").HasData(
+                         new { ProgramsId = 1, WorkoutsId = 1 },
+                         new { ProgramsId = 1, WorkoutsId = 2 },
+                         new { ProgramsId = 2, WorkoutsId = 3 });
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

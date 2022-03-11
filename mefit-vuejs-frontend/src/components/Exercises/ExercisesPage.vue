@@ -28,7 +28,7 @@
             <section v-if="JSON.stringify(exercises) !== '[]'" title="exerciseList">
                 <ExerciseList v-bind:exercises="exercises"></ExerciseList>
             </section>
-            <section v-if="JSON.stringify(exercises) !== '[]'" title="exerciseDetails">
+            <section v-if="exercise !== undefined" title="exerciseDetails">
                 Details of exercise:
                 <ExerciseDetails v-bind:exercise="exercise"></ExerciseDetails>
             </section>
