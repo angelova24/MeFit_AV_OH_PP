@@ -9,6 +9,7 @@ using MeFit.DAL.Models.Data;
 using MeFit.DAL.Models.Domain;
 using AutoMapper;
 using MeFit.DAL.Models.DTOs.Set;
+using System.Net.Mime;
 
 namespace MeFit.API.Controllers
 {
@@ -25,18 +26,38 @@ namespace MeFit.API.Controllers
     }
 
         // GET: api/Sets
+        /// <summary>
+        /// Gets all sets
+        /// </summary>
+        /// <returns>List of all sets</returns>
+        /// <response code="200">Returns all sets</response>
+        /// <response code="204">No sets found</response>
         [HttpGet]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<SetReadWithIdDTO>>> GetSets()
         {
             var sets = _mapper.Map<List<SetReadWithIdDTO>>(await _context.Sets.ToListAsync());
-            return sets;
+            if (sets.Count == 0)
+            {
+                return NoContent();
+            }
+            return Ok(sets);
         }
 
         // GET: api/Sets/5
+        /// <summary>
+        /// Gets set by ID
+        /// </summary>
+        /// <param name="id">ID of a set</param>
+        /// <returns>Set</returns>
+        /// <response code="200">Returns a set</response>
+        /// <response code="404">No set found</response>
         [HttpGet("{id}")]
-        public async Task<ActionResult<SetReadWithIdDTO>> GetSet(int id)
-        {
-            
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<SetReadWithIdDTO>> GetSet([FromRoute]int id)
+        {     
             var sets = _mapper.Map<SetReadWithIdDTO>(await _context.Sets.FindAsync(id));
 
             if (sets == null)
@@ -44,7 +65,7 @@ namespace MeFit.API.Controllers
                 return NotFound();
             }
 
-            return sets;
+            return Ok(sets);
         }
 
         // PUT: api/Sets/5
