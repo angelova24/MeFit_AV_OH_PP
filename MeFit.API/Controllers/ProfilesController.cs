@@ -9,6 +9,7 @@ using MeFit.DAL.Models.Data;
 using MeFit.DAL.Models.Domain;
 using AutoMapper;
 using MeFit.DAL.Models.DTOs.ProfileDTO;
+using System.Net.Mime;
 
 namespace MeFit.API.Controllers
 {
@@ -27,35 +28,39 @@ namespace MeFit.API.Controllers
         /// <summary>
         /// Returns detail about current state of the users profile
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">ID of a profile</param>
+        /// <returns>Profile</returns>
+        /// <response code="200">Returns a profile</response>
+        /// <response code="404">No profile found</response>
         // GET: api/Profiles/profile_id
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProfileReadDTO>> GetProfile(int id)
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ProfileReadDTO>> GetProfileById([FromRoute] int id)
         {
-            var profile = await _context.Users.FirstOrDefaultAsync(u => u.ProfileId == id);
+            var profile = await _context.Profiles.FindAsync(id);
 
             if (profile == null)
             {
                 return NotFound();
             }
             var profileReadDTO = _mapper.Map<ProfileReadDTO>(profile);
-            return profileReadDTO;
+            return Ok(profileReadDTO);
         }
 
         /// <summary>
         /// Executes partial update of the corresponding profile_id.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">ID of a profile</param>
         /// <param name="profile"></param>
-        /// <returns></returns>
+        /// <response code="204">Successfully changed profile</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="404">No profile found</response>
         // PATCH: api/Profiles/profile_id
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPatch("{id}")]
-        //[Consumes("application/json")]
-        public async Task<IActionResult> PutProfile(int id, ProfileUpdateDTO profile)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> PutProfile([FromRoute] int id, [FromBody] ProfileUpdateDTO profile)
         {
-
             if (id != profile.Id)
             {
                 return BadRequest();
@@ -85,15 +90,17 @@ namespace MeFit.API.Controllers
         /// <summary>
         /// Creates a new profile. Accepts appropriate parameters in the profile body as application/json
         /// </summary>
-        /// <param name="newProfile"></param>
-        /// <returns></returns>
+        /// <param name="newProfile">Profile info</param>
+        /// <returns>A newly created profile</returns>
+        /// <response code="201">Successfully created profile</response>
         // POST: api/Profiles
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Consumes("application/json")]
-        public async Task<ActionResult<ProfileReadDTO>> PostProfile([FromBody]ProfileCreateDTO newProfile)
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<ProfileReadDTO>> PostProfile([FromBody] ProfileCreateDTO newProfile)
         {
-            var domainProfile = _mapper.Map<MeFit.DAL.Models.Domain.Profile>(newProfile);
+            var domainProfile = _mapper.Map<DAL.Models.Domain.Profile>(newProfile);
             _context.Profiles.Add(domainProfile);
             await _context.SaveChangesAsync();
 
@@ -103,10 +110,12 @@ namespace MeFit.API.Controllers
         /// <summary>
         /// Deletes a profile
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        // DELETE: api/Profiles/5
+        /// <param name="id">ID of a profile</param>
+        /// <response code="204">Successfully deleted profile</response>
+        /// <response code="404">No profile found</response>
+        // DELETE: api/Profiles/5 ------------- USER ONLY!!!!! -------------
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteProfile(int id)
         {
             var profile = await _context.Profiles.FindAsync(id);
