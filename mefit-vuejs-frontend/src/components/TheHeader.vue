@@ -1,5 +1,10 @@
 <script setup>
-    
+    import { computed } from '@vue/runtime-core';
+    import { useStore } from 'vuex';
+
+    const store = useStore();
+    const username = computed(() => store.state.user.username);
+
 </script>
 
 <template>
@@ -21,7 +26,7 @@
             <router-link to="/exercises" active-class="active">
                 Exercises
             </router-link>
-            
+            logged in as: {{ username }}
         </nav>
     </div>
 </template>

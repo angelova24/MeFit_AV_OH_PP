@@ -3,8 +3,12 @@ import { createStore } from "vuex";
 const store = createStore({
     state: {
         user: {
-            userid: 0,
-            username: ""
+            id: "",
+            username: "",
+            firstName: "",
+            lastName: "",
+            email: "",
+            emailVerified: ""
         },
         profile: {
             
@@ -91,6 +95,9 @@ const store = createStore({
         programDetailsId: 0
     },
     mutations: {
+        setUser: (state, payload) => {
+            state.user = payload;
+        },
         addExercises: (state, payload) => {
             for (const exercise of payload) {
                 state.exercises.push(exercise);    
