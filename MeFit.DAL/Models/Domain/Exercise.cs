@@ -17,6 +17,7 @@ namespace MeFit.DAL.Models.Domain
         public string ImageURL { get; set; }
         [MaxLength(200)]
         public string VideoURL { get; set; }
+        public int OwnerId { get; set; }
         //navigation property
         public ICollection<Set> Sets { get; set; } = new HashSet<Set>();
 

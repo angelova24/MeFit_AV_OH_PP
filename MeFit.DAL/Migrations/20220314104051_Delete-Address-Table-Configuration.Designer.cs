@@ -4,14 +4,16 @@ using MeFit.DAL.Models.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MeFit.DAL.Migrations
 {
     [DbContext(typeof(MeFitDbContext))]
-    partial class MeFitDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220314104051_Delete-Address-Table-Configuration")]
+    partial class DeleteAddressTableConfiguration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,9 +41,6 @@ namespace MeFit.DAL.Migrations
                         .HasMaxLength(70)
                         .HasColumnType("nvarchar(70)");
 
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("TargetMuscleGroup")
                         .IsRequired()
                         .HasMaxLength(70)
@@ -61,7 +60,6 @@ namespace MeFit.DAL.Migrations
                             Id = 1,
                             Description = "Conditioning exercise in which a person squats, places the palms of the hands on the floor in front of the feet, jumps back into a push-up position",
                             Name = "Burpees",
-                            OwnerId = 0,
                             TargetMuscleGroup = "Whole body",
                             VideoURL = "https://www.thephysedexpress.com/uploads/3/1/1/1/31119283/burpee_orig.gif"
                         },
@@ -70,7 +68,6 @@ namespace MeFit.DAL.Migrations
                             Id = 2,
                             Description = "Raise your heels slowly, keeping your knees extended. Pause for one second when you're standing as much on the tips of your toes as you can. Lower your heels back to the ground, returning to the starting position.",
                             Name = "Calf raises",
-                            OwnerId = 0,
                             TargetMuscleGroup = "Legs",
                             VideoURL = "https://www.thephysedexpress.com/uploads/3/1/1/1/31119283/calf-raises_orig.gif"
                         },
@@ -79,7 +76,6 @@ namespace MeFit.DAL.Migrations
                             Id = 3,
                             Description = "Jump squats are bodyweight exercises characterized by leaping directly upwards at the top of the movement",
                             Name = "Jump squats",
-                            OwnerId = 0,
                             TargetMuscleGroup = "Legs",
                             VideoURL = "https://www.thephysedexpress.com/uploads/3/1/1/1/31119283/jump-squats_orig.gif"
                         },
@@ -88,7 +84,6 @@ namespace MeFit.DAL.Migrations
                             Id = 4,
                             Description = "The jump lunge is an advanced variation of a basic walking lunge exercise, bumping up the intensity by adding a jump.",
                             Name = "Jumping lunges",
-                            OwnerId = 0,
                             TargetMuscleGroup = "Legs",
                             VideoURL = "https://www.thephysedexpress.com/uploads/3/1/1/1/31119283/jumping-lunges_orig.gif"
                         },
@@ -97,7 +92,6 @@ namespace MeFit.DAL.Migrations
                             Id = 5,
                             Description = "Lay flat with your arms at your sides and legs stretched out next to each other, then raise those legs.",
                             Name = "Leg raises",
-                            OwnerId = 0,
                             TargetMuscleGroup = "Abs",
                             VideoURL = "https://www.thephysedexpress.com/uploads/3/1/1/1/31119283/leg-raises_orig.gif"
                         });
@@ -227,9 +221,6 @@ namespace MeFit.DAL.Migrations
                         .HasMaxLength(70)
                         .HasColumnType("nvarchar(70)");
 
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.ToTable("Programs");
@@ -239,22 +230,19 @@ namespace MeFit.DAL.Migrations
                         {
                             Id = 1,
                             Category = "loose fat",
-                            Name = "Get in summer shape",
-                            OwnerId = 0
+                            Name = "Get in summer shape"
                         },
                         new
                         {
                             Id = 2,
                             Category = "no gym",
-                            Name = "Covid - do not leave home",
-                            OwnerId = 0
+                            Name = "Covid - do not leave home"
                         },
                         new
                         {
                             Id = 3,
                             Category = "beginner",
-                            Name = "Conquer one's weaker self",
-                            OwnerId = 0
+                            Name = "Conquer one's weaker self"
                         });
                 });
 
@@ -271,9 +259,6 @@ namespace MeFit.DAL.Migrations
                     b.Property<int>("ExerciseRepetitions")
                         .HasColumnType("int");
 
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ExerciseId");
@@ -285,71 +270,61 @@ namespace MeFit.DAL.Migrations
                         {
                             Id = 1,
                             ExerciseId = 1,
-                            ExerciseRepetitions = 10,
-                            OwnerId = 0
+                            ExerciseRepetitions = 10
                         },
                         new
                         {
                             Id = 2,
                             ExerciseId = 2,
-                            ExerciseRepetitions = 10,
-                            OwnerId = 0
+                            ExerciseRepetitions = 10
                         },
                         new
                         {
                             Id = 3,
                             ExerciseId = 3,
-                            ExerciseRepetitions = 10,
-                            OwnerId = 0
+                            ExerciseRepetitions = 10
                         },
                         new
                         {
                             Id = 4,
                             ExerciseId = 4,
-                            ExerciseRepetitions = 10,
-                            OwnerId = 0
+                            ExerciseRepetitions = 10
                         },
                         new
                         {
                             Id = 5,
                             ExerciseId = 5,
-                            ExerciseRepetitions = 10,
-                            OwnerId = 0
+                            ExerciseRepetitions = 10
                         },
                         new
                         {
                             Id = 6,
                             ExerciseId = 1,
-                            ExerciseRepetitions = 15,
-                            OwnerId = 0
+                            ExerciseRepetitions = 15
                         },
                         new
                         {
                             Id = 7,
                             ExerciseId = 2,
-                            ExerciseRepetitions = 15,
-                            OwnerId = 0
+                            ExerciseRepetitions = 15
                         },
                         new
                         {
                             Id = 8,
                             ExerciseId = 3,
-                            ExerciseRepetitions = 15,
-                            OwnerId = 0
+                            ExerciseRepetitions = 15
                         },
                         new
                         {
                             Id = 9,
                             ExerciseId = 4,
-                            ExerciseRepetitions = 15,
-                            OwnerId = 0
+                            ExerciseRepetitions = 15
                         },
                         new
                         {
                             Id = 10,
                             ExerciseId = 5,
-                            ExerciseRepetitions = 15,
-                            OwnerId = 0
+                            ExerciseRepetitions = 15
                         });
                 });
 
@@ -443,9 +418,6 @@ namespace MeFit.DAL.Migrations
                         .HasMaxLength(70)
                         .HasColumnType("nvarchar(70)");
 
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
@@ -458,21 +430,18 @@ namespace MeFit.DAL.Migrations
                         {
                             Id = 1,
                             Name = "Basic",
-                            OwnerId = 0,
                             Type = "Beginner"
                         },
                         new
                         {
                             Id = 2,
                             Name = "Basic+",
-                            OwnerId = 0,
                             Type = "Beginner"
                         },
                         new
                         {
                             Id = 3,
                             Name = "Jump",
-                            OwnerId = 0,
                             Type = "Competent"
                         });
                 });
