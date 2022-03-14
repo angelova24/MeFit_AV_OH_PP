@@ -1,7 +1,7 @@
 ﻿
 
 using MeFit.DAL.Models.Domain;
-using MeFit.DAL.Models.DTOs.ProfileDTO;
+using MeFit.DAL.Models.DTOs.Profile;
 
 namespace MeFit.API.Profiles
 {

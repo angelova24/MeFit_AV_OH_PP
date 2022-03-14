@@ -6,7 +6,6 @@ namespace MeFit.DAL.Models.Data
 {
     public class MeFitDbContext : DbContext
     {
-        public DbSet<Address> Addresses { get; set; }
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<Goal> Goals { get; set; }
         public DbSet<Profile> Profiles { get; set; }
@@ -21,29 +20,15 @@ namespace MeFit.DAL.Models.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
-            
-            //User FK
-            modelBuilder.Entity<User>()            
-            .HasOne(u => u.Profile)
-            .WithOne(p => p.User)
-            .HasForeignKey<Profile>(p => p.UserId);
-
-            //Address FK
-            modelBuilder.Entity<Address>()           
-           .HasOne(a => a.Profile)
-           .WithOne(p => p.Address)
-           .HasForeignKey<Profile>(p => p.AddressId);
-
             //User seeding
             modelBuilder.Entity<User>()
-             .HasData(new User(){Id = 1, FirstName = "John", LastName = "Doe", Password = "password1234", IsAdmin = false, Username = "Doe.J", IsContributor = false, ProfileId = 1},
-                      new User(){Id = 2, FirstName = "AdminUser", LastName = "AUser", Password = "admin1234", IsAdmin = true, Username = "admin", IsContributor = false, ProfileId = 1 },
-                      new User(){Id = 3, FirstName = "Contributor", LastName = "CUser", Password = "con1234", IsAdmin = false, Username = "cont", IsContributor = true, ProfileId = 1 });
+             .HasData(new User() { Id = 1, FirstName = "John", LastName = "Doe", Password = "password1234", IsAdmin = false, Username = "Doe.J", IsContributor = false, ProfileId = 1 },
+                      new User() { Id = 2, FirstName = "AdminUser", LastName = "AUser", Password = "admin1234", IsAdmin = true, Username = "admin", IsContributor = false },
+                      new User() { Id = 3, FirstName = "Contributor", LastName = "CUser", Password = "con1234", IsAdmin = false, Username = "cont", IsContributor = true });
 
             //Profile seeding
             modelBuilder.Entity<Profile>()
-            .HasData(new Profile { Id = 1, UserId = 1, Disabilities = "none", Height = 1.70, MedicalConditions = "healthy", Weight = 78.05 });
+            .HasData(new Profile { Id = 1, Disabilities = "none", Height = 1.70, MedicalConditions = "healthy", Weight = 78.05 });
 
             //Exercise seeding
             modelBuilder.Entity<Exercise>()
