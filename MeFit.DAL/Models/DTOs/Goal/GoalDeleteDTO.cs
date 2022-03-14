@@ -1,6 +1,6 @@
 ﻿
 
-namespace MeFit.DAL.Models.DTOs.GoalsDTO
+namespace MeFit.DAL.Models.DTOs.Goal
 {
     public class GoalDeleteDTO
     {

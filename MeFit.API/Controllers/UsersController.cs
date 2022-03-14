@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MeFit.DAL.Models.Data;
 using MeFit.DAL.Models.Domain;
-using MeFit.DAL.Models.DTOs.UserDTOs;
+using MeFit.DAL.Models.DTOs.User;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 

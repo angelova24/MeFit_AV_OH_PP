@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using MeFit.DAL.Models.Data;
 using MeFit.DAL.Models.Domain;
 using AutoMapper;
-using MeFit.DAL.Models.DTOs.ProfileDTO;
+using MeFit.DAL.Models.DTOs.Profile;
 using System.Net.Mime;
 
 namespace MeFit.API.Controllers

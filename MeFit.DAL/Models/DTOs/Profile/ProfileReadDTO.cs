@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 
-namespace MeFit.DAL.Models.DTOs.ProfileDTO
+namespace MeFit.DAL.Models.DTOs.Profile
 {
     public class ProfileReadDTO
     {

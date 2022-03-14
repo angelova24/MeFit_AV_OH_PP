@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MeFit.DAL.Models.Data;
 using MeFit.DAL.Models.Domain;
-using MeFit.DAL.Models.DTOs.GoalsDTO;
+using MeFit.DAL.Models.DTOs.Goal;
 using AutoMapper;
 using System.Net.Mime;
 
