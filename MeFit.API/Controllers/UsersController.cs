@@ -32,13 +32,15 @@ namespace MeFit.API.Controllers
         /// <summary>
         /// Get user by ID
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">User ID</param>
         /// <returns>User</returns>
         // GET: api/Users/5
+        [Authorize]        
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status303SeeOther)]
-        public async Task<ActionResult<UserReadDTO>> GetUser([FromHeader] int id)
+        public async Task<ActionResult<UserReadDTO>> GetUser(int id )
         {
+
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
@@ -56,7 +58,8 @@ namespace MeFit.API.Controllers
         /// <param name="id"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        // PATCH: api/Users/:user_id     
+        // PATCH: api/Users/:user_id
+        [Authorize]
         [HttpPatch("{id}")]        
         //[Consumes("application/json")]
         public async Task<ActionResult<UserUpdatePasswordDTO>> PutUser(int id, UserUpdatePasswordDTO user)
@@ -96,9 +99,9 @@ namespace MeFit.API.Controllers
        /// <returns></returns>
         // POST: api/Users
         [HttpPost]
-        //[Authorize]
+        [Authorize]
         [Consumes("application/json")]
-        public async Task<ActionResult<UserCreateDTO>> PostUser(UserCreateDTO newUser)
+        public async Task<ActionResult<UserCreateDTO>> PostUser([FromBody]UserCreateDTO newUser)
         {
             
             var domainnewUser = _mapper.Map<MeFit.DAL.Models.Domain.User>(newUser);
@@ -150,6 +153,7 @@ namespace MeFit.API.Controllers
         /// <returns></returns>
         // --------------SELF  AND ADMIN-------------
         // DELETE: api/Users/:user_id
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult<UserDeleteDTO>> DeleteUser(int id)
         {
