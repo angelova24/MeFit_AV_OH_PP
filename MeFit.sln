@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeFit.API", "MeFit.API\MeFi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeFit.DAL", "MeFit.DAL\MeFit.DAL.csproj", "{5CCBEEA8-25EC-4F38-A1EF-208A6FAE4B2E}"
 EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "mefit-vuejs-fe", "mefit-vuejs-fe\mefit-vuejs-fe.esproj", "{65D8DE3E-9D8E-49B0-86FC-A663A4B377EE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,12 +21,6 @@ Global
 		{5CCBEEA8-25EC-4F38-A1EF-208A6FAE4B2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CCBEEA8-25EC-4F38-A1EF-208A6FAE4B2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CCBEEA8-25EC-4F38-A1EF-208A6FAE4B2E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{65D8DE3E-9D8E-49B0-86FC-A663A4B377EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{65D8DE3E-9D8E-49B0-86FC-A663A4B377EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{65D8DE3E-9D8E-49B0-86FC-A663A4B377EE}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{65D8DE3E-9D8E-49B0-86FC-A663A4B377EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{65D8DE3E-9D8E-49B0-86FC-A663A4B377EE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{65D8DE3E-9D8E-49B0-86FC-A663A4B377EE}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
