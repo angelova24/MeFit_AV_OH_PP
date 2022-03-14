@@ -10,6 +10,8 @@ using MeFit.DAL.Models.Domain;
 using AutoMapper;
 using MeFit.DAL.Models.DTOs.Exercise;
 using System.Net.Mime;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace MeFit.API.Controllers
 {
@@ -103,7 +105,10 @@ namespace MeFit.API.Controllers
         /// <param name="exercise">Exercises new info</param>
         /// <response code="204">Successfully changed exercise</response>
         /// <response code="400">Bad request</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Not allowed(not having the necessary permissions)</response>
         /// <response code="404">No exercise found</response>
+        [Authorize(Roles = "contributor, administrator")]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UpdateExercise([FromRoute] int id, [FromBody] ExerciseReadDTO exercise)
@@ -143,6 +148,9 @@ namespace MeFit.API.Controllers
         /// <param name="newExercise">Exercises info</param>
         /// <returns>A newly created exercise</returns>
         /// <response code="201">Successfully created exercise</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Not allowed(not having the necessary permissions)</response>
+        [Authorize(Roles = "contributor, administrator")]
         [HttpPost]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -161,8 +169,12 @@ namespace MeFit.API.Controllers
         /// </summary>
         /// <param name="id">ID of an exercise</param>
         /// <response code="204">Successfully deleted exercise</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Not allowed(not having the necessary permissions)</response>
         /// <response code="404">No exercise found</response>
+        [Authorize(Roles = "contributor, administrator")]
         [HttpDelete("{id}")]
+        //[Authorize(Roles = "administrator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteExercise([FromRoute] int id)
         {
