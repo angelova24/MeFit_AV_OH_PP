@@ -10,6 +10,7 @@ using MeFit.DAL.Models.Domain;
 using AutoMapper;
 using MeFit.DAL.Models.DTOs.Workout;
 using System.Net.Mime;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MeFit.API.Controllers
 {
@@ -101,8 +102,11 @@ namespace MeFit.API.Controllers
         /// <param name="id">ID of a workout</param>
         /// <param name="sets">List of sets IDs to be added</param>
         /// <response code="204">Successfully added sets to a workout</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Not allowed(not having the necessary permissions)</response>
         /// <response code="404">No workout found</response>
         [HttpPatch("{id}/AddSets")]
+        [Authorize(Roles = "contributor, administrator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> AddSets([FromRoute] int id, [FromBody] List<int> sets)
         {
@@ -151,7 +155,10 @@ namespace MeFit.API.Controllers
         /// <param name="newWorkout">New workout info</param>
         /// <returns>A newly created workout</returns>
         /// <response code="201">Successfully created exercise</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Not allowed(not having the necessary permissions)</response>
         [HttpPost]
+        [Authorize(Roles = "contributor, administrator")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<Workout>> PostWorkout([FromBody] WorkoutCreatDTO newWorkout)
@@ -169,8 +176,11 @@ namespace MeFit.API.Controllers
         /// </summary>
         /// <param name="id">ID of a workout</param>
         /// <response code="204">Successfully deleted workout</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Not allowed(not having the necessary permissions)</response>
         /// <response code="404">No workout found</response>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "contributor, administrator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteWorkout([FromRoute] int id)
         {
