@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeFit.DAL.Models.DTOs.UserDTOs
+namespace MeFit.DAL.Models.DTOs.User
 {
     public class UserUpdatePasswordDTO
     {
