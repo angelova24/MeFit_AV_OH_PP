@@ -7,6 +7,7 @@ namespace MeFit.DAL.Models.Domain
     {
         public int Id { get; set; }
         public int ExerciseRepetitions { get; set; }
+        public int OwnerId { get; set; }
 
         //FK with navigation properties
         public int ExerciseId { get; set; }

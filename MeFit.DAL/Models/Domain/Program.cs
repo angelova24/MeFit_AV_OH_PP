@@ -10,6 +10,8 @@ namespace MeFit.DAL.Models.Domain
         public string Name { get; set; }
         [Required, MaxLength(70)]
         public string Category { get; set; }
+
+        public int OwnerId { get; set; }
         //navigation property
         public ICollection<Workout> Workouts { get; set; } = new HashSet<Workout>();
     }
