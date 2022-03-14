@@ -100,6 +100,8 @@ namespace MeFitAPI
 
             app.UseCors("allowedOrigins");
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
