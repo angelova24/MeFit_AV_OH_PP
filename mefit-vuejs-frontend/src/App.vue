@@ -7,12 +7,13 @@
   const props = defineProps(["keycloak"]);
   const { keycloak } = toRefs(props);
   const store = useStore();
+  
   keycloak.value.onReady = authenticated => { 
     if(authenticated) {
       keycloak.value.loadUserProfile()
         .then(profile => {
           alert(JSON.stringify(profile, null, "  "));
-          store.commit("setUser", profile);
+          store.commit("setUserIdentity", profile);
         })
         .catch(error => {
           alert("Failed to load user profile...");

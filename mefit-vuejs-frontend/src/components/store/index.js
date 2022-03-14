@@ -2,7 +2,7 @@ import { createStore } from "vuex";
 
 const store = createStore({
     state: {
-        user: {
+        userIdentity: {
             id: "",
             username: "",
             firstName: "",
@@ -10,8 +10,29 @@ const store = createStore({
             email: "",
             emailVerified: ""
         },
+        user: {
+            //#region test data - only until API endpoint is available
+            id: 1,
+            username: "oliver hauck",
+            firstName: "Oliver",
+            lastName: "Hauck",
+            disabilities: "none"
+            //#endregion
+        },
         profile: {
-            
+            //#region test data - only until API endpoint is available
+            id: 1,
+            weight: 78.05,
+            height: 1.7,
+            medicalCondition: "healthy",
+            isContribuor: false,
+            isAdmin: false,
+            addressLine1: "Schloßallee 17",
+            addressLine2: "please ring twice",
+            postalCode: "12345",
+            city: "Monopolis",
+            country: "BoardGameland"
+            //#endregion
         },
         exercises: [],
         exerciseDetailsId: 0,
@@ -95,8 +116,8 @@ const store = createStore({
         programDetailsId: 0
     },
     mutations: {
-        setUser: (state, payload) => {
-            state.user = payload;
+        setUserIdentity: (state, payload) => {
+            state.userIdentity = payload;
         },
         addExercises: (state, payload) => {
             for (const exercise of payload) {
@@ -129,13 +150,21 @@ const store = createStore({
         }
     },
     actions: {
-        async fetchExcercises(state) {
+        fetchExcercises: async state => {
             const response = await fetch("https://localhost:44390/api/Exercises");
-            const exercises = await response.json();
-            state.commit("addExercises", exercises);
-            console.log("FetchExercises from Db done...");
+            if(!response.ok)
+            { 
+                console.log(`FetchExercises from Db failed...!!!`);
+            }
+            else
+            {
+                const exercises = await response.json();
+                state.commit("addExercises", exercises);
+                console.log("FetchExercises from Db done...");
+                console.log("Exercises received:", exercises);
+            }
         },
-        async fetchSets(state) {
+        fetchSets: async state => {
             const response = await fetch("https://localhost:44390/api/Sets");
             if(!response.ok)
             { 
@@ -149,13 +178,21 @@ const store = createStore({
                 console.log("Sets received:", sets);
             }
         },
-        async fetchWorkouts(state) {
+        fetchWorkouts: async state => {
             const response = await fetch("https://localhost:44390/api/Workouts");
-            const workouts = await response.json();
-            state.commit("addWorkouts", workouts);
-            console.log("FetchWorkouts from Db done...");
+            if(!response.ok)
+            { 
+                console.log(`FetchWorkouts from Db failed...!!!`);
+            }
+            else
+            {
+                const workouts = await response.json();
+                state.commit("addWorkouts", workouts);
+                console.log("FetchWorkouts from Db done...");
+                console.log("Workouts received:", workouts);
+            }
         },
-        async fetchPrograms(state) {
+        fetchPrograms: async state => {
             const response = await fetch("https://localhost:44390/api/Programs");
             if(!response.ok)
             { 
