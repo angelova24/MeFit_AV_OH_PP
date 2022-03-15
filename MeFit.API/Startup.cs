@@ -52,6 +52,7 @@ namespace MeFitAPI
             services.AddCors(options => options.AddPolicy("allowedOrigins", builder =>
             {
                 builder.AllowAnyOrigin();
+                builder.AllowAnyHeader();
             }));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>

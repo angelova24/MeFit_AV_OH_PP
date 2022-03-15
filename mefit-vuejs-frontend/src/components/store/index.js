@@ -164,7 +164,6 @@ const store = createStore({
                         'Content-Type': 'application/json'
                     }
             });
-            //const response = await fetch("https://localhost:44390/api/Exercises");
             if(!response.ok)
             { 
                 console.log(`FetchExercises from Db failed...!!!`);
@@ -178,7 +177,13 @@ const store = createStore({
             }
         },
         fetchSets: async store => {
-            const response = await fetch("https://localhost:44390/api/Sets");
+            const response = await fetch("https://localhost:44390/api/Sets", {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + store.state.token,
+                    'Content-Type': 'application/json'
+                }
+            });
             if(!response.ok)
             { 
                 console.log(`fetchSets from Db failed...!!!`);
@@ -192,7 +197,13 @@ const store = createStore({
             }
         },
         fetchWorkouts: async store => {
-            const response = await fetch("https://localhost:44390/api/Workouts");
+            const response = await fetch("https://localhost:44390/api/Workouts", {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + store.state.token,
+                    'Content-Type': 'application/json'
+                }
+            });
             if(!response.ok)
             { 
                 console.log(`FetchWorkouts from Db failed...!!!`);
@@ -206,7 +217,13 @@ const store = createStore({
             }
         },
         fetchPrograms: async store => {
-            const response = await fetch("https://localhost:44390/api/Programs");
+            const response = await fetch("https://localhost:44390/api/Programs", {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + store.state.token,
+                    'Content-Type': 'application/json'
+                }
+            });
             if(!response.ok)
             { 
                 console.log(`fetchPrograms from Db failed...!!!`);
