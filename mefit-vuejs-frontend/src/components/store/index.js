@@ -1,13 +1,40 @@
+import { stringifyQuery } from "vue-router";
 import { createStore } from "vuex";
 
 const store = createStore({
     state: {
+        userIdentity: {
+            id: "",
+            username: "",
+            firstName: "",
+            lastName: "",
+            email: "",
+            emailVerified: ""
+        },
+        token: "",
         user: {
-            userid: 0,
-            username: ""
+            //#region test data - only until API endpoint is available
+            id: 1,
+            username: "oliver hauck",
+            firstName: "Oliver",
+            lastName: "Hauck",
+            disabilities: "none"
+            //#endregion
         },
         profile: {
-            
+            //#region test data - only until API endpoint is available
+            id: 1,
+            weight: 78.05,
+            height: 1.7,
+            medicalCondition: "healthy",
+            isContribuor: false,
+            isAdmin: false,
+            addressLine1: "Schloßallee 17",
+            addressLine2: "please ring twice",
+            postalCode: "12345",
+            city: "Monopolis",
+            country: "BoardGameland"
+            //#endregion
         },
         exercises: [],
         exerciseDetailsId: 0,
@@ -91,6 +118,13 @@ const store = createStore({
         programDetailsId: 0
     },
     mutations: {
+        setUserIdentity: (state, payload) => {
+            state.userIdentity = payload;
+        },
+        setToken: (state, payload) => {
+            console.log("token in store will be set to:", payload);
+            state.token = payload;
+        },
         addExercises: (state, payload) => {
             for (const exercise of payload) {
                 state.exercises.push(exercise);    
@@ -122,14 +156,34 @@ const store = createStore({
         }
     },
     actions: {
-        async fetchExcercises(state) {
-            const response = await fetch("https://localhost:44390/api/Exercises");
-            const exercises = await response.json();
-            state.commit("addExercises", exercises);
-            console.log("FetchExercises from Db done...");
+        fetchExcercises: async store => {
+            const response = await fetch("https://localhost:44390/api/Exercises", {
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Bearer " + store.state.token,
+                        'Content-Type': 'application/json'
+                    }
+            });
+            if(!response.ok)
+            { 
+                console.log(`FetchExercises from Db failed...!!!`);
+            }
+            else
+            {
+                const exercises = await response.json();
+                store.commit("addExercises", exercises);
+                console.log("FetchExercises from Db done...");
+                console.log("Exercises received:", exercises);
+            }
         },
-        async fetchSets(state) {
-            const response = await fetch("https://localhost:44390/api/Sets");
+        fetchSets: async store => {
+            const response = await fetch("https://localhost:44390/api/Sets", {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + store.state.token,
+                    'Content-Type': 'application/json'
+                }
+            });
             if(!response.ok)
             { 
                 console.log(`fetchSets from Db failed...!!!`);
@@ -137,19 +191,39 @@ const store = createStore({
             else
             {
                 const sets = await response.json();
-                state.commit("addSets", sets);
+                store.commit("addSets", sets);
                 console.log("FetchSets from Db done...");
                 console.log("Sets received:", sets);
             }
         },
-        async fetchWorkouts(state) {
-            const response = await fetch("https://localhost:44390/api/Workouts");
-            const workouts = await response.json();
-            state.commit("addWorkouts", workouts);
-            console.log("FetchWorkouts from Db done...");
+        fetchWorkouts: async store => {
+            const response = await fetch("https://localhost:44390/api/Workouts", {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + store.state.token,
+                    'Content-Type': 'application/json'
+                }
+            });
+            if(!response.ok)
+            { 
+                console.log(`FetchWorkouts from Db failed...!!!`);
+            }
+            else
+            {
+                const workouts = await response.json();
+                store.commit("addWorkouts", workouts);
+                console.log("FetchWorkouts from Db done...");
+                console.log("Workouts received:", workouts);
+            }
         },
-        async fetchPrograms(state) {
-            const response = await fetch("https://localhost:44390/api/Programs");
+        fetchPrograms: async store => {
+            const response = await fetch("https://localhost:44390/api/Programs", {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + store.state.token,
+                    'Content-Type': 'application/json'
+                }
+            });
             if(!response.ok)
             { 
                 console.log(`fetchPrograms from Db failed...!!!`);
@@ -157,8 +231,9 @@ const store = createStore({
             else
             {
                 const programs = await response.json();
-                state.commit("addPrograms", programs);
+                store.commit("addPrograms", programs);
                 console.log("FetchPrograms from Db done...");
+                console.log("programs received:", programs);
             }
         }
     },

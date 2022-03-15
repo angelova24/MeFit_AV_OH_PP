@@ -35,6 +35,7 @@ namespace MeFit.API.Controllers
         /// <returns>List of all exercises</returns>
         /// <response code="200">Returns all exercises</response>
         /// <response code="204">No exercises found</response>
+        [Authorize]
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
