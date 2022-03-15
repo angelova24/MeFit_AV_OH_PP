@@ -7,12 +7,8 @@ namespace MeFit.DAL.Models.Domain
         public int Id { get; set; }
         [Required, MaxLength(50)]
         public string Username { get; set; }
-        [Required, MaxLength(30)]
-        public string Password { get; set; }
-        [Required, MaxLength(50)]
-        public string FirstName { get; set; }
-        [Required, MaxLength(50)]
-        public string LastName { get; set; }
+        [Required, MaxLength(80)]
+        public string Name { get; set; }
         public bool IsContributor { get; set; }
         public bool IsAdmin { get; set; }
         //FK and navigation property
