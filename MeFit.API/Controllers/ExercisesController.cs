@@ -42,13 +42,38 @@ namespace MeFit.API.Controllers
         //[ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult<IEnumerable<ExerciseReadDTO>>> GetExercises()
         {
+            string userName = "";
+            string firstName = "";
+            string lastName = "";
+            string emailAddress = "";
+            var claim = User.Claims.FirstOrDefault(c => c.Type == "name");
+            if (claim != null)
+            {
+                userName = claim.Value;
+            }
+            claim = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname");
+            if (claim != null)
+            {
+                firstName = claim.Value;
+            }
+            claim = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname");
+            if (claim != null)
+            {
+                lastName = claim.Value;
+            }
+            claim = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress");
+            if (claim != null)
+            {
+                emailAddress = claim.Value;
+            }
+
             var exercises = _mapper.Map<List<ExerciseReadDTO>>(await _context.Exercises.ToListAsync());
 
             if (exercises.Count == 0)
             {
                 return NoContent();
             }
-
+            
             return Ok(exercises);
         }
 
