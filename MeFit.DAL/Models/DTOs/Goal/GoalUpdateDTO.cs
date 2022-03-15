@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 
-namespace MeFit.DAL.Models.DTOs.GoalsDTO
+namespace MeFit.DAL.Models.DTOs.Goal
 {
     public class GoalUpdateDTO
     {

@@ -1,5 +1,5 @@
 ﻿using MeFit.DAL.Models.Domain;
-using MeFit.DAL.Models.DTOs.UserDTOs;
+using MeFit.DAL.Models.DTOs.User;
 using System.Linq;
 
 
