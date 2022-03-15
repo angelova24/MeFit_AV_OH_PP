@@ -41,7 +41,8 @@
             </router-link>
             <select v-on:change="onSelectUserChange" v-model="selectedUserValue">
                 <option value="username">logged in as: {{ username }}</option>
-                <option value="showprofile">show my profile</option>
+                <option value="showprofile">show my profile...</option>
+                <option value="logout">log me out...</option>
             </select>
             
         </nav>

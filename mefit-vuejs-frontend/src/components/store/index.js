@@ -1,3 +1,4 @@
+import { stringifyQuery } from "vue-router";
 import { createStore } from "vuex";
 
 const store = createStore({
@@ -10,6 +11,7 @@ const store = createStore({
             email: "",
             emailVerified: ""
         },
+        token: {},
         user: {
             //#region test data - only until API endpoint is available
             id: 1,
@@ -119,6 +121,9 @@ const store = createStore({
         setUserIdentity: (state, payload) => {
             state.userIdentity = payload;
         },
+        setToken: (state, payload) => {
+            state.token = payload;
+        },
         addExercises: (state, payload) => {
             for (const exercise of payload) {
                 state.exercises.push(exercise);    
@@ -151,7 +156,14 @@ const store = createStore({
     },
     actions: {
         fetchExcercises: async state => {
-            const response = await fetch("https://localhost:44390/api/Exercises");
+            const response = await fetch("https://localhost:44390/api/Exercises", {
+                    method: 'GET',
+                    headers: {
+                        "Authorization": "Bearer " + state.token,
+                        "Content-Type": "application/json"
+                    }
+            });
+            //const response = await fetch("https://localhost:44390/api/Exercises");
             if(!response.ok)
             { 
                 console.log(`FetchExercises from Db failed...!!!`);

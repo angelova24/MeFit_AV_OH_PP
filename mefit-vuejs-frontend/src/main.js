@@ -39,4 +39,5 @@ keycloak.init({
 createApp(App, {keycloak: keycloak})
     .use(router)
     .use(store)
+    //.use(keycloak.middleware)
     .mount('#app');
