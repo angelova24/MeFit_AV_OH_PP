@@ -11,7 +11,7 @@ const store = createStore({
             email: "",
             emailVerified: ""
         },
-        token: {},
+        token: "",
         user: {
             //#region test data - only until API endpoint is available
             id: 1,
@@ -122,6 +122,7 @@ const store = createStore({
             state.userIdentity = payload;
         },
         setToken: (state, payload) => {
+            console.log("token in store will be set to:", payload);
             state.token = payload;
         },
         addExercises: (state, payload) => {
@@ -155,12 +156,12 @@ const store = createStore({
         }
     },
     actions: {
-        fetchExcercises: async state => {
+        fetchExcercises: async store => {
             const response = await fetch("https://localhost:44390/api/Exercises", {
-                    method: 'GET',
+                    method: "GET",
                     headers: {
-                        "Authorization": "Bearer " + state.token,
-                        "Content-Type": "application/json"
+                        "Authorization": "Bearer " + store.state.token,
+                        'Content-Type': 'application/json'
                     }
             });
             //const response = await fetch("https://localhost:44390/api/Exercises");
@@ -171,12 +172,12 @@ const store = createStore({
             else
             {
                 const exercises = await response.json();
-                state.commit("addExercises", exercises);
+                store.commit("addExercises", exercises);
                 console.log("FetchExercises from Db done...");
                 console.log("Exercises received:", exercises);
             }
         },
-        fetchSets: async state => {
+        fetchSets: async store => {
             const response = await fetch("https://localhost:44390/api/Sets");
             if(!response.ok)
             { 
@@ -185,12 +186,12 @@ const store = createStore({
             else
             {
                 const sets = await response.json();
-                state.commit("addSets", sets);
+                store.commit("addSets", sets);
                 console.log("FetchSets from Db done...");
                 console.log("Sets received:", sets);
             }
         },
-        fetchWorkouts: async state => {
+        fetchWorkouts: async store => {
             const response = await fetch("https://localhost:44390/api/Workouts");
             if(!response.ok)
             { 
@@ -199,12 +200,12 @@ const store = createStore({
             else
             {
                 const workouts = await response.json();
-                state.commit("addWorkouts", workouts);
+                store.commit("addWorkouts", workouts);
                 console.log("FetchWorkouts from Db done...");
                 console.log("Workouts received:", workouts);
             }
         },
-        fetchPrograms: async state => {
+        fetchPrograms: async store => {
             const response = await fetch("https://localhost:44390/api/Programs");
             if(!response.ok)
             { 
@@ -213,8 +214,9 @@ const store = createStore({
             else
             {
                 const programs = await response.json();
-                state.commit("addPrograms", programs);
+                store.commit("addPrograms", programs);
                 console.log("FetchPrograms from Db done...");
+                console.log("programs received:", programs);
             }
         }
     },

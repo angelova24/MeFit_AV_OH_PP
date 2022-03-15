@@ -8,49 +8,51 @@
   const { keycloak } = toRefs(props);
   const store = useStore();
   
-  keycloak.value.onReady = authenticated => { 
-    if(authenticated) {
-      keycloak.value.loadUserProfile()
-        .then(profile => {
-          alert(JSON.stringify(profile, null, "  "));
-          store.commit("setUserIdentity", profile);
-          store.commit("setToken", keycloak.value.token);
-        })
-        .catch(error => {
-          alert("Failed to load user profile...");
-          console.log("Failed to load user profile:", error);
-        }); 
-    }
-  };
-
-  keycloak.value.onTokenExpired = parameter => {
-    alert("Token is expired...");
-    console.log("Token expired:", parameter);
-    keycloak.value.updateToken(5);
-    store.commit("SetToken", keycloak.value.token);
-  }
-  
-  onMounted(() => {
+  const readData = () => {
     store.dispatch("fetchExcercises");
     store.dispatch("fetchSets");
     store.dispatch("fetchWorkouts");
     store.dispatch("fetchPrograms");
-  })
+  }
+
+  const updateToken = (minValidity) => {
+    keycloak.value.updateToken(minValidity)
+      .then(refreshed => {
+        if (refreshed) {
+          console.log('Token was successfully refreshed...');
+        } 
+        else {
+          console.log('Token is still valid...');
+        }
+        store.commit("setToken", keycloak.value.token);
+        console.log("Token:", keycloak.value.token)
+      })
+      .catch(error => {
+        console.log("Failed to refresh the token, or the session has expired: ", error);
+      });
+  }
+
+  
+  keycloak.value.onReady = authenticated => { 
+    if(authenticated) {
+      console.log("User was successfully authenticated...");
+      //--- write current token in store
+      store.commit("setToken", keycloak.value.token);
+      readData();
+    }
+    else
+    {
+      console.log("User authentication failed...");
+    }
+  };
+
+  keycloak.value.onTokenExpired = parameter => {
+    console.log("Token expired:", parameter);
+    updateToken(5);
+  }
 
   const generateToken = () => { 
-    keycloak.value.updateToken(50000)
-    .then(function(refreshed) {
-        if (refreshed) {
-            alert('Token was successfully refreshed');
-            store.commit("SetToken", keycloak.value.token);
-            console.log("Token:", keycloak.value.token)
-        } else {
-            alert('Token is still valid');
-        }
-    })
-    .catch(error => {
-        alert("Failed to refresh the token, or the session has expired: ", error);
-    });
+    updateToken(50000);
   }
 
 </script>
