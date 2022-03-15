@@ -46,7 +46,7 @@ namespace MeFit.API.Controllers
                 return NoContent();
             }
             var profileReadDTO = _mapper.Map<ProfileReadDTO>(profile);
-            return Ok(profile);
+            return Ok(profileReadDTO);
         }
 
         /// <summary>

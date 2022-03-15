@@ -70,6 +70,7 @@ namespace MeFit.API.Controllers
         [ProducesResponseType(StatusCodes.Status303SeeOther)]
         public async Task<ActionResult<UserReadDTO>> GetUserById(int id)
         {
+             
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
@@ -79,17 +80,17 @@ namespace MeFit.API.Controllers
             var userReadDTO = _mapper.Map<UserReadDTO>(user);
             return userReadDTO;
 
-        }
-
-        ///// <summary>
-        ///// Makes a partial update to the user object
-        ///// </summary>
-        ///// <param name="id"></param>
-        ///// <param name="user"></param>
-        ///// <returns></returns>
-        // PATCH: api/Users/:user_id
-        //[Authorize]
-        //[HttpPatch("{id}")]        
+        }       
+        //------------------------------------------Self only Admin-----------------
+        /// <summary>
+        /// Update to the users password
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        // PATCH: api/Users/user_id/update_password
+        [Authorize]
+        [HttpPatch("{id}")]        
         //[Consumes("application/json")]
         //public async Task<ActionResult<UserUpdatePasswordDTO>> PutUser(int id, UserUpdatePasswordDTO user)
         //{
