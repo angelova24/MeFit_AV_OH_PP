@@ -22,15 +22,15 @@
 <template>
     <div>
         <header>
-            <b>List of available programs:</b>
+            <b>List of goals:</b>
         </header>
         <main>
-            <ProgramListItem 
-                v-for="program in programs" 
-                v-bind:program="program"
-                v-bind:key="program.id"
-                v-on:click="onProgramListItemClicked($event, program.id)">
-            </ProgramListItem>
+            <GoalListItem 
+                v-for="goal in goals" 
+                v-bind:goal="goal"
+                v-bind:key="goal.id"
+                v-on:click="onGoalListItemClicked($event, goal.id)">
+            </GoalListItem>
         </main>
     </div>
 </template>
