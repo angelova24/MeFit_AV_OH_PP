@@ -4,14 +4,16 @@ using MeFit.DAL.Models.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MeFit.DAL.Migrations
 {
     [DbContext(typeof(MeFitDbContext))]
-    partial class MeFitDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220315111944_Fix_User_Model")]
+    partial class Fix_User_Model
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -386,33 +388,6 @@ namespace MeFit.DAL.Migrations
                         .HasFilter("[ProfileId] IS NOT NULL");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            IsAdmin = false,
-                            IsContributor = false,
-                            Name = "John Doe",
-                            ProfileId = 1,
-                            Username = "Doe.J"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            IsAdmin = true,
-                            IsContributor = false,
-                            Name = "Admin User",
-                            Username = "admin"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            IsAdmin = false,
-                            IsContributor = true,
-                            Name = "Contributor User",
-                            Username = "cont"
-                        });
                 });
 
             modelBuilder.Entity("MeFit.DAL.Models.Domain.Workout", b =>
