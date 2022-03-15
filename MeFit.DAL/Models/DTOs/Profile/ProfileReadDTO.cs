@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace MeFit.DAL.Models.DTOs.Profile
@@ -14,5 +15,7 @@ namespace MeFit.DAL.Models.DTOs.Profile
         public string MedicalConditions { get; set; }
         [MaxLength(100)]
         public string Disabilities { get; set; }
+
+        public List<int> Goals { get; set; }
     }
 }
