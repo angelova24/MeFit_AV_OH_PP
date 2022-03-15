@@ -29,6 +29,8 @@ namespace MeFit.API.Controllers
 
         //We need a get from header after Keyloack
 
+        
+
         /// <summary>
         /// Get user by ID
         /// </summary>
@@ -40,7 +42,7 @@ namespace MeFit.API.Controllers
         [ProducesResponseType(StatusCodes.Status303SeeOther)]
         public async Task<ActionResult<UserReadDTO>> GetUser(int id )
         {
-
+             
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
@@ -50,15 +52,15 @@ namespace MeFit.API.Controllers
             var userReadDTO = _mapper.Map<UserReadDTO>(user);
             return userReadDTO;
 
-        }
-
+        }       
+        //------------------------------------------Self only Admin-----------------
         /// <summary>
-        /// Makes a partial update to the user object
+        /// Update to the users password
         /// </summary>
         /// <param name="id"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        // PATCH: api/Users/:user_id
+        // PATCH: api/Users/user_id/update_password
         [Authorize]
         [HttpPatch("{id}")]        
         //[Consumes("application/json")]
