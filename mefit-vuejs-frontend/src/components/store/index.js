@@ -1,4 +1,3 @@
-import { stringifyQuery } from "vue-router";
 import { createStore } from "vuex";
 
 const store = createStore({
@@ -14,26 +13,39 @@ const store = createStore({
         token: "",
         user: {
             //#region test data - only until API endpoint is available
-            id: 1,
+            id: 5,
             username: "oliver hauck",
             firstName: "Oliver",
             lastName: "Hauck",
-            disabilities: "none"
+            isContributor: false,
+            isAdmin: false,
+            profileId: 3
             //#endregion
         },
         profile: {
+            id: 0,
+            weight: 0,
+            height: 0,
+            medicalCondition: "",
+            disabilities: "",
+            addressLine1: "",
+            addressLine2: "",
+            postalCode: "",
+            city: "",
+            country: "",
+            goalIds: []
             //#region test data - only until API endpoint is available
-            id: 1,
-            weight: 78.05,
-            height: 1.7,
-            medicalCondition: "healthy",
-            isContribuor: false,
-            isAdmin: false,
-            addressLine1: "Schloßallee 17",
-            addressLine2: "please ring twice",
-            postalCode: "12345",
-            city: "Monopolis",
-            country: "BoardGameland"
+            // id: 3,
+            // weight: 75,
+            // height: 178,
+            // medicalCondition: "healthy",
+            // disabilities: "none",
+            // addressLine1: "Schloßallee 17",
+            // addressLine2: "please ring twice",
+            // postalCode: "12345",
+            // city: "Monopolis",
+            // country: "BoardGameland",
+            // goalIds: [1]
             //#endregion
         },
         exercises: [],
@@ -115,7 +127,20 @@ const store = createStore({
             // }
             //#endregion
         ],
-        programDetailsId: 0
+        programDetailsId: 0,
+        goals: [
+            //#region some test data - only until API is available
+            {
+                id: 1,
+                startDate: "2022-03-15T00:00:00.000Z",
+                endDate: "2022-03-22T12:00:00.000Z",
+                achieved: false,
+                profileId: 3,
+                workouts: [1, 2]
+            }
+            //#endregion
+        ],
+        goalDetailsId: 0
     },
     mutations: {
         setUserIdentity: (state, payload) => {
@@ -124,6 +149,10 @@ const store = createStore({
         setToken: (state, payload) => {
             console.log("token in store will be set to:", payload);
             state.token = payload;
+        },
+        setProfile: (state, payload) => {
+            console.log("profile will be set to:", payload);
+            state.profile = payload;
         },
         addExercises: (state, payload) => {
             for (const exercise of payload) {
@@ -153,10 +182,19 @@ const store = createStore({
         },
         setProgramDetailsId: (state, payload) => {
             state.programDetailsId = payload;
+        },
+        addGoals: (state, payload) => {
+            for (const goal of payload) {
+                state.goals.push(goal);    
+            }
+        },
+        setGoalDetailsId: (state, payload) => {
+            state.goalDetailsId = payload;
         }
     },
     actions: {
         fetchExcercises: async store => {
+            console.log("fetching exercises from Db...");
             const response = await fetch("https://localhost:44390/api/Exercises", {
                     method: "GET",
                     headers: {
@@ -235,7 +273,28 @@ const store = createStore({
                 console.log("FetchPrograms from Db done...");
                 console.log("programs received:", programs);
             }
+        },
+        fetchProfile: async store => {
+            const response = await fetch("https://localhost:44390/api/Profiles/3", {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + store.state.token,
+                    'Content-Type': 'application/json'
+                }
+            });
+            if(!response.ok)
+            { 
+                console.log(`fetchProfile from Db failed...!!!`);
+            }
+            else
+            {
+                const profile = await response.json();
+                store.commit("setProfile", profile);
+                console.log("FetchProfile from Db done...");
+                console.log("profile received:", profile);
+            }
         }
+
     },
     getters: {
         getExerciseById: state => id => {
@@ -249,6 +308,12 @@ const store = createStore({
         },
         getProgramById: state => id => {
             return state.programs.find(p => p.id === id);
+        },
+        getGoalById: state => id => {
+            const goal = state.goals.find(g => g.id === id);
+            goal.startDate = (new Date(goal.startDate));
+            goal.endDate = (new Date(goal.endDate));
+            return goal;
         }
     }
 });

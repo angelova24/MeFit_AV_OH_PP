@@ -9,10 +9,12 @@
   const store = useStore();
   
   const readData = () => {
+    console.log("reading data from Db...");
     store.dispatch("fetchExcercises");
     store.dispatch("fetchSets");
     store.dispatch("fetchWorkouts");
     store.dispatch("fetchPrograms");
+    store.dispatch("fetchProfile");
   }
 
   const updateToken = (minValidity) => {
@@ -60,6 +62,7 @@
 <template>
   <div>
     <button v-on:click="generateToken">Generate Token</button>
+    <button v-on:click="readData">Read data from Db</button>
     <TheHeader></TheHeader>
     <hr />
     <router-view></router-view>
