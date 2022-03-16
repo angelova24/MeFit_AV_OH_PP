@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MeFit.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/user")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -26,21 +26,58 @@ namespace MeFit.API.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Gets user
+        /// </summary>
+        /// <returns>Redirect Url in Headers</returns>
+        // GET: api/user
+        [Authorize]
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status303SeeOther)]
+        public async Task<ActionResult> GetUser()
+        {
+            //takes username and fullname from token
+            var usernameFromToken = User.Claims.FirstOrDefault(c => c.Type == "preferred_username");
+            var nameFromToken = User.Claims.FirstOrDefault(c => c.Type == "name");
+            var userId = 0;
 
-        //We need a get from header after Keyloack
+            //search for user in DB with the same username
+            var userDB = await _context.Users.FirstOrDefaultAsync(x => x.Username == usernameFromToken.Value);
+
+            if (userDB == null)
+            {
+                //creates new user
+                var newUser = new UserCreateDTO() { Username = usernameFromToken.Value, Name = nameFromToken.Value };
+                var domainNewUser = _mapper.Map<User>(newUser);
+                var createdUser = _context.Users.Add(domainNewUser);
+                userId = createdUser.CurrentValues.GetValue<int>("Id");
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                userId = userDB.Id;
+            }
+            string location = Url.Action(nameof(GetUserById), null, new { id = userId }, Request.Scheme);
+            Response.Headers.Add("Location", location);
+            return StatusCode(StatusCodes.Status303SeeOther);
+        }
+
+
+        
 
         /// <summary>
-        /// Get user by ID
+        /// Gets user by ID
         /// </summary>
         /// <param name="id">User ID</param>
         /// <returns>User</returns>
         // GET: api/Users/5
         [Authorize]        
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status303SeeOther)]
-        public async Task<ActionResult<UserReadDTO>> GetUser(int id )
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<UserReadDTO>> GetUserById(int id)
         {
-
+             
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
@@ -48,50 +85,52 @@ namespace MeFit.API.Controllers
                 return NotFound();
             }
             var userReadDTO = _mapper.Map<UserReadDTO>(user);
-            return userReadDTO;
+            return Ok(userReadDTO);
 
-        }
-
+        }       
+        //------------------------------------------Self only Admin-----------------
         /// <summary>
-        /// Makes a partial update to the user object
+        /// Update to the users password
         /// </summary>
         /// <param name="id"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        // PATCH: api/Users/:user_id
+        // PATCH: api/Users/user_id/update_password
         [Authorize]
         [HttpPatch("{id}")]        
         //[Consumes("application/json")]
-        public async Task<ActionResult<UserUpdatePasswordDTO>> PutUser(int id, UserUpdatePasswordDTO user)
-        {
+        //public async Task<ActionResult<UserUpdatePasswordDTO>> PutUser(int id, UserUpdatePasswordDTO user)
+        //{
             
-            var userDb = await _context.Users.FindAsync(id);
+        //    var userDb = await _context.Users.FindAsync(id);
             
-            if (id != user.Id)
-            {
-                return BadRequest();
-            }
-            userDb.Password = user.Password;
+        //    if (id != user.Id)
+        //    {
+        //        return BadRequest();
+        //    }
+        //    userDb.Password = user.Password;
             
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return BadRequest(400);
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!UserExists(id))
+        //        {
+        //            return BadRequest(400);
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
             
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
+
+
        /// <summary>
        /// Creates a new user
        /// </summary>
@@ -108,7 +147,7 @@ namespace MeFit.API.Controllers
             _context.Users.Add(domainnewUser);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = domainnewUser.Id }, newUser);
+            return CreatedAtAction("GetUserById", new { id = domainnewUser.Id }, newUser);
         }
 
 
@@ -155,11 +194,11 @@ namespace MeFit.API.Controllers
         // DELETE: api/Users/:user_id
         [Authorize]
         [HttpDelete("{id}")]
-        public async Task<ActionResult<UserDeleteDTO>> DeleteUser(int id)
+        public async Task<ActionResult> DeleteUser(int id)
         {
             //cascade delete user with profile of user
 
-            var user = await _context.Users.Include(p => p.Profile).FirstOrDefaultAsync();
+            var user = await _context.Users.Include(p => p.Profile).FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
             {
                 return NotFound();

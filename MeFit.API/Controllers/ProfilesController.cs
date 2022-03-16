@@ -26,7 +26,7 @@ namespace MeFit.API.Controllers
         }
 
         /// <summary>
-        /// Returns detail about current state of the users profile
+        /// Returns detail about current state of the users profile with their goals
         /// </summary>
         /// <param name="id">ID of a profile</param>
         /// <returns>Profile</returns>
@@ -38,11 +38,12 @@ namespace MeFit.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ProfileReadDTO>> GetProfileById([FromRoute] int id)
         {
-            var profile = await _context.Profiles.FindAsync(id);
-
+            //var profile = await _context.Profiles.FindAsync(id);
+            var profile = await _context.Profiles.Include(p => p.Goals).FirstOrDefaultAsync(p => p.Id == id);
+            
             if (profile == null)
             {
-                return NotFound();
+                return NoContent();
             }
             var profileReadDTO = _mapper.Map<ProfileReadDTO>(profile);
             return Ok(profileReadDTO);

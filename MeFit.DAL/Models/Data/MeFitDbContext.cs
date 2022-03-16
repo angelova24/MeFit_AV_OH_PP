@@ -22,9 +22,9 @@ namespace MeFit.DAL.Models.Data
         {
             //User seeding
             modelBuilder.Entity<User>()
-             .HasData(new User() { Id = 1, FirstName = "John", LastName = "Doe", Password = "password1234", IsAdmin = false, Username = "Doe.J", IsContributor = false, ProfileId = 1 },
-                      new User() { Id = 2, FirstName = "AdminUser", LastName = "AUser", Password = "admin1234", IsAdmin = true, Username = "admin", IsContributor = false },
-                      new User() { Id = 3, FirstName = "Contributor", LastName = "CUser", Password = "con1234", IsAdmin = false, Username = "cont", IsContributor = true });
+             .HasData(new User() { Id = 1, Username = "Doe.J", Name = "John Doe", IsAdmin = false, IsContributor = false, ProfileId = 1 },
+                      new User() { Id = 2, Username = "admin", Name = "Admin User", IsAdmin = true,  IsContributor = false },
+                      new User() { Id = 3, Username = "cont", Name = "Contributor User", IsAdmin = false,  IsContributor = true });
 
             //Profile seeding
             modelBuilder.Entity<Profile>()
