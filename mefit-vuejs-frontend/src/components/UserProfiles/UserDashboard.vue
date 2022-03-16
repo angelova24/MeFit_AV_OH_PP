@@ -1,6 +1,6 @@
 <script setup>
-    import { ref } from "@vue/reactivity";
-    import { computed } from "@vue/runtime-core";
+    import { ref, computed } from 'vue';
+    
     import { useStore } from "vuex";
     import GoalsDetail from "../Goals/GoalsDetail.vue";
  
@@ -9,7 +9,13 @@
 
     const store = useStore();
     const goal = computed(() => store.getters.getGoalById(1));
-    const numberOfDaysLeft = ref(Math.ceil((goal.value.endDate - new Date(currentDate.value)) / (24 * 60 * 60 * 1000)) - 1);
+    const numberOfDaysLeft = computed(() => {
+        let result = NaN;
+        if (goal.value !== undefined) {
+            result = Math.ceil((goal.value.endDate - new Date(currentDate.value)) / (24 * 60 * 60 * 1000));
+        }
+        return result;
+    });
 
 
 </script>
@@ -22,7 +28,7 @@
         <section title="calender">
             <input type="date" v-bind:value="currentDate" />
         </section>
-        <section title="currentGoal">
+        <section v-if="goal !== undefined" title="currentGoal">
             <GoalsDetail v-bind:goal="goal"></GoalsDetail>
             <b>{{ numberOfDaysLeft }}</b> days left to reach this goal...
         </section>

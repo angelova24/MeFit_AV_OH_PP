@@ -14,8 +14,12 @@
     store.dispatch("fetchSets");
     store.dispatch("fetchWorkouts");
     store.dispatch("fetchPrograms");
-    store.dispatch("fetchUser");
-    store.dispatch("fetchProfile");
+    store.dispatch("fetchUser")
+      .then(user => {
+        console.log("User received in promise:", user)
+        store.dispatch("fetchProfile", user.profileId)
+          .then(profile => store.dispatch("fetchGoals", profile.goals))
+      });
   }
 
   const updateToken = (minValidity) => {
@@ -57,13 +61,24 @@
     updateToken(50000);
   }
 
+  const onLogout = event => {
+    const options = {
+      redirectUri: window.location.protocol + "//" + window.location.host + "/login"
+    };
+    console.log("current Url:", options.redirectUri);
+    keycloak.value.logout(options)
+      .then(parameter => {
+        console.log("You have been logged out...", parameter);
+      });
+  }
+
 </script>
  
 <template>
   <div>
     <button v-on:click="generateToken">Generate Token</button>
     <button v-on:click="readData">Read data from Db</button>
-    <TheHeader></TheHeader>
+    <TheHeader v-on:logout="onLogout"></TheHeader>
     <hr />
     <router-view></router-view>
     <hr />
