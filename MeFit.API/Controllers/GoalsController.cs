@@ -13,7 +13,7 @@ using System.Net.Mime;
 
 namespace MeFit.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api")]
     [ApiController]
     public class GoalsController : ControllerBase
     {
@@ -32,7 +32,7 @@ namespace MeFit.API.Controllers
         /// <response code="200">Returns all goals</response>
         /// <response code="204">No goals found</response>
         // GET: api/Goals
-        [HttpGet]
+        [HttpGet("goals")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<GoalReadDTO>>> GetGoals()
         {
@@ -54,12 +54,12 @@ namespace MeFit.API.Controllers
         /// <returns>Goal</returns>
         /// <response code="200">Returns a goal</response>
         /// <response code="404">No goal found</response>
-        [HttpGet("{id}")]
+        [HttpGet("goal/{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<GoalReadDTO>> GetGoalById([FromRoute] int id)
+        public async Task<ActionResult<GoalWorkoutsDTO>> GetGoalById([FromRoute] int id)
         {
-            var goalReadDTO = _mapper.Map<GoalReadDTO>( await _context.Goals.Include(g => g.Workouts).FirstOrDefaultAsync(g => g.Id == id));
+            var goalReadDTO = _mapper.Map<GoalWorkoutsDTO>( await _context.Goals.Include(g => g.Workouts).FirstOrDefaultAsync(g => g.Id == id));
 
             if (goalReadDTO == null)
             {
@@ -78,7 +78,7 @@ namespace MeFit.API.Controllers
         /// <response code="400">Bad request</response>
         /// <response code="404">No goal/profile found</response>
         // PATCH: api/Goals/5/SetAchieved
-        [HttpPatch("{id}/SetAchieved")]
+        [HttpPatch("goal/{id}/SetAchieved")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UpdateGoalAchieved([FromBody] int profId, [FromRoute] int id)
         {
@@ -111,7 +111,7 @@ namespace MeFit.API.Controllers
         /// <param name="newGoal">Goals info</param>
         /// <returns>A newly created goal</returns>
         /// <response code="201">Successfully created goal</response>
-        [HttpPost]
+        [HttpPost("goal")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<GoalReadDTO>> PostExercise([FromBody] GoalCreateDTO newGoal)
@@ -132,7 +132,7 @@ namespace MeFit.API.Controllers
         /// <response code="404">No profile found</response>
         // POST: api/Goals/AddToProfile5
         // Vily: little bit confused about this endpoint
-        [HttpPost("AddToProfile{id}")]
+        [HttpPost("goals/AddToProfile{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> CreateGoal([FromRoute] int id, [FromBody] List<int> goals)
         {
@@ -165,7 +165,7 @@ namespace MeFit.API.Controllers
         /// <response code="204">Successfully deleted goal</response>
         /// <response code="404">No goal found</response>
         // DELETE: api/Goals/5
-        [HttpDelete("{id}")]
+        [HttpDelete("goal/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult> DeleteGoal(int id)
         {
