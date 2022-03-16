@@ -9,5 +9,6 @@ namespace MeFit.DAL.Models.DTOs.User
         public string Username { get; set; }
         [Required, MaxLength(80)]
         public string Name { get; set; }
+        public int ProfileId { get; set; }
     }
 }
