@@ -59,14 +59,14 @@ namespace MeFit.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<GoalReadDTO>> GetGoalById([FromRoute] int id)
         {
-            var goal = await _context.Goals.FindAsync(id);
+            var goalReadDTO = _mapper.Map<GoalReadDTO>( await _context.Goals.Include(g => g.Workouts).FirstOrDefaultAsync(g => g.Id == id));
 
-            if (goal == null)
+            if (goalReadDTO == null)
             {
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<GoalReadDTO>(goal));
+            return Ok(goalReadDTO);
         }
 
         /// <summary>
