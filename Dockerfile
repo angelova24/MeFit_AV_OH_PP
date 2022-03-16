@@ -9,6 +9,7 @@ WORKDIR /src
 COPY ["MeFit.API/MeFit.API.csproj", "MeFit.API/"]
 RUN dotnet restore "MeFit.API/MeFit.API.csproj"
 COPY . .
+WORKDIR "/src/MeFit.API"
 RUN dotnet build "MeFit.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
