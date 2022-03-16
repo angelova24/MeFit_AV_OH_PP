@@ -162,7 +162,7 @@ namespace MeFit.API.Controllers
         //[Authorize(Roles = "contributor, administrator")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<WorkoutReadDTO>> PostWorkout([FromBody] WorkoutCreatDTO newWorkout)
+        public async Task<ActionResult<WorkoutReadDTO>> PostWorkout([FromBody] WorkoutCreateDTO newWorkout)
         {
             //var usernameToken = TakeUserNameFromToken();
             //var userId = TakeIdFromUser(usernameToken).Result;

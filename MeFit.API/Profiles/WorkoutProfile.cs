@@ -19,7 +19,7 @@ namespace MeFit.API.Profiles
               opt.MapFrom(w => w.Goals.Select(g => g.Id).ToArray()))
                .ReverseMap();
 
-            CreateMap<Workout, WorkoutCreatDTO>()
+            CreateMap<Workout, WorkoutCreateDTO>()
                 .ReverseMap();
 
             CreateMap<Workout, WorkoutSetDTO>()
