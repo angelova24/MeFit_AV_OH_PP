@@ -87,11 +87,12 @@ namespace MeFit.API.Controllers
             var userReadDTO = _mapper.Map<UserReadDTO>(user);
             return Ok(userReadDTO);
 
-        }       
+        }
         //------------------------------------------Self only Admin-----------------
         /// <summary>
         /// Update to the users password
         /// </summary>
+        /// <param name="newUser"></param>
         /// <param name="id"></param>
         /// <param name="user"></param>
         /// <returns></returns>
@@ -135,10 +136,11 @@ namespace MeFit.API.Controllers
        /// Creates a new user
        /// </summary>
        /// <param name="newUser"></param>
-       /// <returns></returns>
+       /// <returns>Status code 201 created and the created User by id</returns>
         // POST: api/Users
         [HttpPost]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [Consumes("application/json")]
         public async Task<ActionResult<UserCreateDTO>> PostUser([FromBody]UserCreateDTO newUser)
         {

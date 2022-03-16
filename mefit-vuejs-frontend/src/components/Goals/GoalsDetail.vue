@@ -16,13 +16,16 @@
     const store = useStore();
 
     const workouts = computed(() => {
-        console.log("Workouts", goal.value.workouts);
         const tempWorkouts = [];
-        for (const workoutId of goal.value.workouts) {
-            console.log("workoutId:", workoutId);
-            const tempWorkout = computed(() => store.getters.getWorkoutById(workoutId));
-            console.log("tempWorkout:", tempWorkout.value);
-            tempWorkouts.push(tempWorkout.value);
+        if (goal.value.workouts !== undefined)
+        {
+            console.log("Workouts", goal.value.workouts);
+            for (const workoutId of goal.value.workouts) {
+                console.log("workoutId:", workoutId);
+                const tempWorkout = computed(() => store.getters.getWorkoutById(workoutId));
+                console.log("tempWorkout:", tempWorkout.value);
+                tempWorkouts.push(tempWorkout.value);
+            }
         }
         console.log(tempWorkouts);
         return tempWorkouts;

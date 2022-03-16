@@ -3,6 +3,8 @@
     import { useStore } from 'vuex';
     import { useRouter } from 'vue-router';
 
+    const emits = defineEmits(["logout"]);
+
     const store = useStore();
     const username = computed(() => store.state.user.username);
     const router = useRouter();
@@ -10,10 +12,14 @@
     const selectedUserValue = ref("username");
     const onSelectUserChange = (event) => {
         console.log(`new SelectUser value: ${event.target.value}`);
-        if(event.target.value == "showprofile")
-        {
-            router.push("/profile")
-            selectedUserValue.value = "username";
+        switch(event.target.value) {
+            case "showprofile":
+                router.push("/profile")
+                selectedUserValue.value = "username";
+                break;
+            case "logout":
+                emits("logout");
+                break;
         }
     }
 

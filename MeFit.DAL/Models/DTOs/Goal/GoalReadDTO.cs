@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -13,6 +13,7 @@ namespace MeFit.DAL.Models.DTOs.Goal
         [Required]
         public DateTime EndDate { get; set; }
         public bool Achieved { get; set; }
-        
+
+        public List<int> Workouts { get; set; }
     }
 }

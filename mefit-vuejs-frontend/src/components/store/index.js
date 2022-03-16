@@ -136,14 +136,14 @@ const store = createStore({
         programDetailsId: 0,
         goals: [
             //#region some test data - only until API is available
-            {
-                id: 1,
-                startDate: "2022-03-15T00:00:00.000Z",
-                endDate: "2022-03-22T12:00:00.000Z",
-                achieved: false,
-                profileId: 3,
-                workouts: [1, 2]
-            }
+            // {
+            //     id: 1,
+            //     startDate: "2022-03-15T00:00:00.000Z",
+            //     endDate: "2022-03-22T12:00:00.000Z",
+            //     achieved: false,
+            //     profileId: 3,
+            //     workouts: [1, 2]
+            // }
             //#endregion
         ],
         goalDetailsId: 0
@@ -284,8 +284,8 @@ const store = createStore({
                 console.log("programs received:", programs);
             }
         },
-        fetchProfile: async store => {
-            const response = await fetch("https://localhost:44390/api/Profiles/3", {
+        fetchProfile: async (store, id) => {
+            const response = await fetch(`https://localhost:44390/api/Profiles/${id}`, {
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer " + store.state.token,
@@ -302,6 +302,7 @@ const store = createStore({
                 store.commit("setProfile", profile);
                 console.log("FetchProfile from Db done...");
                 console.log("profile received:", profile);
+                return profile;
             }
         },
         fetchUser: async store => {
@@ -323,7 +324,33 @@ const store = createStore({
                 store.commit("setUser", user);
                 console.log("FetchUser from Db done...");
                 console.log("user received:", user);
+                return user;
             }
+        },
+        fetchGoals: async (store, goalIds) => {
+            const goals = [];
+            for (const goalId of goalIds) {
+                const response = await fetch(`https://localhost:44390/api/goals/${goalId}`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Bearer " + store.state.token,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if(!response.ok)
+                { 
+                    console.log(`FetchGoals for GoalId ${goalId} from Db failed...!!!`);
+                }
+                else
+                {
+                    const goal = await response.json();
+                    goals.push(goal);                    
+                }
+            }
+            store.commit("addGoals", goals);
+            console.log("FetchGoals from Db done...");
+            console.log("Goals received:", goals);
+            return goals
         },
     },
     getters: {
@@ -341,8 +368,10 @@ const store = createStore({
         },
         getGoalById: state => id => {
             const goal = state.goals.find(g => g.id === id);
-            goal.startDate = (new Date(goal.startDate));
-            goal.endDate = (new Date(goal.endDate));
+            if(goal != undefined) {
+                goal.startDate = (new Date(goal.startDate));
+                goal.endDate = (new Date(goal.endDate));
+            }
             return goal;
         }
     }

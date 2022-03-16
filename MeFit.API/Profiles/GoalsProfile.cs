@@ -1,5 +1,6 @@
 ﻿using MeFit.DAL.Models.Domain;
 using MeFit.DAL.Models.DTOs.Goal;
+using System.Linq;
 
 namespace MeFit.API.Profiles
 {
@@ -11,7 +12,8 @@ namespace MeFit.API.Profiles
                 .ReverseMap();
             CreateMap<Goal, GoalUpdateDTO>()
                 .ReverseMap();
-            CreateMap<Goal, GoalReadDTO>()
+            CreateMap<Goal, GoalReadDTO>().ForMember(gdto => gdto.Workouts, opt =>
+             opt.MapFrom(g => g.Workouts.Select(g => g.Id).ToArray()))
                 .ReverseMap();
             CreateMap<Goal, GoalDeleteDTO>()
                 .ReverseMap();
