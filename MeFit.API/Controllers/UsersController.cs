@@ -39,6 +39,7 @@ namespace MeFit.API.Controllers
             //takes username and fullname from token
             var usernameFromToken = User.Claims.FirstOrDefault(c => c.Type == "preferred_username");
             var nameFromToken = User.Claims.FirstOrDefault(c => c.Type == "name");
+            var userId = 0;
 
             //search for user in DB with the same username
             var userDB = await _context.Users.FirstOrDefaultAsync(x => x.Username == usernameFromToken.Value);
@@ -48,12 +49,17 @@ namespace MeFit.API.Controllers
                 //creates new user
                 var newUser = new UserCreateDTO() { Username = usernameFromToken.Value, Name = nameFromToken.Value };
                 var domainNewUser = _mapper.Map<User>(newUser);
-                _context.Users.Add(domainNewUser);
+                var createdUser = _context.Users.Add(domainNewUser);
+                userId = createdUser.CurrentValues.GetValue<int>("Id");
                 await _context.SaveChangesAsync();
             }
-            //adds redirect url in Headers https://localhost:44390/api/user/ + users id from DB
-            Response.Redirect("https://localhost:44390/api/user/" + (await _context.Users.FirstOrDefaultAsync(x => x.Username == usernameFromToken.Value)).Id);
-            return NoContent();
+            else
+            {
+                userId = userDB.Id;
+            }
+            string location = Url.Action(nameof(GetUserById), null, new { id = userId }, Request.Scheme);
+            Response.Headers.Add("Location", location);
+            return StatusCode(StatusCodes.Status303SeeOther);
         }
 
 
@@ -78,7 +84,7 @@ namespace MeFit.API.Controllers
                 return NotFound();
             }
             var userReadDTO = _mapper.Map<UserReadDTO>(user);
-            return userReadDTO;
+            return Ok(userReadDTO);
 
         }       
         //------------------------------------------Self only Admin-----------------

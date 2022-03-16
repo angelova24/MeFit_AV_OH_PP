@@ -293,8 +293,25 @@ const store = createStore({
                 console.log("FetchProfile from Db done...");
                 console.log("profile received:", profile);
             }
-        }
-
+        },
+        fetchUser: async store => {
+            const response = await fetch("https://localhost:44390/api/user", {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + store.state.token,
+                    'Content-Type': 'application/json'
+                }
+            });
+            if(!response.ok)
+            { 
+                //--- check whether response is 303
+                console.log(`fetchUser from Db failed...!!!`);
+            }
+            else
+            {
+                console.log(`fetchUser from Db done...`);
+            }
+        },
     },
     getters: {
         getExerciseById: state => id => {

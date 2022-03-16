@@ -14,6 +14,7 @@
     store.dispatch("fetchSets");
     store.dispatch("fetchWorkouts");
     store.dispatch("fetchPrograms");
+    store.dispatch("fetchUser");
     store.dispatch("fetchProfile");
   }
 
@@ -33,7 +34,6 @@
         console.log("Failed to refresh the token, or the session has expired: ", error);
       });
   }
-
   
   keycloak.value.onReady = authenticated => { 
     if(authenticated) {
