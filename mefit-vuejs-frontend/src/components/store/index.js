@@ -12,14 +12,20 @@ const store = createStore({
         },
         token: "",
         user: {
-            //#region test data - only until API endpoint is available
-            id: 5,
-            username: "oliver hauck",
-            firstName: "Oliver",
-            lastName: "Hauck",
+            id: 0,
+            username: "",
+            name: "",
             isContributor: false,
             isAdmin: false,
-            profileId: 3
+            profileId: 0
+            //#region test data - only until API endpoint is available
+            // id: 5,
+            // username: "oliver hauck",
+            // firstName: "Oliver",
+            // lastName: "Hauck",
+            // isContributor: false,
+            // isAdmin: false,
+            // profileId: 3
             //#endregion
         },
         profile: {
@@ -149,6 +155,10 @@ const store = createStore({
         setToken: (state, payload) => {
             console.log("token in store will be set to:", payload);
             state.token = payload;
+        },
+        setUser: (state, payload) => {
+            console.log("user will be set to:", payload);
+            state.user = payload;
         },
         setProfile: (state, payload) => {
             console.log("profile will be set to:", payload);
@@ -309,7 +319,10 @@ const store = createStore({
             }
             else
             {
-                console.log(`fetchUser from Db done...`);
+                const user = await response.json();
+                store.commit("setUser", user);
+                console.log("FetchUser from Db done...");
+                console.log("user received:", user);
             }
         },
     },

@@ -73,7 +73,8 @@ namespace MeFit.API.Controllers
         // GET: api/Users/5
         [Authorize]        
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status303SeeOther)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<UserReadDTO>> GetUserById(int id)
         {
              
