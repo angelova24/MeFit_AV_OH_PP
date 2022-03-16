@@ -12,10 +12,11 @@ using MeFit.DAL.Models.DTOs.Exercise;
 using System.Net.Mime;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using System.Security.Claims;
 
 namespace MeFit.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api")]
     [ApiController]
     public class ExercisesController : ControllerBase
     {
@@ -35,8 +36,7 @@ namespace MeFit.API.Controllers
         /// <returns>List of all exercises</returns>
         /// <response code="200">Returns all exercises</response>
         /// <response code="204">No exercises found</response>
-        [Authorize]
-        [HttpGet]
+        [HttpGet("exercises")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         //[ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -77,6 +77,34 @@ namespace MeFit.API.Controllers
             return Ok(exercises);
         }
 
+        // GET: api/exercises/contributor
+        /// <summary>
+        /// Gets all exercises from specific contributor
+        /// </summary>
+        /// <returns>List of all exercises</returns>
+        /// <response code="200">Returns all exercises</response>
+        /// <response code="204">No exercises found</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Not allowed(not having the necessary permissions)</response>
+        [HttpGet("exercises/contributor")]
+        [Authorize(Roles = "contributor, administrator")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<ExerciseReadDTO>>> GetExercisesFromContributor()
+        {
+            var usernameToken = TakeUserNameFromToken();
+            var id = TakeIdFromUser(usernameToken);
+
+            var exercises = _mapper.Map<List<ExerciseReadDTO>>(await _context.Exercises.Where(x => x.OwnerId == id.Result).ToListAsync());
+
+            if (exercises.Count == 0)
+            {
+                return NoContent();
+            }
+
+            return Ok(exercises);
+        }
+
         // GET: api/Exercises/TargetMuscleGroup
         /// <summary>
         /// Gets all exercises ordered by target muscle group
@@ -84,7 +112,7 @@ namespace MeFit.API.Controllers
         /// <returns>List of all exercises ordered by target muscle group</returns>
         /// <response code="200">Returns all exercises ordered by target muscle group</response>
         /// <response code="204">No exercises found</response>
-        [HttpGet("TargetMuscleGroup")]
+        [HttpGet("exercises/TargetMuscleGroup")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         //[ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -108,7 +136,7 @@ namespace MeFit.API.Controllers
         /// <returns>Exercise</returns>
         /// <response code="200">Returns an exercise</response>
         /// <response code="404">No exercise found</response>
-        [HttpGet("{id}")]
+        [HttpGet("exercise/{id}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ExerciseReadDTO>> GetExerciseById([FromRoute] int id)
@@ -135,7 +163,7 @@ namespace MeFit.API.Controllers
         /// <response code="403">Not allowed(not having the necessary permissions)</response>
         /// <response code="404">No exercise found</response>
         [Authorize(Roles = "contributor, administrator")]
-        [HttpPut("{id}")]
+        [HttpPut("exercise/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UpdateExercise([FromRoute] int id, [FromBody] ExerciseReadDTO exercise)
         {
@@ -176,13 +204,17 @@ namespace MeFit.API.Controllers
         /// <response code="201">Successfully created exercise</response>
         /// <response code="401">Not authorized</response>
         /// <response code="403">Not allowed(not having the necessary permissions)</response>
+        [HttpPost("exercise")]
         [Authorize(Roles = "contributor, administrator")]
-        [HttpPost]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<ExerciseReadDTO>> PostExercise([FromBody] ExerciseCreateDTO newExercise)
         {
+            var usernameToken = TakeUserNameFromToken();
+            var id = TakeIdFromUser(usernameToken);
+    
             var domainExercise = _mapper.Map<Exercise>(newExercise);
+            domainExercise.OwnerId = id.Result;
             _context.Exercises.Add(domainExercise);
             await _context.SaveChangesAsync();
 
@@ -199,7 +231,7 @@ namespace MeFit.API.Controllers
         /// <response code="403">Not allowed(not having the necessary permissions)</response>
         /// <response code="404">No exercise found</response>
         [Authorize(Roles = "contributor, administrator")]
-        [HttpDelete("{id}")]
+        [HttpDelete("exercise/{id}")]
         //[Authorize(Roles = "administrator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteExercise([FromRoute] int id)
@@ -208,6 +240,12 @@ namespace MeFit.API.Controllers
             if (exercise == null)
             {
                 return NotFound();
+            }
+
+            var usernameFromToken = TakeUserNameFromToken();
+            if (exercise.OwnerId != TakeIdFromUser(usernameFromToken).Result)
+            {
+                return Forbid();
             }
 
             _context.Exercises.Remove(exercise);
@@ -219,6 +257,16 @@ namespace MeFit.API.Controllers
         private bool ExerciseExists(int id)
         {
             return _context.Exercises.Any(e => e.Id == id);
+        }
+        private string TakeUserNameFromToken()
+        {
+            var username = User.Claims.FirstOrDefault(c => c.Type == "preferred_username");
+            return username.Value;
+        }
+        private async Task<int> TakeIdFromUser(string usernameFromToken)
+        {
+            var id = (await _context.Users.FirstOrDefaultAsync(x => x.Username == usernameFromToken)).Id;
+            return id;
         }
     }
 }
