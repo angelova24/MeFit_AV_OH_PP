@@ -10,34 +10,38 @@ using MeFit.DAL.Models.Domain;
 using AutoMapper;
 using MeFit.DAL.Models.DTOs.Set;
 using System.Net.Mime;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MeFit.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api")]
     [ApiController]
     public class SetsController : ControllerBase
     {
         private readonly MeFitDbContext _context;
         private readonly IMapper _mapper;
-        public SetsController(MeFitDbContext context, IMapper mapper )
+        public SetsController(MeFitDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
-    }
+        }
 
-        // GET: api/Sets
+        // GET: api/sets
         /// <summary>
         /// Gets all sets
         /// </summary>
         /// <returns>List of all sets</returns>
         /// <response code="200">Returns all sets</response>
         /// <response code="204">No sets found</response>
-        [HttpGet]
+        /// <response code="401">Not authorized</response>
+        [HttpGet("sets")]
+        //[Authorize]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<SetReadWithIdDTO>>> GetSets()
         {
             var sets = _mapper.Map<List<SetReadWithIdDTO>>(await _context.Sets.ToListAsync());
+
             if (sets.Count == 0)
             {
                 return NoContent();
@@ -45,90 +49,113 @@ namespace MeFit.API.Controllers
             return Ok(sets);
         }
 
-        // GET: api/Sets/5
+        // GET: api/sets/5
         /// <summary>
         /// Gets set by ID
         /// </summary>
         /// <param name="id">ID of a set</param>
         /// <returns>Set</returns>
         /// <response code="200">Returns a set</response>
+        /// <response code="401">Not authorized</response>
         /// <response code="404">No set found</response>
-        [HttpGet("{id}")]
+        [HttpGet("sets/{id}")]
+        //[Authorize]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<SetReadWithIdDTO>> GetSet([FromRoute]int id)
-        {     
-            var sets = _mapper.Map<SetReadWithIdDTO>(await _context.Sets.FindAsync(id));
+        public async Task<ActionResult<SetReadWithIdDTO>> GetSetById([FromRoute] int id)
+        {
+            var set = await _context.Sets.FindAsync(id);
 
-            if (sets == null)
+            if (set == null)
             {
                 return NotFound();
             }
 
-            return Ok(sets);
+            return Ok(_mapper.Map<SetReadWithIdDTO>(set));
         }
 
-        // PUT: api/Sets/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutSet(int id, Set @set)
+        // POST: api/set
+        /// <summary>
+        /// Creates a set
+        /// </summary>
+        /// <param name="newSet">Set info</param>
+        /// <returns>A newly created set</returns>
+        /// <response code="201">Successfully created set</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Not allowed(not having the necessary permissions)</response>
+        /// <response code="500">Internal Server Error</response>
+        [HttpPost("set")]
+        //[Authorize(Roles = "contributor, administrator")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<SetReadWithIdDTO>> PostSet([FromBody] SetReadDTO newSet)
         {
-            if (id != @set.Id)
-            {
-                return BadRequest();
-            }
+            //var usernameToken = TakeUserNameFromToken();
+            //var userId = TakeIdFromUser(usernameToken).Result;
 
-            _context.Entry(@set).State = EntityState.Modified;
+            var domainSet = _mapper.Map<Set>(newSet);
+            domainSet.OwnerId = 1; //1 is hard coded, change with userId!!!
+            _context.Sets.Add(domainSet);
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch
             {
-                if (!SetExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return NoContent();
+            return CreatedAtAction("GetSetById", new { id = domainSet.Id }, _mapper.Map<SetReadWithIdDTO>(domainSet));
         }
 
-        // POST: api/Sets
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Set>> PostSet(Set @set)
-        {
-            _context.Sets.Add(@set);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetSet", new { id = @set.Id }, @set);
-        }
-
-        // DELETE: api/Sets/5
-        [HttpDelete("{id}")]
+        // DELETE: api/set/5
+        /// <summary>
+        /// Deletes a specific set
+        /// </summary>
+        /// <param name="id">ID of a set</param>
+        /// <response code="204">Successfully deleted set</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Not allowed(not having the necessary permissions)</response>
+        /// <response code="404">No exercise found</response>
+        /// <response code="500">Internal Server Error</response>
+        [HttpDelete("set/{id}")]
+        [Authorize(Roles = "contributor, administrator")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteSet(int id)
         {
-            var @set = await _context.Sets.FindAsync(id);
-            if (@set == null)
+            var set = await _context.Sets.FindAsync(id);
+            if (set == null)
             {
                 return NotFound();
             }
 
-            _context.Sets.Remove(@set);
-            await _context.SaveChangesAsync();
+            var usernameFromToken = TakeUserNameFromToken();
+            if (set.OwnerId != TakeIdFromUser(usernameFromToken).Result)
+            {
+                return Forbid();
+            }
 
+            try
+            {
+                _context.Sets.Remove(set);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
             return NoContent();
         }
-
-        private bool SetExists(int id)
+        private string TakeUserNameFromToken()
         {
-            return _context.Sets.Any(e => e.Id == id);
+            var username = User.Claims.FirstOrDefault(c => c.Type == "preferred_username");
+            return username.Value;
+        }
+        private async Task<int> TakeIdFromUser(string usernameFromToken)
+        {
+            var id = (await _context.Users.FirstOrDefaultAsync(x => x.Username == usernameFromToken)).Id;
+            return id;
         }
     }
 }
