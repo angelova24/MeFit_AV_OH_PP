@@ -14,7 +14,9 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "VaultUri": "https://vault-va-pp-oh.vault.azure.net/",
+        "AZURE_USERNAME": "oliver.hauck@ProserviaGermany.onmicrosoft.com"
       }
     },
     "MeFitAPI": {
@@ -22,7 +24,9 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "VaultUri": "https://vault-va-pp-oh.vault.azure.net/",
+        "AZURE_USERNAME": "oliver.hauck@ProserviaGermany.onmicrosoft.com"
       },
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "dotnetRunMessages": "true"
@@ -32,7 +36,15 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "publishAllPorts": true,
-      "useSSL": true
+      "useSSL": true,
+      "environmentVariables": {
+        "VaultUri": "https://vault-va-pp-oh.vault.azure.net/",
+        //"AZURE_USERNAME": "oliver.hauck@ProserviaGermany.onmicrosoft.com",
+        "AZURE_CLIENT_ID": "0db5a503-4bcc-41e3-8924-54d31b949800",
+        "AZURE_TENANT_ID": "df57f497-8b2e-40bb-96a9-20858528868c",
+        "AZURE_CLIENT_SECRET": "bAI7Q~DQm.XLemXep_r-.OxbeV7i1AOmfNkOO"
+        //"AZURE_PASSWORD": "***"
+      }
     }
   }
 }

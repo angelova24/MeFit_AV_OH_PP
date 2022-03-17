@@ -132,7 +132,7 @@ namespace MeFit.API.Controllers
         /// <response code="404">No profile found</response>
         // POST: api/Goals/AddToProfile5
         // Vily: little bit confused about this endpoint
-        [HttpPost("goals/AddToProfile{id}")]
+        [HttpPost("goals/AddToProfile/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> CreateGoal([FromRoute] int id, [FromBody] List<int> goals)
         {
