@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using System;
 using Azure.Identity;
+using Microsoft.Extensions.Configuration;
+using System;
 
 namespace MeFitAPI
 {

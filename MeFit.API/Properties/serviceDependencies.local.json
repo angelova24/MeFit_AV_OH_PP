@@ -1,16 +1,16 @@
 {
   "dependencies": {
-    "secrets2": {
-      "secretStore": null,
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.KeyVault/vaults/vault-va-pp-oh",
-      "type": "secrets.keyVault",
-      "connectionId": "VaultUri"
-    },
     "secrets1": {
       "secretStore": null,
       "resourceId": null,
       "type": "secrets.user",
       "connectionId": null
+    },
+    "secrets2": {
+      "secretStore": null,
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.KeyVault/vaults/vault-va-pp-oh",
+      "type": "secrets.keyVault",
+      "connectionId": "VaultUri"
     }
   }
 }

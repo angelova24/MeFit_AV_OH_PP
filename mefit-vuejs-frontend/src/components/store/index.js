@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 
+//const apiUrl = "https://localhost:49153/api";
 //const apiUrl = "https://localhost:44390/api";
 const apiUrl = "https://mefitapi-va-pp-oh.azurewebsites.net/api";
 
@@ -288,7 +289,7 @@ const store = createStore({
             }
         },
         fetchProfile: async (store, id) => {
-            const response = await fetch(`${apiUrl}/Profiles/${id}`, {
+            const response = await fetch(`${apiUrl}/profile/${id}`, {
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer " + store.state.token,
@@ -309,10 +310,11 @@ const store = createStore({
             }
         },
         fetchUser: async store => {
-            const response = await fetch(`${apiUrl}/user/`, {
+            const response = await fetch(`${apiUrl}/user`, {
                 method: "GET",
                 headers: {
-                    "Authorization": "Bearer " + store.state.token
+                    "Authorization": "Bearer " + store.state.token,
+                    'Content-Type': 'application/json'
                 }
             })
             .catch(reason => {
@@ -320,7 +322,6 @@ const store = createStore({
             });
             if(response != undefined && !response.ok)
             { 
-                //--- check whether response is 303
                 console.log(`fetchUser from Db failed...!!! ResponseCode: ${response}`);
             }
             else

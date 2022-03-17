@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MeFit.DAL.Models.DTOs.Workout
 {
-    public class WorkoutCreatDTO
+    public class WorkoutCreateDTO
     {
         [Required, MaxLength(70)]
         public string Name { get; set; }

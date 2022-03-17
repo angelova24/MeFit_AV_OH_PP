@@ -63,6 +63,9 @@ namespace MeFit.API.Controllers
             return StatusCode(StatusCodes.Status303SeeOther);
         }
 
+
+        
+
         /// <summary>
         /// Gets user by ID
         /// </summary>
