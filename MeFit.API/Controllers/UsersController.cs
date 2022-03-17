@@ -57,7 +57,8 @@ namespace MeFit.API.Controllers
             {
                 userId = userDB.Id;
             }
-            string location = Url.Action(nameof(GetUserById), null, new { id = userId }, Request.Scheme);
+            string location = Url.Action(nameof(GetUserById), null, new { id = userId }, "https");
+            location = location.Replace("http://", "https://");
             Response.Headers.Add("Location", location);
             return StatusCode(StatusCodes.Status303SeeOther);
         }
