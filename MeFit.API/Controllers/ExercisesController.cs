@@ -13,6 +13,7 @@ using System.Net.Mime;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using System.Security.Claims;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace MeFit.API.Controllers
 {
@@ -29,51 +30,27 @@ namespace MeFit.API.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/Exercises
+        // GET: api/exercises
         /// <summary>
         /// Gets all exercises
         /// </summary>
         /// <returns>List of all exercises</returns>
         /// <response code="200">Returns all exercises</response>
         /// <response code="204">No exercises found</response>
+        /// <response code="401">Not authorized</response>
         [HttpGet("exercises")]
+        //[Authorize]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult<IEnumerable<ExerciseReadDTO>>> GetExercises()
         {
-            string userName = "";
-            string firstName = "";
-            string lastName = "";
-            string emailAddress = "";
-            var claim = User.Claims.FirstOrDefault(c => c.Type == "name");
-            if (claim != null)
-            {
-                userName = claim.Value;
-            }
-            claim = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname");
-            if (claim != null)
-            {
-                firstName = claim.Value;
-            }
-            claim = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname");
-            if (claim != null)
-            {
-                lastName = claim.Value;
-            }
-            claim = User.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress");
-            if (claim != null)
-            {
-                emailAddress = claim.Value;
-            }
-
             var exercises = _mapper.Map<List<ExerciseReadDTO>>(await _context.Exercises.ToListAsync());
 
             if (exercises.Count == 0)
             {
                 return NoContent();
             }
-            
+
             return Ok(exercises);
         }
 
@@ -93,9 +70,9 @@ namespace MeFit.API.Controllers
         public async Task<ActionResult<IEnumerable<ExerciseReadDTO>>> GetExercisesFromContributor()
         {
             var usernameToken = TakeUserNameFromToken();
-            var id = TakeIdFromUser(usernameToken);
+            var userId = TakeIdFromUser(usernameToken).Result;
 
-            var exercises = _mapper.Map<List<ExerciseReadDTO>>(await _context.Exercises.Where(x => x.OwnerId == id.Result).ToListAsync());
+            var exercises = _mapper.Map<List<ExerciseReadDTO>>(await _context.Exercises.Where(x => x.OwnerId == userId).ToListAsync());
 
             if (exercises.Count == 0)
             {
@@ -105,17 +82,18 @@ namespace MeFit.API.Controllers
             return Ok(exercises);
         }
 
-        // GET: api/Exercises/TargetMuscleGroup
+        // GET: api/exercises/TargetMuscleGroup
         /// <summary>
         /// Gets all exercises ordered by target muscle group
         /// </summary>
         /// <returns>List of all exercises ordered by target muscle group</returns>
         /// <response code="200">Returns all exercises ordered by target muscle group</response>
         /// <response code="204">No exercises found</response>
+        /// <response code="401">Not authorized</response>
         [HttpGet("exercises/TargetMuscleGroup")]
+        //[Authorize]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult<IEnumerable<ExerciseReadDTO>>> GetExercisesByTargetMuscleGroup()
         {
             var exercises = _mapper.Map<List<ExerciseReadDTO>>(await _context.Exercises.OrderBy(e => e.TargetMuscleGroup).ToListAsync());
@@ -128,15 +106,17 @@ namespace MeFit.API.Controllers
             return Ok(exercises);
         }
 
-        // GET: api/Exercises/5
+        // GET: api/exercises/5
         /// <summary>
         /// Gets exercise by ID
         /// </summary>
         /// <param name="id">ID of an exercise</param>
         /// <returns>Exercise</returns>
         /// <response code="200">Returns an exercise</response>
+        /// <response code="401">Not authorized</response>
         /// <response code="404">No exercise found</response>
         [HttpGet("exercise/{id}")]
+        //[Authorize]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ExerciseReadDTO>> GetExerciseById([FromRoute] int id)
@@ -151,51 +131,43 @@ namespace MeFit.API.Controllers
             return Ok(_mapper.Map<ExerciseReadDTO>(exercise));
         }
 
-        // PUT: api/Exercises/5 -------------CONTRIBUTOR ONLY!!!!! -------------
+        // PATCH: api/exercise/5 -------------CONTRIBUTOR ONLY!!!!! -------------
         /// <summary>
         /// Updates exercises info
         /// </summary>
         /// <param name="id">ID of an exercise</param>
-        /// <param name="exercise">Exercises new info</param>
+        /// <param name="newExercise">Exercises new info</param>
         /// <response code="204">Successfully changed exercise</response>
-        /// <response code="400">Bad request</response>
         /// <response code="401">Not authorized</response>
         /// <response code="403">Not allowed(not having the necessary permissions)</response>
         /// <response code="404">No exercise found</response>
-        [Authorize(Roles = "contributor, administrator")]
-        [HttpPut("exercise/{id}")]
+        /// <response code="500">Internal Server Error</response>
+        [HttpPatch("exercise/{id}")]
+        //[Authorize(Roles = "contributor, administrator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> UpdateExercise([FromRoute] int id, [FromBody] ExerciseReadDTO exercise)
+        public async Task<IActionResult> UpdateExercise([FromRoute] int id, [FromBody] JsonPatchDocument<Exercise> newExercise)
         {
-            if (id != exercise.Id)
+            var exercise = await _context.Exercises.FindAsync(id);
+            if (exercise == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            var domainExercise = _mapper.Map<Exercise>(exercise);
-
-            _context.Entry(domainExercise).State = EntityState.Modified;
+            newExercise.ApplyTo(exercise, ModelState);
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch
             {
-                if (!ExerciseExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             return NoContent();
         }
 
-        // POST: api/Exercises -------------CONTRIBUTOR ONLY!!!!! -------------
+        // POST: api/exercises -------------CONTRIBUTOR ONLY!!!!! -------------
         /// <summary>
         /// Creates an exercise
         /// </summary>
@@ -204,24 +176,33 @@ namespace MeFit.API.Controllers
         /// <response code="201">Successfully created exercise</response>
         /// <response code="401">Not authorized</response>
         /// <response code="403">Not allowed(not having the necessary permissions)</response>
+        /// <response code="500">Internal Server Error</response>
         [HttpPost("exercise")]
-        [Authorize(Roles = "contributor, administrator")]
+        //[Authorize(Roles = "contributor, administrator")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<ExerciseReadDTO>> PostExercise([FromBody] ExerciseCreateDTO newExercise)
         {
-            var usernameToken = TakeUserNameFromToken();
-            var id = TakeIdFromUser(usernameToken);
+            //var usernameToken = TakeUserNameFromToken();
+            //var userId = TakeIdFromUser(usernameToken).Result;
     
             var domainExercise = _mapper.Map<Exercise>(newExercise);
-            domainExercise.OwnerId = id.Result;
+            domainExercise.OwnerId = 1; //1 is hard coded, change with userId!!!
             _context.Exercises.Add(domainExercise);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
 
             return CreatedAtAction("GetExerciseById", new { id = domainExercise.Id }, _mapper.Map<ExerciseReadDTO>(domainExercise));
         }
 
-        // DELETE: api/Exercises/5 ------------- CONTRIBUTOR ONLY!!!!! -------------
+        // DELETE: api/exercise/5 ------------- CONTRIBUTOR ONLY!!!!! -------------
         /// <summary>
         /// Deletes a specific exercise
         /// </summary>
@@ -232,7 +213,6 @@ namespace MeFit.API.Controllers
         /// <response code="404">No exercise found</response>
         [Authorize(Roles = "contributor, administrator")]
         [HttpDelete("exercise/{id}")]
-        //[Authorize(Roles = "administrator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteExercise([FromRoute] int id)
         {
@@ -252,11 +232,6 @@ namespace MeFit.API.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool ExerciseExists(int id)
-        {
-            return _context.Exercises.Any(e => e.Id == id);
         }
         private string TakeUserNameFromToken()
         {
