@@ -1,5 +1,9 @@
 import { createStore } from "vuex";
 
+//const apiUrl = "https://localhost:49153/api";
+//const apiUrl = "https://localhost:44390/api";
+const apiUrl = "https://mefitapi-va-pp-oh.azurewebsites.net/api";
+
 const store = createStore({
     state: {
         userIdentity: {
@@ -205,7 +209,7 @@ const store = createStore({
     actions: {
         fetchExcercises: async store => {
             console.log("fetching exercises from Db...");
-            const response = await fetch("https://localhost:44390/api/Exercises", {
+            const response = await fetch(`${apiUrl}/Exercises`, {
                     method: "GET",
                     headers: {
                         "Authorization": "Bearer " + store.state.token,
@@ -225,7 +229,7 @@ const store = createStore({
             }
         },
         fetchSets: async store => {
-            const response = await fetch("https://localhost:44390/api/Sets", {
+            const response = await fetch(`${apiUrl}/Sets`, {
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer " + store.state.token,
@@ -245,7 +249,7 @@ const store = createStore({
             }
         },
         fetchWorkouts: async store => {
-            const response = await fetch("https://localhost:44390/api/Workouts", {
+            const response = await fetch(`${apiUrl}/Workouts`, {
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer " + store.state.token,
@@ -265,7 +269,7 @@ const store = createStore({
             }
         },
         fetchPrograms: async store => {
-            const response = await fetch("https://localhost:44390/api/Programs", {
+            const response = await fetch(`${apiUrl}/Programs`, {
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer " + store.state.token,
@@ -285,7 +289,7 @@ const store = createStore({
             }
         },
         fetchProfile: async (store, id) => {
-            const response = await fetch(`https://localhost:44390/api/Profiles/${id}`, {
+            const response = await fetch(`${apiUrl}/profile/${id}`, {
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer " + store.state.token,
@@ -306,17 +310,19 @@ const store = createStore({
             }
         },
         fetchUser: async store => {
-            const response = await fetch("https://localhost:44390/api/user", {
+            const response = await fetch(`${apiUrl}/user`, {
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer " + store.state.token,
                     'Content-Type': 'application/json'
                 }
+            })
+            .catch(reason => {
+                console.log(`fetchUser from Db failed, because:`, reason);
             });
-            if(!response.ok)
+            if(response != undefined && !response.ok)
             { 
-                //--- check whether response is 303
-                console.log(`fetchUser from Db failed...!!!`);
+                console.log(`fetchUser from Db failed...!!! ResponseCode: ${response}`);
             }
             else
             {
@@ -330,7 +336,7 @@ const store = createStore({
         fetchGoals: async (store, goalIds) => {
             const goals = [];
             for (const goalId of goalIds) {
-                const response = await fetch(`https://localhost:44390/api/goals/${goalId}`, {
+                const response = await fetch(`${apiUrl}/goal/${goalId}`, {
                     method: "GET",
                     headers: {
                         "Authorization": "Bearer " + store.state.token,
@@ -378,3 +384,7 @@ const store = createStore({
 });
 
 export default store;
+
+// export function apiUrl() {
+//     inject: ["apiUrl"]
+// }

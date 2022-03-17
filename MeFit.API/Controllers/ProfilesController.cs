@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MeFit.DAL.Models.Data;
-using MeFit.DAL.Models.Domain;
 using AutoMapper;
 using MeFit.DAL.Models.DTOs.Profile;
 using System.Net.Mime;

@@ -40,4 +40,5 @@ createApp(App, {keycloak: keycloak})
     .use(router)
     .use(store)
     //.use(keycloak.middleware)
+    //.provide("apiUrl", "https://localhost:49153/api")
     .mount('#app');
