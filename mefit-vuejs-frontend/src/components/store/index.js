@@ -1,8 +1,6 @@
 import { createStore } from "vuex";
 
-//const apiUrl = "https://localhost:44390/api";
-const apiUrl = "https://mefitapi-va-pp-oh.azurewebsites.net/api";
-
+const apiUrl = "https://localhost:49153/api";
 const store = createStore({
     state: {
         userIdentity: {
@@ -309,19 +307,17 @@ const store = createStore({
             }
         },
         fetchUser: async store => {
-            const response = await fetch(`${apiUrl}/user/`, {
+            const response = await fetch(`${apiUrl}/user`, {
                 method: "GET",
                 headers: {
-                    "Authorization": "Bearer " + store.state.token
+                    "Authorization": "Bearer " + store.state.token,
+                    'Content-Type': 'application/json'
                 }
-            })
-            .catch(reason => {
-                console.log(`fetchUser from Db failed, because:`, reason);
             });
-            if(response != undefined && !response.ok)
+            if(!response.ok)
             { 
                 //--- check whether response is 303
-                console.log(`fetchUser from Db failed...!!! ResponseCode: ${response}`);
+                console.log(`fetchUser from Db failed...!!!`);
             }
             else
             {
@@ -335,7 +331,7 @@ const store = createStore({
         fetchGoals: async (store, goalIds) => {
             const goals = [];
             for (const goalId of goalIds) {
-                const response = await fetch(`${apiUrl}/goal/${goalId}`, {
+                const response = await fetch(`${apiUrl}/goals/${goalId}`, {
                     method: "GET",
                     headers: {
                         "Authorization": "Bearer " + store.state.token,
