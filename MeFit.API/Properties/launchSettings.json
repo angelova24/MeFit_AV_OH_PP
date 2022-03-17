@@ -37,14 +37,9 @@
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "publishAllPorts": true,
       "useSSL": true,
-      "environmentVariables": {
-        "VaultUri": "https://vault-va-pp-oh.vault.azure.net/",
-        //"AZURE_USERNAME": "oliver.hauck@ProserviaGermany.onmicrosoft.com",
-        "AZURE_CLIENT_ID": "0db5a503-4bcc-41e3-8924-54d31b949800",
-        "AZURE_TENANT_ID": "df57f497-8b2e-40bb-96a9-20858528868c",
-        "AZURE_CLIENT_SECRET": "bAI7Q~DQm.XLemXep_r-.OxbeV7i1AOmfNkOO"
-        //"AZURE_PASSWORD": "***"
-      }
+      //"environmentVariables": {
+      //  "VaultUri": "https://vault-va-pp-oh.vault.azure.net/",
+      //}
     }
   }
 }
