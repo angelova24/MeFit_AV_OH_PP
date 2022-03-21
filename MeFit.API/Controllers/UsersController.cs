@@ -10,6 +10,7 @@ using MeFit.DAL.Models.Domain;
 using MeFit.DAL.Models.DTOs.User;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using System.Net.Mime;
 
 namespace MeFit.API.Controllers
 {
@@ -26,32 +27,41 @@ namespace MeFit.API.Controllers
             _mapper = mapper;
         }
 
+        // GET: api/user
         /// <summary>
         /// Gets user
         /// </summary>
         /// <returns>Redirect Url in Headers</returns>
-        // GET: api/user
-        [Authorize]
+        /// <response code="303">Redirect URL</response>
+        /// <response code="500">Internal Server Error</response>
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status303SeeOther)]
         public async Task<ActionResult> GetUser()
         {
             //takes username and fullname from token
-            var usernameFromToken = User.Claims.FirstOrDefault(c => c.Type == "preferred_username");
+            var usernameFromToken = TakeUserNameFromToken();
             var nameFromToken = User.Claims.FirstOrDefault(c => c.Type == "name");
             var userId = 0;
 
             //search for user in DB with the same username
-            var userDB = await _context.Users.FirstOrDefaultAsync(x => x.Username == usernameFromToken.Value);
+            var userDB = await _context.Users.FirstOrDefaultAsync(x => x.Username == usernameFromToken);
 
             if (userDB == null)
             {
                 //creates new user
-                var newUser = new UserCreateDTO() { Username = usernameFromToken.Value, Name = nameFromToken.Value };
+                var newUser = new UserCreateDTO() { Username = usernameFromToken, Name = nameFromToken.Value };
                 var domainNewUser = _mapper.Map<User>(newUser);
                 var createdUser = _context.Users.Add(domainNewUser);
                 userId = createdUser.CurrentValues.GetValue<int>("Id");
-                await _context.SaveChangesAsync();
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
             }
             else
             {
@@ -63,22 +73,21 @@ namespace MeFit.API.Controllers
             return StatusCode(StatusCodes.Status303SeeOther);
         }
 
-
-        
-
+        // GET: api/user/5
         /// <summary>
         /// Gets user by ID
         /// </summary>
         /// <param name="id">User ID</param>
         /// <returns>User</returns>
-        // GET: api/Users/5
-        [Authorize]        
+        /// <response code="200">Returns a user</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="404">No user found</response>
         [HttpGet("{id}")]
+        [Authorize]
+        [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<UserReadDTO>> GetUserById(int id)
         {
-             
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
@@ -89,68 +98,47 @@ namespace MeFit.API.Controllers
             return Ok(userReadDTO);
 
         }
-        //------------------------------------------Self only Admin-----------------
+
+        // POST: api/user
         /// <summary>
-        /// Update to the users password
+        /// Creates a new user
         /// </summary>
-        /// <param name="newUser"></param>
-        /// <param name="id"></param>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        // PATCH: api/Users/user_id/update_password
-        [Authorize]
-        [HttpPatch("{id}")]        
-        //[Consumes("application/json")]
-        //public async Task<ActionResult<UserUpdatePasswordDTO>> PutUser(int id, UserUpdatePasswordDTO user)
-        //{
-            
-        //    var userDb = await _context.Users.FindAsync(id);
-            
-        //    if (id != user.Id)
-        //    {
-        //        return BadRequest();
-        //    }
-        //    userDb.Password = user.Password;
-            
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!UserExists(id))
-        //        {
-        //            return BadRequest(400);
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-            
-        //    return NoContent();
-        //}
-
-
-       /// <summary>
-       /// Creates a new user
-       /// </summary>
-       /// <param name="newUser"></param>
-       /// <returns>Status code 201 created and the created User by id</returns>
-        // POST: api/Users
+        /// <returns>A newly created user</returns>
+        /// <response code="201">Successfully created exercise</response>
+        /// <response code="204">User already exists</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="500">Internal Server Error</response>
         [HttpPost]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [Consumes("application/json")]
-        public async Task<ActionResult<UserCreateDTO>> PostUser([FromBody]UserCreateDTO newUser)
+        public async Task<ActionResult<UserReadDTO>> PostUser()
         {
-            
-            var domainnewUser = _mapper.Map<MeFit.DAL.Models.Domain.User>(newUser);
-            _context.Users.Add(domainnewUser);
-            await _context.SaveChangesAsync();
+            //takes username and fullname from token
+            var usernameFromToken = TakeUserNameFromToken();
+            var nameFromToken = User.Claims.FirstOrDefault(c => c.Type == "name").Value;
 
-            return CreatedAtAction("GetUserById", new { id = domainnewUser.Id }, newUser);
+            //search for user in DB with the same username
+            var userDB = await _context.Users.FirstOrDefaultAsync(x => x.Username == usernameFromToken);
+
+            if (userDB == null)
+            {
+                //creates new user
+                var newUser = new UserCreateDTO() { Username = usernameFromToken, Name = nameFromToken };
+                var domainNewUser = _mapper.Map<User>(newUser);
+
+                try
+                {
+                    _context.Users.Add(domainNewUser);
+                    await _context.SaveChangesAsync();
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+                return CreatedAtAction("GetUserById", new { id = domainNewUser.Id }, _mapper.Map<UserReadDTO>(newUser));
+            }
+
+            return NoContent();
         }
 
 
@@ -188,34 +176,54 @@ namespace MeFit.API.Controllers
         //    return domainUser;
         //}
 
+        // DELETE: api/user/id --------------SELF  AND ADMIN-------------
         /// <summary>
-        /// Deletes user (cascade - user's profile)
+        /// Deletes user
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        // --------------SELF  AND ADMIN-------------
-        // DELETE: api/Users/:user_id
-        [Authorize]
+        /// <param name="id">ID of an user</param>
+        /// <response code="204">Successfully deleted user</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Not allowed</response>
+        /// <response code="404">No user found</response>
+        /// <response code="500">Internal Server Error</response>
         [HttpDelete("{id}")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult> DeleteUser(int id)
         {
-            //cascade delete user with profile of user
-
             var user = await _context.Users.Include(p => p.Profile).FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+            var usernameFromToken = TakeUserNameFromToken();
+            if (user.Username != usernameFromToken)
+            {
+                return Forbid();
+            }
+            try
+            {
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
 
             return NoContent();
         }
 
-        private bool UserExists(int id)
+        private string TakeUserNameFromToken()
         {
-            return _context.Users.Any(e => e.Id == id);
+            var username = User.Claims.FirstOrDefault(c => c.Type == "preferred_username");
+            return username.Value;
+        }
+        private async Task<int> TakeIdFromUser(string usernameFromToken)
+        {
+            var id = (await _context.Users.FirstOrDefaultAsync(x => x.Username == usernameFromToken)).Id;
+            return id;
         }
     }
 }

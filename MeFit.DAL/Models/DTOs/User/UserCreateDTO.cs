@@ -9,10 +9,5 @@ namespace MeFit.DAL.Models.DTOs.User
         public string Username { get; set; }
         [Required, MaxLength(80)]
         public string Name { get; set; }
-
-        //WIP needs to be commented with team
-
-        //public bool IsContributor { get; set; }
-        //public bool IsAdmin { get; set; }
     }
 }
