@@ -33,10 +33,10 @@ namespace MeFit.API.Controllers
         /// </summary>
         /// <returns>List of all workouts with IDs to Sets, Programs and Goals</returns>
         /// <response code="200">Returns all workouts</response>
-        /// <response code="204">No exercises found</response>
+        /// <response code="204">No workouts found</response>
         /// <response code="401">Not authorized</response>
         [HttpGet("workouts")]
-        //[Authorize]
+        [Authorize]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<WorkoutReadDTO>>> GetWorkouts()
@@ -53,7 +53,7 @@ namespace MeFit.API.Controllers
 
         // GET: api/workout/5
         /// <summary>
-        /// Gets a workout by ID
+        /// Gets workout by ID
         /// </summary>
         /// <param name="id">ID of a workout</param>
         /// <returns>Workout</returns>
@@ -61,7 +61,7 @@ namespace MeFit.API.Controllers
         /// <response code="401">Not authorized</response>
         /// <response code="404">No workout found</response>
         [HttpGet("workout/{id}")]
-        //[Authorize]
+        [Authorize]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<WorkoutReadDTO>> GetWorkoutById([FromRoute] int id)
@@ -76,7 +76,7 @@ namespace MeFit.API.Controllers
             return Ok(_mapper.Map<WorkoutReadDTO>(workout));
         }
 
-        // GET: api/workout/5/Sets
+        // GET: api/workout/5/sets
         /// <summary>
         /// Gets a workout with all sets in it
         /// </summary>
@@ -85,8 +85,8 @@ namespace MeFit.API.Controllers
         /// <response code="200">Returns a workout</response>
         /// <response code="401">Not authorized</response>
         /// <response code="404">No workout found</response>
-        [HttpGet("workout/{id}/Sets")]
-        //[Authorize]
+        [HttpGet("workout/{id}/sets")]
+        [Authorize]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<WorkoutSetDTO>> GetWorkoutWithSets([FromRoute] int id)
@@ -150,25 +150,25 @@ namespace MeFit.API.Controllers
 
         // POST: api/workout -------------CONTRIBUTOR ONLY!!!!! -------------
         /// <summary>
-        /// Creates a new workout
+        /// Creates new workout
         /// </summary>
         /// <param name="newWorkout">New workout info</param>
         /// <returns>A newly created workout</returns>
-        /// <response code="201">Successfully created exercise</response>
+        /// <response code="201">Successfully created workout</response>
         /// <response code="401">Not authorized</response>
         /// <response code="403">Not allowed(not having the necessary permissions)</response>
         /// <response code="500">Internal Server Error</response>
         [HttpPost("workout")]
-        //[Authorize(Roles = "contributor, administrator")]
+        [Authorize(Roles = "contributor, administrator")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<WorkoutReadDTO>> PostWorkout([FromBody] WorkoutCreateDTO newWorkout)
         {
-            //var usernameToken = TakeUserNameFromToken();
-            //var userId = TakeIdFromUser(usernameToken).Result;
+            var usernameToken = TakeUserNameFromToken();
+            var userId = TakeIdFromUser(usernameToken).Result;
 
             var domainWorkout = _mapper.Map<Workout>(newWorkout);
-            domainWorkout.OwnerId = 1; //1 is hard coded, change with userId!!!
+            domainWorkout.OwnerId = userId;
             _context.Workouts.Add(domainWorkout);
 
             try
