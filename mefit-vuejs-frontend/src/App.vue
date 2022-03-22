@@ -29,19 +29,21 @@
     const userIdentity = keycloak.value.tokenParsed;
     store.commit("setUserIdentity", userIdentity);
     console.log("userIdentity:", userIdentity)
-    let user = store.state.user;
-    if(userIdentity.role.includes("contributor")) {
-      store.commit("setUser", { ...user, isContributor: true } );
-    }
-    else {
-      store.commit("setUser", { ...user, isContributor: false } );
-    }
-    user = store.state.user;
-    if(userIdentity.role.includes("administrator")) {
-      store.commit("setUser", { ...user, isAdmin: true } );
-    }
-    else {
-      store.commit("setUser", { ...user, isAdmin: false } );
+    if(userIdentity.role !== undefined) {
+      let user = store.state.user;
+      if(userIdentity.role.includes("contributor")) {
+        store.commit("setUser", { ...user, isContributor: true } );
+      }
+      else {
+        store.commit("setUser", { ...user, isContributor: false } );
+      }
+      user = store.state.user;
+      if(userIdentity.role.includes("administrator")) {
+        store.commit("setUser", { ...user, isAdmin: true } );
+      }
+      else {
+        store.commit("setUser", { ...user, isAdmin: false } );
+      }
     }
   };
 
