@@ -29,7 +29,7 @@
     const userIdentity = keycloak.value.tokenParsed;
     store.commit("setUserIdentity", userIdentity);
     console.log("userIdentity:", userIdentity)
-    const user = store.state.user;
+    let user = store.state.user;
     if(userIdentity.role.includes("contributor")) {
       store.commit("setUser", { ...user, isContributor: true } );
     }
