@@ -59,6 +59,25 @@ console.log(`GoalsPage: selected goal: ${goal.value}`);
       </tr>
     </tbody>
   </table>
+  <br>
+  <table class="CompletedTable">
+  <thead>
+    <tr>
+      <th>Recently Completed</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Completed Workout 1</td>
+    </tr>
+    <tr>
+      <td>Completed Workout 2</td>
+    </tr>
+    <tr>
+      <td>Completed Workout 3</td>
+    </tr>
+  </tbody>
+</table>
 </template>
 
 <style scoped>
@@ -68,7 +87,7 @@ table.Table {
   border-collapse: collapse;
   border-width: 2px;
   border-color: #7e7d77;
-  border-style: solid;
+  border-style: dashed;
   color: #000000;
 }
 
@@ -76,11 +95,35 @@ table.Table td,
 table.Table th {
   border-width: 2px;
   border-color: #7e7d77;
-  border-style: solid;
+  border-style: dashed;
   padding: 3px;
 }
 
 table.Table thead {
   background-color: #cfcfcf;
 }
+
+table.CompletedTable {
+  width: 85%;
+  text-align: center;
+  background-color: #fefbfb;
+  border-collapse: collapse;
+  border-width: 2px;
+  border-color: #7e7d77;
+  border-style: dashed;
+  color: #000000;
+}
+
+table.CompletedTable td, table.CompletedTable th {
+  border-width: 2px;
+  border-color: #7e7d77;
+  border-style:dashed;
+  padding: 3px;
+}
+
+table.CompletedTable thead {
+  background-color: #05e684;
+}
+
+
 </style>
