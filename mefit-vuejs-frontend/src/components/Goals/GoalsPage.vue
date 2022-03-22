@@ -30,6 +30,7 @@ console.log(`GoalsPage: selected goal: ${goal.value}`);
     <section v-if="JSON.stringify(goals) === '[]'">
       We are sorry, but currently no goals are available.<br />
       Please try again later...
+      
     </section>
   </main>
 
