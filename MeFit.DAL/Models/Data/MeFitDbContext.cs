@@ -22,13 +22,13 @@ namespace MeFit.DAL.Models.Data
         {
             //User seeding
             modelBuilder.Entity<User>()
-             .HasData(new User() { Id = 1, Username = "Doe.J", Name = "John Doe", IsAdmin = false, IsContributor = false, ProfileId = 1 },
-                      new User() { Id = 2, Username = "admin", Name = "Admin User", IsAdmin = true,  IsContributor = false },
-                      new User() { Id = 3, Username = "cont", Name = "Contributor User", IsAdmin = false,  IsContributor = true });
+             .HasData(new User() { Id = 1, Username = "john@example.com", Name = "John Doe", ProfileId = 1 },
+                      new User() { Id = 2, Username = "contributor@example.com", Name = "Contributor User", ProfileId = 2 });
 
             //Profile seeding
             modelBuilder.Entity<Profile>()
-            .HasData(new Profile { Id = 1, Disabilities = "none", Height = 1.70, MedicalConditions = "healthy", Weight = 78.05 });
+            .HasData(new Profile { Id = 1, Disabilities = "none", Height = 1.70, MedicalConditions = "healthy", Weight = 78.05, FintessLevelEvaluation          = 2 },
+                     new Profile { Id = 2, Disabilities = "none", Height = 1.70, MedicalConditions = "healthy", Weight = 78.05, FintessLevelEvaluation = 5 });
 
             //Exercise seeding
             modelBuilder.Entity<Exercise>()
@@ -40,22 +40,22 @@ namespace MeFit.DAL.Models.Data
 
             //Set seeding
             modelBuilder.Entity<Set>()
-                .HasData(new Set { Id = 1, ExerciseId = 1, ExerciseRepetitions = 10 },
-                         new Set { Id = 2, ExerciseId = 2, ExerciseRepetitions = 10 },
-                         new Set { Id = 3, ExerciseId = 3, ExerciseRepetitions = 10 },
-                         new Set { Id = 4, ExerciseId = 4, ExerciseRepetitions = 10 },
-                         new Set { Id = 5, ExerciseId = 5, ExerciseRepetitions = 10 },
-                         new Set { Id = 6, ExerciseId = 1, ExerciseRepetitions = 15 },
-                         new Set { Id = 7, ExerciseId = 2, ExerciseRepetitions = 15 },
-                         new Set { Id = 8, ExerciseId = 3, ExerciseRepetitions = 15 },
-                         new Set { Id = 9, ExerciseId = 4, ExerciseRepetitions = 15 },
-                         new Set { Id = 10, ExerciseId = 5, ExerciseRepetitions = 15 });
+                .HasData(new Set { Id = 1, ExerciseId = 1, ExerciseRepetitions = 10, OwnerId = 2 },
+                         new Set { Id = 2, ExerciseId = 2, ExerciseRepetitions = 10, OwnerId = 2 },
+                         new Set { Id = 3, ExerciseId = 3, ExerciseRepetitions = 10, OwnerId = 2 },
+                         new Set { Id = 4, ExerciseId = 4, ExerciseRepetitions = 10, OwnerId = 2 },
+                         new Set { Id = 5, ExerciseId = 5, ExerciseRepetitions = 10, OwnerId = 2 },
+                         new Set { Id = 6, ExerciseId = 1, ExerciseRepetitions = 15, OwnerId = 2 },
+                         new Set { Id = 7, ExerciseId = 2, ExerciseRepetitions = 15, OwnerId = 2 },
+                         new Set { Id = 8, ExerciseId = 3, ExerciseRepetitions = 15, OwnerId = 2 },
+                         new Set { Id = 9, ExerciseId = 4, ExerciseRepetitions = 15, OwnerId = 2 },
+                         new Set { Id = 10, ExerciseId = 5, ExerciseRepetitions = 15, OwnerId = 2 });
 
             //Workout seeding
             modelBuilder.Entity<Workout>()
-                .HasData(new Workout { Id = 1, Name = "Basic", Type = "Beginner" },
-                         new Workout { Id = 2, Name = "Basic+", Type = "Beginner" },
-                         new Workout { Id = 3, Name = "Jump", Type = "Competent" });
+                .HasData(new Workout { Id = 1, Name = "Basic", Type = "Beginner", OwnerId = 2 },
+                         new Workout { Id = 2, Name = "Basic+", Type = "Beginner", OwnerId = 2 },
+                         new Workout { Id = 3, Name = "Jump", Type = "Competent", OwnerId = 2 });
 
             //SetWorkout seeding
             modelBuilder.Entity("SetWorkout").HasData(
@@ -69,9 +69,9 @@ namespace MeFit.DAL.Models.Data
 
             //Program seeding
             modelBuilder.Entity<Program>().HasData(
-                         new Program { Id = 1, Name = "Get in summer shape", Category = "loose fat" },
-                         new Program { Id = 2, Name = "Covid - do not leave home", Category = "no gym" },
-                         new Program { Id = 3, Name = "Conquer one's weaker self", Category = "beginner" }
+                         new Program { Id = 1, Name = "Get in summer shape", Category = "loose fat", OwnerId = 2 },
+                         new Program { Id = 2, Name = "Covid - do not leave home", Category = "no gym", OwnerId = 2 },
+                         new Program { Id = 3, Name = "Conquer one's weaker self", Category = "beginner", OwnerId = 2 }
                          );
 
             //ProgramWorkout seeding

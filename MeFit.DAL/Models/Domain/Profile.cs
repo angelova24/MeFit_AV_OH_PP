@@ -6,15 +6,14 @@ namespace MeFit.DAL.Models.Domain
     public class Profile
     {
         public int Id { get; set; }
-        
-        public double Weight { get; set; }
-       
+        public double Weight { get; set; }    
         public double Height { get; set; }
         [MaxLength(100)]        
         public string MedicalConditions { get; set; }
         [MaxLength(100)]
         public string Disabilities { get; set; }
-
+        [Range(1,6, ErrorMessage ="Please enter level between {1} and {2}")]
+        public int FintessLevelEvaluation { get; set; }
         [MaxLength(150)]
         public string AddressLine1 { get; set; }
         [MaxLength(150)]
