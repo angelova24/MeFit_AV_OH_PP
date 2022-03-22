@@ -55,12 +55,14 @@ const onSelectUserChange = (event) => {
             Exercises
           </router-link>
         </li>
-        <li style="float:right;">
-          <select class="custom-select" v-on:change="onSelectUserChange" v-model="selectedUserValue">
-            <option value="username">logged in as: {{ username }}</option>
-            <option value="showprofile">show my profile...</option>
-            <option value="logout">log me out...</option>
-          </select>
+        <li style="float: right">
+          <div>
+            <select class="custom-select" v-on:change="onSelectUserChange" v-model="selectedUserValue">
+              <option value="username">logged in as: {{ username }}</option>
+              <option value="showprofile">show my profile...</option>
+              <option value="logout">log me out...</option>
+            </select>
+          </div>
         </li>
       </ul>
     </nav>
@@ -68,11 +70,24 @@ const onSelectUserChange = (event) => {
 </template>
 
 <style scoped>
-.custom-select{
-    margin: 0%;
-    color:aliceblue;
-    padding: 14px 16px;
-    background-color: #333;
+.custom-select {
+  margin: 0%;
+  color: aliceblue;
+  padding: 14px 16px;
+  background-color: #333;
+}
+.select-selected {
+  background-color: #04aa6d;
+}
+.select-selected:after {
+  position: absolute;
+  content: "";
+  top: 14px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-color: #fff transparent transparent transparent;
 }
 ul {
   list-style-type: none;
@@ -84,7 +99,7 @@ ul {
 
 li {
   float: left;
-  border-right:1px solid #bbb;
+  border-right: 1px solid #bbb;
 }
 
 li:last-child {
@@ -104,6 +119,6 @@ li a:hover:not(.active) {
 }
 
 .active {
-  background-color: #04AA6D;
+  background-color: #04aa6d;
 }
 </style>
