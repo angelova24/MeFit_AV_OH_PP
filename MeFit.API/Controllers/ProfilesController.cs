@@ -24,7 +24,7 @@ namespace MeFit.API.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/profile/profile_id
+        // GET: api/profile/id
         /// <summary>
         /// Returns detail about current state of the users profile with their goals
         /// </summary>
@@ -34,7 +34,7 @@ namespace MeFit.API.Controllers
         /// <response code="401">Not authorized</response>
         /// <response code="404">No profile found</response>
         [HttpGet("profile/{id}")]
-        //[Authorize]
+        [Authorize]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ProfileReadDTO>> GetProfileById([FromRoute] int id)
@@ -49,25 +49,34 @@ namespace MeFit.API.Controllers
             return Ok(profileReadDTO);
         }
 
-        // PATCH: api/profile/profile_id
+        // PATCH: api/profile/id
         /// <summary>
-        /// Executes partial update of the corresponding profile_id.
+        /// Executes partial update of the corresponding profile.
         /// </summary>
         /// <param name="id">ID of a profile</param>
         /// <param name="newProfile">Profiles new info</param>
         /// <response code="204">Successfully changed profile</response>
         /// <response code="401">Not authorized</response>
+        /// <response code="403">Not allowed</response>
         /// <response code="404">No profile found</response>
         /// <response code="500">Internal Server Error</response>
         [HttpPatch("profile/{id}")]
-        //[Authorize]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UpdateProfile([FromRoute] int id, [FromBody] JsonPatchDocument<DAL.Models.Domain.Profile> newProfile)
         {
-            var profile = await _context.Profiles.FindAsync(id);
+            var usernameToken = TakeUserNameFromToken();
+            var userId = TakeIdFromUser(usernameToken).Result;
+
+            var profile = await _context.Profiles.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
             if (profile == null)
             {
                 return NotFound();
+            }
+            //check if the user is owner of the profile
+            if (profile.User.Id != userId)
+            {
+                return Forbid();
             }
 
             newProfile.ApplyTo(profile, ModelState);
@@ -94,12 +103,16 @@ namespace MeFit.API.Controllers
         /// <response code="401">Not authorized</response>
         /// <response code="500">Internal Server Error</response>
         [HttpPost("profile")]
-        //[Authorize]
+        [Authorize]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<ProfileReadDTO>> PostProfile([FromBody] ProfileCreateDTO newProfile)
         {
+            var usernameToken = TakeUserNameFromToken();
+            var userId = TakeIdFromUser(usernameToken).Result;
+
             var domainProfile = _mapper.Map<DAL.Models.Domain.Profile>(newProfile);
+            domainProfile.User.Id = userId;
             _context.Profiles.Add(domainProfile);
 
             try
@@ -121,22 +134,22 @@ namespace MeFit.API.Controllers
         /// <param name="id">ID of a profile</param>
         /// <response code="204">Successfully deleted profile</response>
         /// <response code="401">Not authorized</response>
-        /// <response code="403">Not allowed(not having the necessary permissions)</response>
+        /// <response code="403">Not allowed(you're not the owner of this profile)</response>
         /// <response code="404">No profile found</response>
         /// <response code="500">Internal Server Error</response>
         [HttpDelete("profile/{id}")]
-        //[Authorize]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteProfile(int id)
         {
-            var profile = await _context.Profiles.FindAsync(id);
+            var profile = await _context.Profiles.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
             if (profile == null)
             {
                 return NotFound();
             }
 
             var usernameFromToken = TakeUserNameFromToken();
-            if (profile.User.Id != TakeIdFromUser(usernameFromToken).Result)
+            if (profile.User.Username != usernameFromToken)
             {
                 return Forbid();
             }

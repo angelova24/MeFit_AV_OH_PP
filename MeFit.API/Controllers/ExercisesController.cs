@@ -40,7 +40,7 @@ namespace MeFit.API.Controllers
         /// <response code="204">No exercises found</response>
         /// <response code="401">Not authorized</response>
         [HttpGet("exercises")]
-        //[Authorize]
+        [Authorize]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<ExerciseReadDTO>>> GetExercises()
@@ -57,7 +57,7 @@ namespace MeFit.API.Controllers
 
         // GET: api/exercises/contributor
         /// <summary>
-        /// Gets all exercises from specific contributor
+        /// Gets all exercises published by specific contributor
         /// </summary>
         /// <returns>List of all exercises</returns>
         /// <response code="200">Returns all exercises</response>
@@ -92,7 +92,7 @@ namespace MeFit.API.Controllers
         /// <response code="204">No exercises found</response>
         /// <response code="401">Not authorized</response>
         [HttpGet("exercises/TargetMuscleGroup")]
-        //[Authorize]
+        [Authorize]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<ExerciseReadDTO>>> GetExercisesByTargetMuscleGroup()
@@ -107,7 +107,7 @@ namespace MeFit.API.Controllers
             return Ok(exercises);
         }
 
-        // GET: api/exercises/5
+        // GET: api/exercise/5
         /// <summary>
         /// Gets exercise by ID
         /// </summary>
@@ -117,7 +117,7 @@ namespace MeFit.API.Controllers
         /// <response code="401">Not authorized</response>
         /// <response code="404">No exercise found</response>
         [HttpGet("exercise/{id}")]
-        //[Authorize]
+        [Authorize]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ExerciseReadDTO>> GetExerciseById([FromRoute] int id)
@@ -144,7 +144,7 @@ namespace MeFit.API.Controllers
         /// <response code="404">No exercise found</response>
         /// <response code="500">Internal Server Error</response>
         [HttpPatch("exercise/{id}")]
-        //[Authorize(Roles = "contributor, administrator")]
+        [Authorize(Roles = "contributor, administrator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UpdateExercise([FromRoute] int id, [FromBody] JsonPatchDocument<Exercise> newExercise)
         {
@@ -168,7 +168,7 @@ namespace MeFit.API.Controllers
             return NoContent();
         }
 
-        // POST: api/exercises -------------CONTRIBUTOR ONLY!!!!! -------------
+        // POST: api/exercise -------------CONTRIBUTOR ONLY!!!!! -------------
         /// <summary>
         /// Creates an exercise
         /// </summary>
@@ -179,16 +179,16 @@ namespace MeFit.API.Controllers
         /// <response code="403">Not allowed(not having the necessary permissions)</response>
         /// <response code="500">Internal Server Error</response>
         [HttpPost("exercise")]
-        //[Authorize(Roles = "contributor, administrator")]
+        [Authorize(Roles = "contributor, administrator")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<ExerciseReadDTO>> PostExercise([FromBody] ExerciseCreateDTO newExercise)
         {
-            //var usernameToken = TakeUserNameFromToken();
-            //var userId = TakeIdFromUser(usernameToken).Result;
-    
+            var usernameToken = TakeUserNameFromToken();
+            var userId = TakeIdFromUser(usernameToken).Result;
+
             var domainExercise = _mapper.Map<Exercise>(newExercise);
-            domainExercise.OwnerId = 1; //1 is hard coded, change with userId!!!
+            domainExercise.OwnerId = userId;
             _context.Exercises.Add(domainExercise);
 
             try
@@ -212,8 +212,9 @@ namespace MeFit.API.Controllers
         /// <response code="401">Not authorized</response>
         /// <response code="403">Not allowed(not having the necessary permissions)</response>
         /// <response code="404">No exercise found</response>
-        [Authorize(Roles = "contributor, administrator")]
+        /// <response code="500">Internal Server Error</response>
         [HttpDelete("exercise/{id}")]
+        [Authorize(Roles = "contributor, administrator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteExercise([FromRoute] int id)
         {
@@ -229,8 +230,15 @@ namespace MeFit.API.Controllers
                 return Forbid();
             }
 
-            _context.Exercises.Remove(exercise);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Exercises.Remove(exercise);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
 
             return NoContent();
         }

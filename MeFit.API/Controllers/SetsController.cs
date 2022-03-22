@@ -35,7 +35,7 @@ namespace MeFit.API.Controllers
         /// <response code="204">No sets found</response>
         /// <response code="401">Not authorized</response>
         [HttpGet("sets")]
-        //[Authorize]
+        [Authorize]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<SetReadWithIdDTO>>> GetSets()
@@ -49,7 +49,7 @@ namespace MeFit.API.Controllers
             return Ok(sets);
         }
 
-        // GET: api/sets/5
+        // GET: api/set/5
         /// <summary>
         /// Gets set by ID
         /// </summary>
@@ -58,8 +58,8 @@ namespace MeFit.API.Controllers
         /// <response code="200">Returns a set</response>
         /// <response code="401">Not authorized</response>
         /// <response code="404">No set found</response>
-        [HttpGet("sets/{id}")]
-        //[Authorize]
+        [HttpGet("set/{id}")]
+        [Authorize]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<SetReadWithIdDTO>> GetSetById([FromRoute] int id)
@@ -74,7 +74,7 @@ namespace MeFit.API.Controllers
             return Ok(_mapper.Map<SetReadWithIdDTO>(set));
         }
 
-        // POST: api/set
+        // POST: api/set -------------CONTRIBUTOR ONLY!!!!! -------------
         /// <summary>
         /// Creates a set
         /// </summary>
@@ -85,16 +85,16 @@ namespace MeFit.API.Controllers
         /// <response code="403">Not allowed(not having the necessary permissions)</response>
         /// <response code="500">Internal Server Error</response>
         [HttpPost("set")]
-        //[Authorize(Roles = "contributor, administrator")]
+        [Authorize(Roles = "contributor, administrator")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<SetReadWithIdDTO>> PostSet([FromBody] SetReadDTO newSet)
         {
-            //var usernameToken = TakeUserNameFromToken();
-            //var userId = TakeIdFromUser(usernameToken).Result;
+            var usernameToken = TakeUserNameFromToken();
+            var userId = TakeIdFromUser(usernameToken).Result;
 
             var domainSet = _mapper.Map<Set>(newSet);
-            domainSet.OwnerId = 1; //1 is hard coded, change with userId!!!
+            domainSet.OwnerId = userId;
             _context.Sets.Add(domainSet);
 
             try
@@ -109,7 +109,7 @@ namespace MeFit.API.Controllers
             return CreatedAtAction("GetSetById", new { id = domainSet.Id }, _mapper.Map<SetReadWithIdDTO>(domainSet));
         }
 
-        // DELETE: api/set/5
+        // DELETE: api/set/5  ------------- CONTRIBUTOR ONLY!!!!! -------------
         /// <summary>
         /// Deletes a specific set
         /// </summary>
