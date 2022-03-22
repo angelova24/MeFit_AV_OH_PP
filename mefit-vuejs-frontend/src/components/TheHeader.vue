@@ -1,64 +1,109 @@
 <script setup>
-    import { computed, ref } from '@vue/runtime-core';
-    import { useStore } from 'vuex';
-    import { useRouter } from 'vue-router';
+import { computed, ref } from "@vue/runtime-core";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
-    const emits = defineEmits(["logout"]);
+const emits = defineEmits(["logout"]);
 
-    const store = useStore();
-    const username = computed(() => store.state.user.username);
-    const baseUrl = computed(() => store.state.baseUrl);
-    const router = useRouter();
+const store = useStore();
+const username = computed(() => store.state.user.username);
+const baseUrl = computed(() => store.state.baseUrl);
+const router = useRouter();
 
-    const selectedUserValue = ref("username");
-    const onSelectUserChange = (event) => {
-        console.log(`new SelectUser value: ${event.target.value}`);
-        switch(event.target.value) {
-            case "showprofile":
-                router.push(`${baseUrl.value}profile`)
-                selectedUserValue.value = "username";
-                break;
-            case "logout":
-                emits("logout");
-                break;
-        }
-    }
-
-
+const selectedUserValue = ref("username");
+const onSelectUserChange = (event) => {
+  console.log(`new SelectUser value: ${event.target.value}`);
+  switch (event.target.value) {
+    case "showprofile":
+      router.push(`${baseUrl.value}profile`);
+      selectedUserValue.value = "username";
+      break;
+    case "logout":
+      emits("logout");
+      break;
+  }
+};
 </script>
 
 <template>
-    <div>
-        <nav>
-            Navigation Bar:
-            <router-link v-bind:to="baseUrl + 'dashboard'" active-class="active">
-                Dashboard
-            </router-link>
-            <router-link v-bind:to="baseUrl + 'goals'" active-class="active">
-                Goals
-            </router-link>
-            <router-link v-bind:to="baseUrl + 'programs'" active-class="active">
-                Programs
-            </router-link>
-            <router-link v-bind:to="baseUrl + 'workouts'" active-class="active">
-                Workouts
-            </router-link>
-            <router-link v-bind:to="baseUrl + 'exercises'" active-class="active">
-                Exercises
-            </router-link>
-            <select v-on:change="onSelectUserChange" v-model="selectedUserValue">
-                <option value="username">logged in as: {{ username }}</option>
-                <option value="showprofile">show my profile...</option>
-                <option value="logout">log me out...</option>
-            </select>
-            
-        </nav>
-    </div>
+  <div>
+    <nav>
+      Navigation Bar:
+      <ul>
+        <li>
+          <router-link v-bind:to="baseUrl + 'dashboard'" active-class="active">
+            Dashboard
+          </router-link>
+        </li>
+        <li>
+          <router-link v-bind:to="baseUrl + 'goals'" active-class="active">
+            Goals
+          </router-link>
+        </li>
+        <li>
+          <router-link v-bind:to="baseUrl + 'programs'" active-class="active">
+            Programs
+          </router-link>
+        </li>
+        <li>
+          <router-link v-bind:to="baseUrl + 'workouts'" active-class="active">
+            Workouts
+          </router-link>
+        </li>
+        <li>
+          <router-link v-bind:to="baseUrl + 'exercises'" active-class="active">
+            Exercises
+          </router-link>
+        </li>
+        <li style="float:right;">
+          <select class="custom-select" v-on:change="onSelectUserChange" v-model="selectedUserValue">
+            <option value="username">logged in as: {{ username }}</option>
+            <option value="showprofile">show my profile...</option>
+            <option value="logout">log me out...</option>
+          </select>
+        </li>
+      </ul>
+    </nav>
+  </div>
 </template>
 
 <style scoped>
-    nav {
-        display: flex;
-        column-gap: 20px;
-    }
+.custom-select{
+    margin: 0%;
+    color:aliceblue;
+    padding: 14px 16px;
+    background-color: #333;
+}
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  float: left;
+  border-right:1px solid #bbb;
+}
+
+li:last-child {
+  border-right: none;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #111;
+}
+
+.active {
+  background-color: #04AA6D;
+}
 </style>
