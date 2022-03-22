@@ -3,20 +3,20 @@
     
     import { useStore } from "vuex";
     import GoalsDetail from "../Goals/GoalsDetail.vue";
+    import GoalList from '../Goals/GoalList.vue';
  
     const today = new Date();
     const currentDate = ref(today.toISOString().split('T')[0]);
-
+    
     const store = useStore();
-    const goal = computed(() => store.getters.getGoalById(1));
-    const numberOfDaysLeft = computed(() => {
-        let result = NaN;
-        if (goal.value !== undefined) {
-            result = Math.ceil((goal.value.endDate - new Date(currentDate.value)) / (24 * 60 * 60 * 1000));
-        }
-        return result;
-    });
-
+    //--- get all Goals from Store
+    const goals = computed(() => store.state.goals);
+    //--- get id of selected goal
+    const goalDetailsId = computed(() => store.state.goalDetailsId);
+    console.log(`UserDashboard: selected goalId: ${goalDetailsId.value}`);
+    //--- get selected goal
+    const goal = computed(() => store.getters.getGoalById(goalDetailsId.value));
+    console.log(`UserDashboard: selected goal: ${goal.value}`);
 
 </script>
 
@@ -28,9 +28,15 @@
         <section title="calender">
             <input type="date" v-bind:value="currentDate" />
         </section>
-        <section v-if="goal !== undefined" title="currentGoal">
+        <section v-if="JSON.stringify(goals) !== '[]'" title="List of Goals">
+            <GoalList v-bind:goals="goals"></GoalList>
+        </section>
+        <section v-if="goal !== undefined" title="Goal details">
+            Details of goal:
             <GoalsDetail v-bind:goal="goal"></GoalsDetail>
-            <b>{{ numberOfDaysLeft }}</b> days left to reach this goal...
+        </section>
+        <section v-if="JSON.stringify(goals) === '[]'">
+            Ooops, it seems you have no goals setup so far...
         </section>
     </main>
 </template>

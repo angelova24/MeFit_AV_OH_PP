@@ -22,7 +22,7 @@
 <template>
     <div>
         <header>
-            <b>List of available workouts:</b>
+            <b>List of workouts:</b>
         </header>
         <main>
             <WorkoutListItem 

@@ -2,11 +2,12 @@
   import TheHeader from "./components/TheHeader.vue";
   import TheFooter from "./components/TheFooter.vue";
   import { useStore } from "vuex";
-  import { onMounted, toRefs, reactive } from "vue";
+  import { onMounted, toRefs, reactive, computed } from "vue";
   
   const props = defineProps(["keycloak"]);
   const { keycloak } = toRefs(props);
   const store = useStore();
+  const baseUrl = computed(() => store.state.baseUrl);
   
   const readData = () => {
     console.log("reading data from Db...");
@@ -63,7 +64,7 @@
 
   const onLogout = event => {
     const options = {
-      redirectUri: window.location.protocol + "//" + window.location.host + "/login"
+      redirectUri: window.location.protocol + "//" + window.location.host + baseUrl.value + "login"
     };
     console.log("current Url:", options.redirectUri);
     keycloak.value.logout(options)

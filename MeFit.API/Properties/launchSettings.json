@@ -15,8 +15,7 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "VaultUri": "https://vault-va-pp-oh.vault.azure.net/",
-        "AZURE_USERNAME": "oliver.hauck@ProserviaGermany.onmicrosoft.com"
+        "VaultUri": "https://vault-va-pp-oh.vault.azure.net/"
       }
     },
     "MeFitAPI": {

@@ -37,8 +37,8 @@ keycloak.init({
 //#endregion
 
 createApp(App, {keycloak: keycloak})
-    .use(router)
     .use(store)
+    .use(router)
     //.use(keycloak.middleware)
     //.provide("apiUrl", "https://localhost:49153/api")
     .mount('#app');

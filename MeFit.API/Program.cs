@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Azure.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 using System;
 
 namespace MeFitAPI
@@ -10,7 +11,8 @@ namespace MeFitAPI
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var app = CreateHostBuilder(args).Build();
+            app.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -18,6 +20,16 @@ namespace MeFitAPI
                 .ConfigureAppConfiguration((context, config) =>
                 {
                     var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
+                    //DefaultAzureCredentialOptions options = new();
+                    //options.ExcludeEnvironmentCredential = false;
+                    //options.ExcludeManagedIdentityCredential = true;
+                    //options.ExcludeSharedTokenCacheCredential = true;
+                    //options.ExcludeVisualStudioCredential = true;
+                    //options.ExcludeVisualStudioCodeCredential = true;
+                    //options.ExcludeAzureCliCredential = true;
+                    //options.ExcludeAzurePowerShellCredential = true;
+                    //options.ExcludeInteractiveBrowserCredential = true;
+                    //config.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential(options));
                     config.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
                 })
                 .ConfigureWebHostDefaults(webBuilder =>

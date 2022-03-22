@@ -6,6 +6,7 @@ const apiUrl = "https://mefitapi-va-pp-oh.azurewebsites.net/api";
 
 const store = createStore({
     state: {
+        baseUrl: "",
         userIdentity: {
             id: "",
             username: "",
@@ -150,9 +151,13 @@ const store = createStore({
             // }
             //#endregion
         ],
-        goalDetailsId: 0
+        goalDetailsId: 0,
+        goalWorkoutDetailsId: 0
     },
     mutations: {
+        setBaseUrl: (state, payload) => {
+            state.baseUrl = payload;
+        },
         setUserIdentity: (state, payload) => {
             state.userIdentity = payload;
         },
@@ -204,7 +209,10 @@ const store = createStore({
         },
         setGoalDetailsId: (state, payload) => {
             state.goalDetailsId = payload;
-        }
+        },
+        setGoalWorkoutDetailsId: (state, payload) => {
+            state.workoutDetailsId = payload;
+        },
     },
     actions: {
         fetchExcercises: async store => {
