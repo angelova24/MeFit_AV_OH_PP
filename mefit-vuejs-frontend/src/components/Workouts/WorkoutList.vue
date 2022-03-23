@@ -9,20 +9,26 @@
         workouts: {
             type: Array,
             required: true
+        },
+        header: {
+            type: String,
+            required: false
         }
     });
+    const emits = defineEmits(["workoutListItemClicked"]);
 
     const onWorkoutListItemClicked = (event, id) => {
         console.log(`WorkoutListItem with id ${id} was clicked...`)
         store.commit("setWorkoutDetailsId", id);
+        emits("workoutListItemClicked", event, id);
     }
 
 </script>
 
 <template>
     <div>
-        <header>
-            <b>List of workouts:</b>
+        <header v-if="header">
+            <b>{{ header }}</b>
         </header>
         <main>
             <WorkoutListItem 

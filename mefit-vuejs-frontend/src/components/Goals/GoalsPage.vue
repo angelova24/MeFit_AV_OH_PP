@@ -1,20 +1,58 @@
 <script setup>
-import { useStore } from "vuex";
-import { computed } from "vue";
-import GoalList from "./GoalList.vue";
-import GoalsDetail from "./GoalsDetail.vue";
+  import { useStore } from "vuex";
+  import { computed, reactive, ref } from "vue";
+  import GoalList from "./GoalList.vue";
+  import GoalsDetail from "./GoalsDetail.vue";
+  import WorkoutList from "../Workouts/WorkoutList.vue";
 
-const store = useStore();
+  const store = useStore();
 
-//--- get all Goals from Store
-const goals = computed(() => store.state.goals);
+  //--- get all Goals from Store
+  const goals = computed(() => store.state.goals);
+  const currentGoals = computed(() => store.getters.getCurrentGoals);
 
-//--- get id of selected goal
-const goalsDetailsId = computed(() => store.state.goalsDetailsId);
-console.log(`GoalsPage: selected goalId: ${goalsDetailsId.value}`);
-//--- get selected goal
-const goal = computed(() => store.getters.getGoalById(goalsDetailsId.value));
-console.log(`GoalsPage: selected goal: ${goal.value}`);
+  //--- get id of selected goal
+  const goalsDetailsId = computed(() => store.state.goalsDetailsId);
+  console.log(`GoalsPage: selected goalId: ${goalsDetailsId.value}`);
+  //--- get selected goal
+  const goal = computed(() => store.getters.getGoalById(goalsDetailsId.value));
+  console.log(`GoalsPage: selected goal: ${goal.value}`);
+
+  //#region workouts stuff
+    const workoutsInNewGoal = reactive([]);
+    const addWorkout2NewGoal = () => {
+      //--- add workout if it is not already contained in new goal
+      if(!workoutsInNewGoal.includes(workout.value)) {
+        workoutsInNewGoal.push(workout.value);
+      }
+    };
+    const removeWorkout2NewGoal = () => {
+      //--- remove workout
+      if(workoutsInNewGoal.includes(workout.value)) {
+        const index = workoutsInNewGoal.indexOf(workout.value);
+        workoutsInNewGoal.splice(index, 1);
+      }
+    };
+    //--- get all Workouts from Store
+    const workouts = computed(() => store.state.workouts);
+    //--- get id of selected workout
+    const workoutDetailsId = computed(() => store.state.workoutDetailsId);
+    console.log(`selected workout id: ${workoutDetailsId.value}`);
+    //--- get selected workout
+    const workout = computed(() => store.getters.getWorkoutById(workoutDetailsId.value));
+    console.log(`selected workout: ${workout.value}`);
+    const OnAddWorkOut = (event, id) => {
+      console.log("WorkoutListItem has been clicked:", id, event);
+      console.log("Workout:", workout.value)
+      addWorkout2NewGoal();
+    }
+    const OnRemoveWorkOut = (event, id) => {
+      console.log("WorkoutListItem has been clicked:", id, event);
+      console.log("Workout:", workout.value)
+      removeWorkout2NewGoal();
+    }
+  //#endregion
+
 </script>
 
 <template>
@@ -27,10 +65,28 @@ console.log(`GoalsPage: selected goal: ${goal.value}`);
       Details of exercise:
       <GoalsDetail v-bind:goal="goal"></GoalsDetail>
     </section>
+    <section title="set new Goal" v-if="currentGoals === undefined">
+      No current goal...
+      <section title="new goal">
+        define new goal:
+        <WorkoutList 
+          v-if="workoutsInNewGoal" 
+          v-bind:workouts="workoutsInNewGoal"
+          v-on:workoutListItemClicked="OnRemoveWorkOut"
+          header="These workouts have been added to your new goal (click to remove)"
+        ></WorkoutList>
+      </section>
+      <section title="available workouts for new goal">
+        <WorkoutList 
+          v-bind:workouts="workouts" 
+          v-on:workoutListItemClicked="OnAddWorkOut"
+          header="You can add any of these workouts to your new goal (click to add)"
+        ></WorkoutList>
+      </section>
+    </section>
     <section v-if="JSON.stringify(goals) === '[]'">
       We are sorry, but currently no goals are available.<br />
       Please try again later...
-      
     </section>
   </main>
 
