@@ -145,7 +145,7 @@ namespace MeFit.API.Controllers
         [Authorize]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<GoalReadDTO>> PostExercise([FromBody] GoalCreateDTO newGoal)
+        public async Task<ActionResult<GoalReadDTO>> PostGoal([FromBody] GoalCreateDTO newGoal)
         {
             var usernameToken = TakeUserNameFromToken();
             var userId = TakeIdFromUser(usernameToken).Result;
@@ -164,7 +164,7 @@ namespace MeFit.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return CreatedAtAction("GetExerciseById", new { id = domainGoal.Id }, _mapper.Map<GoalReadDTO>(domainGoal));
+            return CreatedAtAction("GetGoalById", new { id = domainGoal.Id }, _mapper.Map<GoalReadDTO>(domainGoal));
         }
 
         // DELETE: api/goal/5
