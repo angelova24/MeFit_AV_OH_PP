@@ -50,10 +50,11 @@ const router = createRouter({
 
 router.beforeEach((to, from) => {
     console.log(`page redirection occured from: ${from.fullPath} to: ${to.fullPath}`);
-    let isAuthenticated = true;
-    if(!isAuthenticated && to.fullPath !== `${baseUrl}login`) {
-        return { path: `${baseUrl}login`};
+    if (store.state.profile.id === 0 && !to.fullPath.startsWith(baseUrl + "profile")) {
+        
+        return { path: `${baseUrl}profile`};
     }
+    
 })
 
 export default router;
