@@ -8,6 +8,7 @@ namespace MeFit.DAL.Models.Data
     {
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<Goal> Goals { get; set; }
+        public DbSet<GoalWorkout> GoalWorkouts { get; set; }
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<Program> Programs { get; set; }
         public DbSet<Set> Sets { get; set; }

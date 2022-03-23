@@ -131,6 +131,58 @@ namespace MeFit.API.Controllers
 
             return NoContent();
         }
+        // PATCH: api/workout/5/AddWorkouts
+        /// <summary>
+        /// Adds workouts to goal
+        /// </summary>
+        /// <param name="id">ID of a goal</param>
+        /// <param name="workouts">List of workouts IDs to be added</param>
+        /// <response code="204">Successfully added workouts to a goal</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="404">No goal found</response>
+        /// <response code="500">Internal Server Error</response>
+        [HttpPatch("goal/{id}/AddWorkouts")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> AddSets([FromRoute] int id, [FromBody] List<int> workouts)
+        {
+            var goal = await _context.Goals.Include(g => g.Workouts).FirstOrDefaultAsync(g => g.Id == id);
+
+            if (goal == null)
+            {
+                return NotFound();
+            }
+
+            foreach (var workoutId in workouts)
+            {
+                var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutId);
+                if (workout != null)
+                {
+                    var goalWorkout = new GoalWorkoutCreateDTO() { Complete = false, GoalId = id, WorkoutId = workout.Id };
+                    var domainGoalWorkout = _mapper.Map<GoalWorkout>(goalWorkout);
+                    try
+                    {
+                        _context.GoalWorkouts.Add(domainGoalWorkout);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError);
+                    }
+                }
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return NoContent();
+        }
 
         // POST: api/goal
         /// <summary>
