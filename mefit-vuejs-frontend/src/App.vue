@@ -18,8 +18,14 @@
     store.dispatch("fetchUser")
       .then(user => {
         console.log("User received in promise:", user)
-        store.dispatch("fetchProfile", user.profileId)
+        if (user.profileId !== 0) {
+          store.dispatch("fetchProfile", user.profileId)
           .then(profile => store.dispatch("fetchGoals", profile.goals))
+        }
+        else{
+          console.log("you dont have a profile")
+        }
+        
       });
   }
 
