@@ -100,7 +100,9 @@
     </thead>
     <tbody>
       <tr>
-        <td>Workout 1</td>
+        <td
+         v-if="workoutsInNewGoal"
+         v-bind:workouts="workoutsInNewGoal"></td>
         <td>Here goes period for workout 1</td>
         <td><button>Completed</button></td>
       </tr>
