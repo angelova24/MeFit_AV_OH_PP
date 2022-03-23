@@ -9,7 +9,7 @@
 <template>
     <div>
         <header>
-            Profile Page
+            <h1> Profile Page </h1>
         </header>
         <main>
             <section title="fitnessEvaluation" >
