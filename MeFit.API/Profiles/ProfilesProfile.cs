@@ -16,8 +16,6 @@ namespace MeFit.API.Profiles
             CreateMap<Profile, ProfileReadDTO>()
                 .ForMember(pdto => pdto.Goals, opt => opt.MapFrom(p => p.Goals.Select(g => g.Id).ToArray()))
                .ReverseMap();
-            CreateMap<Profile, ProfileUpdateDTO>()
-               .ReverseMap();
             CreateMap<ProfileReadDTO, ProfileCreateDTO>()
                 .ReverseMap();
         }
