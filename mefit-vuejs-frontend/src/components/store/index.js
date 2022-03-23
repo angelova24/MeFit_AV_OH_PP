@@ -370,43 +370,45 @@ const store = createStore({
             console.log("Goals received:", goals);
             return goals
         },
-        addGoal: async (store, newGoal, withWorkOutIds) => {
-            let addedGoal = newGoal;
+        addGoal: async (store, payload) => {
+            const { goal, workoutIds } = payload;
+            console.log("calling addGoal store action:", goal, workoutIds);
+            let addedGoal = goal;
             const response = await fetch(`${apiUrl}/goal/`, {
                     method: "POST",
                     headers: {
                         "Authorization": "Bearer " + store.state.token,
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify(newGoal)
+                    body: JSON.stringify(goal)
             });
             if(!response.ok)
             { 
-                console.log(`addGoal to Db failed...!!!`, newGoal);
+                console.log(`addGoal to Db failed...!!!`, goal);
             }
             else
             {
                 addedGoal = await response.json();
                 console.log(`addGoal to Db done...`, addedGoal);
-                const response = await fetch(`${apiUrl}/goal/${addedGoal.id}/AddWorkouts`, {
-                    method: "POST",
+                const workoutResponse = await fetch(`${apiUrl}/goal/${addedGoal.id}/AddWorkouts`, {
+                    method: "PATCH",
                     headers: {
                         "Authorization": "Bearer " + store.state.token,
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify(withWorkOutIds)
+                    body: JSON.stringify(workoutIds)
                 });
-                if(!response.ok)
+                if(!workoutResponse.ok)
                 { 
-                    console.log(`addGoal to Db failed...!!!`, newGoal);
+                    console.log(`addWorkouts for Goal to Db failed...!!!`, addedGoal);
                 }
                 else
                 {
                     //--- workouts for new goal were successfully written to Db
-                    console.log("add workoutIds for new goal to Db done:", withWorkOutIds);
-                    addedGoal.workouts = withWorkOutIds;
+                    console.log("add workoutIds for new goal to Db done:", workoutIds);
+                    addedGoal.workouts = workoutIds;
                     console.log("add new goal to store:", addedGoal);
-                    store.commit("AddGoal", addedGoal);
+                    store.commit("addGoal", addedGoal);
                 } 
             }    
         }
