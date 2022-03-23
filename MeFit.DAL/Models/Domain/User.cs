@@ -9,8 +9,7 @@ namespace MeFit.DAL.Models.Domain
         public string Username { get; set; }
         [Required, MaxLength(80)]
         public string Name { get; set; }
-        public bool IsContributor { get; set; }
-        public bool IsAdmin { get; set; }
+
         //FK and navigation property
         public int? ProfileId { get; set; }
         public Profile Profile { get; set; }

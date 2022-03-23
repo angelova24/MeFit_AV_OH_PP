@@ -23,6 +23,30 @@
       });
   }
 
+  const setUser = () => {
+    store.commit("setToken", keycloak.value.token);
+    console.log("Token:", keycloak.value.token)
+    const userIdentity = keycloak.value.tokenParsed;
+    store.commit("setUserIdentity", userIdentity);
+    console.log("userIdentity:", userIdentity)
+    if(userIdentity.role !== undefined) {
+      let user = store.state.user;
+      if(userIdentity.role.includes("contributor")) {
+        store.commit("setUser", { ...user, isContributor: true } );
+      }
+      else {
+        store.commit("setUser", { ...user, isContributor: false } );
+      }
+      user = store.state.user;
+      if(userIdentity.role.includes("administrator")) {
+        store.commit("setUser", { ...user, isAdmin: true } );
+      }
+      else {
+        store.commit("setUser", { ...user, isAdmin: false } );
+      }
+    }
+  };
+
   const updateToken = (minValidity) => {
     keycloak.value.updateToken(minValidity)
       .then(refreshed => {
@@ -32,8 +56,7 @@
         else {
           console.log('Token is still valid...');
         }
-        store.commit("setToken", keycloak.value.token);
-        console.log("Token:", keycloak.value.token)
+        setUser();
       })
       .catch(error => {
         console.log("Failed to refresh the token, or the session has expired: ", error);
@@ -43,8 +66,7 @@
   keycloak.value.onReady = authenticated => { 
     if(authenticated) {
       console.log("User was successfully authenticated...");
-      //--- write current token in store
-      store.commit("setToken", keycloak.value.token);
+      setUser();
       readData();
     }
     else
@@ -60,6 +82,7 @@
 
   const generateToken = () => { 
     updateToken(50000);
+
   }
 
   const onLogout = event => {

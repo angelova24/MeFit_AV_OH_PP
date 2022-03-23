@@ -387,6 +387,17 @@ const store = createStore({
                 goal.endDate = (new Date(goal.endDate));
             }
             return goal;
+        },
+        getCurrentGoals: state => {
+            const currentGoals = state.goals.find(g => (new Date(g.endDate) >= new Date()));
+            console.log("current goals:", currentGoals);
+            if(currentGoals !== undefined) {
+                for (const goal of currentGoals) {
+                    goal.startDate = (new Date(goal.startDate));
+                    goal.endDate = (new Date(goal.endDate));
+                }
+            }
+            return currentGoals;
         }
     }
 });

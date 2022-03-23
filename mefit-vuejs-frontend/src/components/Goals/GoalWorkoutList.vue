@@ -29,7 +29,7 @@
                 v-for="goalworkout, index in goalworkouts" 
                 v-bind:goalworkout="goalworkout"
                 v-bind:key="index"
-                v-on:click="onGoalWorkoutListItemClicked($event, workout.id)">
+                v-on:click="onGoalWorkoutListItemClicked($event, goalworkout.workoutId)">
             </GoalWorkoutListItem>
         </main>
     </div>
