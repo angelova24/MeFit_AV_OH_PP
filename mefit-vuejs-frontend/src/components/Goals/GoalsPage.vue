@@ -6,6 +6,8 @@
   import WorkoutList from "../Workouts/WorkoutList.vue";
 
   const store = useStore();
+  const today = new Date();
+  const todayString = today.toISOString().split('T')[0];
 
   //--- get all Goals from Store
   const goals = computed(() => store.state.goals);
@@ -18,7 +20,8 @@
   const goal = computed(() => store.getters.getGoalById(goalsDetailsId.value));
   console.log(`GoalsPage: selected goal: ${goal.value}`);
 
-  //#region workouts stuff
+  //#region set new goal stuff
+    const newGoalStartDateString = ref(today.toISOString().split('T')[0]);
     const workoutsInNewGoal = reactive([]);
     const addWorkout2NewGoal = () => {
       //--- add workout if it is not already contained in new goal
@@ -26,7 +29,7 @@
         workoutsInNewGoal.push(workout.value);
       }
     };
-    const removeWorkout2NewGoal = () => {
+    const removeWorkoutFromNewGoal = () => {
       //--- remove workout
       if(workoutsInNewGoal.includes(workout.value)) {
         const index = workoutsInNewGoal.indexOf(workout.value);
@@ -49,7 +52,29 @@
     const OnRemoveWorkOut = (event, id) => {
       console.log("WorkoutListItem has been clicked:", id, event);
       console.log("Workout:", workout.value)
-      removeWorkout2NewGoal();
+      removeWorkoutFromNewGoal();
+    }
+    const onSetGoalClicked = () => {
+      //--- add record to DB table Goals (startdate, endDate)
+      //--- ProfileId is determined by BackEnd using the bearer token!!!
+      const startDate = new Date(newGoalStartDateString.value);
+      const endDate = new Date(startDate);
+      endDate.setDate(endDate.getDate() + 7);
+      const newGoal = {
+        startDate,
+        endDate
+      }
+      const withWorkOutIds = [];
+      for (const workout of workoutsInNewGoal) {
+        withWorkOutIds.push(workout.id);
+      } 
+      store.dispatch("addGoal", newGoal, withWorkOutIds)
+        .then(value => {
+          console.log("store.dispatch AddGoal returned:", value);
+          //--- add one record per added workout to DB table GoalWorkout (GoalId, WorkoutId, Complete=false)
+
+        });
+      
     }
   //#endregion
 
@@ -65,7 +90,7 @@
       Details of exercise:
       <GoalsDetail v-bind:goal="goal"></GoalsDetail>
     </section>
-    <section title="set new Goal" v-if="currentGoals === undefined">
+    <section title="set new Goal" v-if="currentGoals.length === 0">
       No current goal...
       <section title="new goal">
         define new goal:
@@ -83,6 +108,11 @@
           header="You can add any of these workouts to your new goal (click to add)"
         ></WorkoutList>
       </section>
+      <section title="set start date of new goal">
+        my new Goal will start on:
+        <input type="date" v-model="newGoalStartDateString" v-bind:min="todayString" /> 
+      </section>
+      <button v-on:click="onSetGoalClicked">Set Goal</button>
     </section>
     <section v-if="JSON.stringify(goals) === '[]'">
       We are sorry, but currently no goals are available.<br />
@@ -138,49 +168,65 @@
 </template>
 
 <style scoped>
-table.Table {
-  width: 85%;
-  background-color: #fefbfb;
-  border-collapse: collapse;
-  border-width: 2px;
-  border-color: #7e7d77;
-  border-style: dashed;
-  color: #000000;
-}
 
-table.Table td,
-table.Table th {
-  border-width: 2px;
-  border-color: #7e7d77;
-  border-style: dashed;
-  padding: 3px;
-}
+  header {
+    font-size: larger;
+  }
+  main {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 10px;
+    column-gap: 10px;
+    align-items:stretch;  
+  }
+  section {
+    flex: 1 1 45%;  /*grow | shrink | basis */
+    border: 2px dashed;
+    border-color: red;
+  }
+  table.Table {
+    width: 85%;
+    background-color: #fefbfb;
+    border-collapse: collapse;
+    border-width: 2px;
+    border-color: #7e7d77;
+    border-style: dashed;
+    color: #000000;
+  }
 
-table.Table thead {
-  background-color: #cfcfcf;
-}
+  table.Table td,
+  table.Table th {
+    border-width: 2px;
+    border-color: #7e7d77;
+    border-style: dashed;
+    padding: 3px;
+  }
 
-table.CompletedTable {
-  width: 85%;
-  text-align: center;
-  background-color: #fefbfb;
-  border-collapse: collapse;
-  border-width: 2px;
-  border-color: #7e7d77;
-  border-style: dashed;
-  color: #000000;
-}
+  table.Table thead {
+    background-color: #cfcfcf;
+  }
 
-table.CompletedTable td, table.CompletedTable th {
-  border-width: 2px;
-  border-color: #7e7d77;
-  border-style:dashed;
-  padding: 3px;
-}
+  table.CompletedTable {
+    width: 85%;
+    text-align: center;
+    background-color: #fefbfb;
+    border-collapse: collapse;
+    border-width: 2px;
+    border-color: #7e7d77;
+    border-style: dashed;
+    color: #000000;
+  }
 
-table.CompletedTable thead {
-  background-color: #05e684;
-}
+  table.CompletedTable td, table.CompletedTable th {
+    border-width: 2px;
+    border-color: #7e7d77;
+    border-style:dashed;
+    padding: 3px;
+  }
+
+  table.CompletedTable thead {
+    background-color: #05e684;
+  }
 
 
 </style>

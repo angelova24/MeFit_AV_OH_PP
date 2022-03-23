@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 
+//const apiUrl = "https://localhost:5001/api";
 //const apiUrl = "https://localhost:49153/api";
 //const apiUrl = "https://localhost:44390/api";
 const apiUrl = "https://mefitapi-va-pp-oh.azurewebsites.net/api";
@@ -207,6 +208,9 @@ const store = createStore({
                 state.goals.push(goal);    
             }
         },
+        addGoal: (state, payload) => {
+            state.goals.push(payload);    
+        },
         setGoalDetailsId: (state, payload) => {
             state.goalDetailsId = payload;
         },
@@ -366,6 +370,46 @@ const store = createStore({
             console.log("Goals received:", goals);
             return goals
         },
+        addGoal: async (store, newGoal, withWorkOutIds) => {
+            let addedGoal = newGoal;
+            const response = await fetch(`${apiUrl}/goal/`, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Bearer " + store.state.token,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(newGoal)
+            });
+            if(!response.ok)
+            { 
+                console.log(`addGoal to Db failed...!!!`, newGoal);
+            }
+            else
+            {
+                addedGoal = await response.json();
+                console.log(`addGoal to Db done...`, addedGoal);
+                const response = await fetch(`${apiUrl}/goal/${addedGoal.id}/AddWorkouts`, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Bearer " + store.state.token,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(withWorkOutIds)
+                });
+                if(!response.ok)
+                { 
+                    console.log(`addGoal to Db failed...!!!`, newGoal);
+                }
+                else
+                {
+                    //--- workouts for new goal were successfully written to Db
+                    console.log("add workoutIds for new goal to Db done:", withWorkOutIds);
+                    addedGoal.workouts = withWorkOutIds;
+                    console.log("add new goal to store:", addedGoal);
+                    store.commit("AddGoal", addedGoal);
+                } 
+            }    
+        }
     },
     getters: {
         getExerciseById: state => id => {
@@ -389,7 +433,7 @@ const store = createStore({
             return goal;
         },
         getCurrentGoals: state => {
-            const currentGoals = state.goals.find(g => (new Date(g.endDate) >= new Date()));
+            const currentGoals = state.goals.filter(g => (new Date(g.endDate) >= new Date()));
             console.log("current goals:", currentGoals);
             if(currentGoals !== undefined) {
                 for (const goal of currentGoals) {
@@ -403,7 +447,3 @@ const store = createStore({
 });
 
 export default store;
-
-// export function apiUrl() {
-//     inject: ["apiUrl"]
-// }
