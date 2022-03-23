@@ -68,7 +68,8 @@
       for (const workout of workoutsInNewGoal) {
         withWorkOutIds.push(workout.id);
       } 
-      store.dispatch("addGoal", newGoal, withWorkOutIds)
+      console.log("withWorkOutIds", withWorkOutIds);
+      store.dispatch("addGoal", { goal: newGoal, workoutIds: withWorkOutIds })
         .then(value => {
           console.log("store.dispatch AddGoal returned:", value);
           //--- add one record per added workout to DB table GoalWorkout (GoalId, WorkoutId, Complete=false)
