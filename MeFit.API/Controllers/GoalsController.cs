@@ -131,6 +131,111 @@ namespace MeFit.API.Controllers
 
             return NoContent();
         }
+        // PATCH: api/goal/5/AddWorkouts
+        /// <summary>
+        /// Adds workouts to goal
+        /// </summary>
+        /// <param name="id">ID of a goal</param>
+        /// <param name="workouts">List of workouts IDs to be added</param>
+        /// <response code="204">Successfully added workouts to a goal</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Not allowed</response>
+        /// <response code="404">No goal found</response>
+        /// <response code="500">Internal Server Error</response>
+        [HttpPatch("goal/{id}/AddWorkouts")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> AddSets([FromRoute] int id, [FromBody] List<int> workouts)
+        {
+            var usernameToken = TakeUserNameFromToken();
+            var userId = TakeIdFromUser(usernameToken).Result;
+            //check if goal exists
+            var goal = await _context.Goals.Include(g => g.Workouts).FirstOrDefaultAsync(g => g.Id == id);
+
+            if (goal == null)
+            {
+                return NotFound();
+            }
+
+            //check if the user is owner of the goal
+            var profile = await _context.Profiles.Include(p => p.User).Include(p => p.Goals).Where(p => p.User.Id == userId).FirstOrDefaultAsync();
+            if (!profile.Goals.Any(g => g.Id == goal.Id))
+            {
+                return Forbid();
+            }
+
+            foreach (var workoutId in workouts)
+            {
+                var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutId);
+                if (workout != null)
+                {
+                    var goalWorkout = new GoalWorkoutCreateDTO() { Complete = false, GoalId = id, WorkoutId = workout.Id };
+                    var domainGoalWorkout = _mapper.Map<GoalWorkout>(goalWorkout);
+                    try
+                    {
+                        _context.GoalWorkouts.Add(domainGoalWorkout);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError);
+                    }
+                }
+            }
+            return NoContent();
+        }
+
+        // PATCH: api/goal/5/workout/5/SetCompleted
+        /// <summary>
+        /// Sets workout from goal to compelted
+        /// </summary>
+        /// <param name="id">ID of a goal</param>
+        /// <param name="workoutId">ID of a workout</param>
+        /// <response code="204">Successfully completed workout</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Not allowed</response>
+        /// <response code="404">Not found</response>
+        /// <response code="500">Internal Server Error</response>
+        [HttpPatch("goal/{id}/workout/{workoutId}/SetCompleted")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> SetWorkoutToCompleted([FromRoute] int id, [FromRoute] int workoutId)
+        {
+            var usernameToken = TakeUserNameFromToken();
+            var userId = TakeIdFromUser(usernameToken).Result;
+            //check if goal exists
+            var goal = await _context.Goals.Include(g => g.Workouts).FirstOrDefaultAsync(g => g.Id == id);
+            if (goal == null)
+            {
+                return NotFound();
+            }
+
+            //check if the user is owner of the goal
+            var profile = await _context.Profiles.Include(p => p.User).Include(p => p.Goals).Where(p => p.User.Id == userId).FirstOrDefaultAsync();
+            if (!profile.Goals.Any(g => g.Id == goal.Id))
+            {
+                return Forbid();
+            }
+            //check if workout exists
+            var workout = goal.Workouts.FirstOrDefault(g => g.WorkoutId == workoutId);
+            if (workout == null)
+            {
+                return NotFound();
+
+            }
+
+            workout.Complete = true;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return NoContent();
+        }
 
         // POST: api/goal
         /// <summary>
