@@ -1,40 +1,57 @@
 # MeFit
 
-MeFit is a simple solution for managing weekly
-workout goals. The application serves a dual purpose. Firstly, it serves to provide a user
+### [Open app in browser]()
+
+## Table of Contents
+
+- [Description](#description)
+- [Documentation](#documentation)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Maintainers](#maintainers)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Description
+
+MeFit is a simple solution for managing weekly workout goals.
+The application serves a dual purpose. Firstly, it serves to provide a user
 with an exercise regime and management thereof. Secondly, the application serves to
 motivate users to complete the exercise regime in weekly goal setting towards consistent
 relevant exercise.
 
+## Documentation
 
-### Prerequisites
+- [User Manual]()
+- [API documentation](https://mefitapi-va-pp-oh.azurewebsites.net/)
+- [Database diagram]()
 
-[.NET CORE 5 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/5.0)
- 
-[Visual Studio Code](https://code.visualstudio.com/download) - recommended
+## Prerequisites
 
-[Node.js](https://nodejs.org/en/download/)
+- [.NET CORE 5 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/5.0)
+- [Visual Studio](https://visualstudio.microsoft.com/de/free-developer-offers/)
+- [Visual Studio Code](https://code.visualstudio.com/download) - recommended
+- [Node.js](https://nodejs.org/en/download/)
 
+## Installation
 
-# Install
+ - Clone to a local directory\
+ `git clone https://github.com/angelova24/MeFit_AV_OH_PP.git`
+ - Backend: Open MeFit.sln in Visual Studio
+ - Frontend: Open mefit-vuejs-frontend folder in Visual Studio Code or any other IDE of your choice\
+  Run commands:\
+  `npm install`\
+  `npm run dev`\
+  Navigate to `http://localhost:3000/`
 
- - Clone to a local directory
-
-    `git clone https://github.com/angelova24/MeFit_AV_OH_PP.git`
- - Open solution in Visual Studio Code or any other IDE of your choice
-
- - `npm install`
-
- - `npm install @vue/cli`
-
-
-# Usage
+## Usage
 
 BackEnd: `dotnet run`
 
 FrontEnd: `npm run dev`
 
-# Maintainers
+## Maintainers
 
 <https://github.com/angelova24>
 
@@ -42,13 +59,11 @@ FrontEnd: `npm run dev`
 
 <https://github.com/Tranquillo1811>
 
-
-# Contributing
+## Contributing
 This project is not supposed to have any contributors.
 It is supposed to grade the individual who composed it.
 Right after that graduation this project will be - most likely - instantly discontinued...
 
-
-# License
+## License
 
 [Apache License &copy; 2022](./LICENSE)
