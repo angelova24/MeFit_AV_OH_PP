@@ -107,7 +107,7 @@ namespace MeFit.API.Controllers
             {
                 return BadRequest();
             }
-            var domainProfile = _mapper.Map<Profile>(newProfile);
+            var domainProfile = _mapper.Map<MeFit.DAL.Models.Domain.Profile>(newProfile);
             _context.Entry(domainProfile).State = EntityState.Modified;
 
             try
