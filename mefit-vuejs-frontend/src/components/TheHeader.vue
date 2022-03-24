@@ -3,7 +3,7 @@ import { computed, ref } from "@vue/runtime-core";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
-const emits = defineEmits(["logout"]);
+const emits = defineEmits(["logout", "changepassword"]);
 
 const store = useStore();
 const username = computed(() => store.state.user.username);
@@ -16,12 +16,15 @@ const onSelectUserChange = (event) => {
   switch (event.target.value) {
     case "showprofile":
       router.push(`${baseUrl.value}profile`);
-      selectedUserValue.value = "username";
       break;
     case "logout":
       emits("logout");
       break;
+    case "changepassword":
+      emits("changepassword");
+      break;
   }
+  selectedUserValue.value = "username";
 };
 </script>
 
@@ -60,6 +63,7 @@ const onSelectUserChange = (event) => {
             <select class="custom-select" v-on:change="onSelectUserChange" v-model="selectedUserValue">
               <option value="username">logged in as: {{ username }}</option>
               <option value="showprofile">show my profile...</option>
+              <option value="changepassword">change password...</option>
               <option value="logout">log me out...</option>
             </select>
           </div>
