@@ -156,6 +156,20 @@ const store = createStore({
         goalWorkoutDetailsId: 0
     },
     mutations: {
+        resetState: (state) => {
+            state.exerciseDetailsId = 0;
+            state.exercises = [];
+            state.goalDetailsId = 0;
+            state.goalWorkoutDetailsId = 0;
+            state.goals = [];
+            state.profile = {};
+            state.programDetailsId = 0;
+            state.programs = [];
+            state.sets = [];
+            state.user = {};
+            state.workoutDetailsId = 0;
+            state.workouts = [];
+        },
         setBaseUrl: (state, payload) => {
             state.baseUrl = payload;
         },
@@ -480,12 +494,12 @@ const store = createStore({
         getCurrentGoals: state => {
             const currentGoals = state.goals.filter(g => (new Date(g.endDate) >= new Date()));
             console.log("current goals:", currentGoals);
-            if(currentGoals !== undefined) {
-                for (const goal of currentGoals) {
-                    goal.startDate = (new Date(goal.startDate));
-                    goal.endDate = (new Date(goal.endDate));
-                }
-            }
+            // if(currentGoals !== undefined) {
+            //     for (const goal of currentGoals) {
+            //         goal.startDate = (new Date(goal.startDate));
+            //         goal.endDate = (new Date(goal.endDate));
+            //     }
+            // }
             return currentGoals;
         }
     }
