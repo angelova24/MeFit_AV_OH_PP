@@ -145,7 +145,7 @@ namespace MeFit.API.Controllers
         [HttpPatch("goal/{id}/AddWorkouts")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> AddSets([FromRoute] int id, [FromBody] List<int> workouts)
+        public async Task<IActionResult> AddWorkouts([FromRoute] int id, [FromBody] List<int> workouts)
         {
             var usernameToken = TakeUserNameFromToken();
             var userId = TakeIdFromUser(usernameToken).Result;

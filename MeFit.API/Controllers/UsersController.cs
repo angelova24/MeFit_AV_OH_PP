@@ -52,16 +52,18 @@ namespace MeFit.API.Controllers
                 //creates new user
                 var newUser = new UserCreateDTO() { Username = usernameFromToken, Name = nameFromToken.Value };
                 var domainNewUser = _mapper.Map<User>(newUser);
-                var createdUser = _context.Users.Add(domainNewUser);
-                userId = createdUser.CurrentValues.GetValue<int>("Id");
                 try
                 {
+                    _context.Users.Add(domainNewUser);
                     await _context.SaveChangesAsync();
                 }
                 catch
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
+                //get the new user 
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == usernameFromToken);
+                userId = user.Id;
             }
             else
             {
