@@ -411,6 +411,49 @@ const store = createStore({
                     store.commit("addGoal", addedGoal);
                 } 
             }    
+        },
+        addProfile: async (store, newProfile) => {
+            let addedProfile = newProfile;
+            console.log(newProfile);
+            const response = await fetch(`${apiUrl}/profile`, {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + store.state.token,
+                    "Content-Type": "application/json",
+                    
+                },                
+                body: JSON.stringify(newProfile)
+            });
+            if(!response.ok)
+            {
+                console.log("addProfile to DB failed...!!!", newProfile)                
+            }
+            else{
+                addedProfile = await response.json();
+                console.log("addProfile to DB done...", addedProfile);                
+                store.commit("setProfile", addedProfile);
+            }
+        },
+        updateProfile: async (store, profile) => {
+            let updatedProfile = profile;
+            console.log(profile);
+            const response = await fetch(`${apiUrl}/profile/${profile.id}`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": "Bearer " + store.state.token,
+                    "Content-Type": "application/json",
+                    
+                },                
+                body: JSON.stringify(profile)
+            });
+            if(!response.ok)
+            {
+                console.log("updateProfile to DB failed...!!!", profile)                
+            }
+            else{                
+                console.log("updateProfile to DB done...", updatedProfile);                
+                store.commit("setProfile", updatedProfile);
+            }
         }
     },
     getters: {
