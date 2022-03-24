@@ -23,7 +23,5 @@ namespace MeFit.DAL.Models.DTOs.Profile
         public string City { get; set; }
         [MaxLength(70)]
         public string Country { get; set; }      
-        public int UserId { get; set; }
-
     }
 }
