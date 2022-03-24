@@ -23,7 +23,7 @@ const store = createStore({
             name: "",
             isContributor: false,
             isAdmin: false,
-            profileId: 0
+            profileId: -1
             //#region test data - only until API endpoint is available
             // id: 5,
             // username: "oliver hauck",

@@ -14,11 +14,9 @@
   const currentGoals = computed(() => store.getters.getCurrentGoals);
 
   //--- get id of selected goal
-  const goalsDetailsId = computed(() => store.state.goalsDetailsId);
-  console.log(`GoalsPage: selected goalId: ${goalsDetailsId.value}`);
+  const goalDetailsId = computed(() => store.state.goalDetailsId);
   //--- get selected goal
-  const goal = computed(() => store.getters.getGoalById(goalsDetailsId.value));
-  console.log(`GoalsPage: selected goal: ${goal.value}`);
+  const goal = computed(() => store.getters.getGoalById(goalDetailsId.value));
 
   //#region set new goal stuff
     const newGoalStartDateString = ref(today.toISOString().split('T')[0]);
@@ -85,14 +83,21 @@
   <div>Goals Page</div>
   <main>
     <section v-if="JSON.stringify(goals) !== '[]'" title="GoalList">
-      <GoalList v-bind:goals="goals"></GoalList>
+      <GoalList 
+        v-bind:goals="goals"
+        header="your Goals:"
+      ></GoalList>
+      selected: {{ goalDetailsId }}
     </section>
+
     <section v-if="goal !== undefined" title="goalDetails">
-      Details of exercise:
+      Details of goal:
       <GoalsDetail v-bind:goal="goal"></GoalsDetail>
     </section>
-    <section title="set new Goal" v-if="currentGoals.length === 0">
+
+    <section class="parentSection" title="set new Goal" v-if="currentGoals.length === 0">
       No current goal...
+
       <section title="new goal">
         define new goal:
         <WorkoutList 
@@ -186,6 +191,15 @@
     flex: 1 1 45%;  /*grow | shrink | basis */
     border: 2px dashed;
     border-color: red;
+  }
+  section section {
+    flex: 1 1 100%;  /*grow | shrink | basis */
+    border: 2px dashed;
+    border-color: blue;
+  }
+  section.parentSection {
+    display: grid;
+    grid-template-columns: auto auto;
   }
   table.Table {
     width: 85%;

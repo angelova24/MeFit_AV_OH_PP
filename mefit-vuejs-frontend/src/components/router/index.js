@@ -50,8 +50,7 @@ const router = createRouter({
 
 router.beforeEach((to, from) => {
     console.log(`page redirection occured from: ${from.fullPath} to: ${to.fullPath}`);
-    if (store.state.profile.id === 0 && !to.fullPath.startsWith(baseUrl + "profile")) {
-        
+    if (store.state.profile.id === 0 && store.state.user.id != 0 && !to.fullPath.startsWith(baseUrl + "profile")) {
         return { path: `${baseUrl}profile`};
     }
     

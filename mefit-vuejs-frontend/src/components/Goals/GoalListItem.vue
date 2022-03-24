@@ -37,5 +37,8 @@
 </template>
 
 <style scoped>
-
+    div {
+        padding: 14px 16px;
+        border: 1px solid green;
+    }
 </style>
