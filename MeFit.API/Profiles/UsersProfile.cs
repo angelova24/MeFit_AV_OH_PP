@@ -14,6 +14,8 @@ namespace MeFit.API.Profiles
                 .ReverseMap();
             CreateMap<User, UserReadDTO>()                
                .ReverseMap();
+            CreateMap<User, UserUpdateDTO>()
+               .ReverseMap();
             CreateMap<UserCreateDTO, UserReadDTO>()
               .ReverseMap();
 
