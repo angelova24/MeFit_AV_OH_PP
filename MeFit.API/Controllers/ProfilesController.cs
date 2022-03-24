@@ -112,9 +112,7 @@ namespace MeFit.API.Controllers
             var userId = TakeIdFromUser(usernameToken).Result;
 
             var domainProfile = _mapper.Map<DAL.Models.Domain.Profile>(newProfile);
-            //domainProfile.User.Id = userId;
             _context.Profiles.Add(domainProfile);
-
             try
             {
                 await _context.SaveChangesAsync();
@@ -124,6 +122,16 @@ namespace MeFit.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
+            var user = await _context.Users.FindAsync(userId);
+            user.ProfileId = domainProfile.Id;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
             return CreatedAtAction("GetProfileById", new { id = domainProfile.Id }, _mapper.Map<ProfileReadDTO>(domainProfile));
         }
 
