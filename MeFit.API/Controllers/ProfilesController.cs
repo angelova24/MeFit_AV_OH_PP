@@ -43,78 +43,52 @@ namespace MeFit.API.Controllers
 
             if (profile == null)
             {
-                return NoContent();
+                return NotFound();
             }
             var profileReadDTO = _mapper.Map<ProfileReadDTO>(profile);
             return Ok(profileReadDTO);
-        }
-
-        // PATCH: api/profile/id
-        /// <summary>
-        /// Executes partial update of the corresponding profile.
-        /// </summary>
-        /// <param name="id">ID of a profile</param>
-        /// <param name="newProfile">Profiles new info</param>
-        /// <response code="204">Successfully changed profile</response>
-        /// <response code="401">Not authorized</response>
-        /// <response code="403">Not allowed</response>
-        /// <response code="404">No profile found</response>
-        /// <response code="500">Internal Server Error</response>
-        [HttpPatch("profile/{id}")]
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> UpdateProfile([FromRoute] int id, [FromBody] JsonPatchDocument<DAL.Models.Domain.Profile> newProfile)
-        {
-            var usernameToken = TakeUserNameFromToken();
-            var userId = TakeIdFromUser(usernameToken).Result;
-
-            var profile = await _context.Profiles.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
-            if (profile == null)
-            {
-                return NotFound();
-            }
-            //check if the user is owner of the profile
-            if (profile.User.Id != userId)
-            {
-                return Forbid();
-            }
-
-            newProfile.ApplyTo(profile, ModelState);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-
-            return NoContent();
         }
 
         // PUT: api/profile/5      
         /// <summary>
         /// Updates a profile by ID
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="newProfile"></param>
-        /// <returns></returns>
+        /// <param name="id">ID of a profile</param>
+        /// <param name="newProfile">New profile info</param>
+        /// <response code="400">Bad Request</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Not allowed(you're not the owner of this profile)</response>
+        /// <response code="404">No profile found</response>
         [HttpPut("profile/{id}")]
-        public async Task<ActionResult> UpdatePutProfile(int id, [FromBody] ProfileUpdateDTO newProfile)
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<ActionResult> UpdateProfile(int id, [FromBody] ProfileUpdateDTO newProfile)
         {
             if (id != newProfile.Id)
             {
                 return BadRequest();
             }
-            var domainProfile = _mapper.Map<MeFit.DAL.Models.Domain.Profile>(newProfile);
+
+            //check which user uses the endpoint
+            var usernameToken = TakeUserNameFromToken();
+            var userId = TakeIdFromUser(usernameToken).Result;
+            var user = await _context.Users.FindAsync(userId);
+
+            //check if the user is owner of the profile, if not -> 403
+            if (user.ProfileId != id)
+            {
+                return Forbid();
+            }
+
+            //change profile info in DB
+            var domainProfile = _mapper.Map<DAL.Models.Domain.Profile>(newProfile);
             _context.Entry(domainProfile).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }

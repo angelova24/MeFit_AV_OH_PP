@@ -44,7 +44,7 @@ namespace MeFit.API.Controllers
             var nameFromToken = User.Claims.FirstOrDefault(c => c.Type == "name");
             var userId = 0;
 
-            //search for user in DB with the same username
+            //find user in DB with the same username
             var userDB = await _context.Users.FirstOrDefaultAsync(x => x.Username == usernameFromToken);
 
             if (userDB == null)
@@ -61,7 +61,7 @@ namespace MeFit.API.Controllers
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
-                //get the new user 
+                //get the new user id
                 var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == usernameFromToken);
                 userId = user.Id;
             }
@@ -106,7 +106,7 @@ namespace MeFit.API.Controllers
         /// Creates a new user
         /// </summary>
         /// <returns>A newly created user</returns>
-        /// <response code="201">Successfully created exercise</response>
+        /// <response code="201">Successfully created user</response>
         /// <response code="204">User already exists</response>
         /// <response code="401">Not authorized</response>
         /// <response code="500">Internal Server Error</response>
@@ -143,42 +143,56 @@ namespace MeFit.API.Controllers
             return NoContent();
         }
 
+        // PATCH: api/user/5      
+        /// <summary>
+        /// Updates an user by ID
+        /// </summary>
+        /// <param name="id">ID of an user</param>
+        /// <param name="newUser">New users info</param>
+        /// <response code="400">Bad Request</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Not allowed(you're not the owner)</response>
+        /// <response code="404">No user found</response>
+        [HttpPatch("{id}")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<ActionResult> UpdateUser(int id, [FromBody] UserUpdateDTO newUser)
+        {
+            if (id != newUser.Id)
+            {
+                return BadRequest();
+            }
+            //check which user uses the endpoint
+            var usernameToken = TakeUserNameFromToken();
+            var userId = TakeIdFromUser(usernameToken).Result;
+            //check if user is in DB
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            //check if the user is owner, if not -> 403
+            if (userId != id)
+            {
+                return Forbid();
+            }
+            //change user info in DB
+            var domainUser = _mapper.Map<User>(newUser);
+            _context.Entry(domainUser).State = EntityState.Modified;
 
-        //------------------------------------------Self only Admin-----------------
-        // POST: api/Users/user_id/update_password
-        //[HttpPatch]
-        //[Consumes("application/json")]
-        //public async Task<ActionResult<User>> PutUPostUserWithPasswordser(int id, UserUpdatePasswordDTO user)
-        //{
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
 
-        //    var domainUser = _mapper.Map<User>(user);
-        //    if (id != user.Id)
-        //    {
-        //        return BadRequest();
-        //    }
+            return NoContent();
+        }
 
-        //    _context.Entry(domainUser).State = EntityState.Modified;
-
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!UserExists(id))
-        //        {
-        //            return BadRequest(400);
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return domainUser;
-        //}
-
-        // DELETE: api/user/id --------------SELF  AND ADMIN-------------
+        // DELETE: api/user/id --------------SELF AND ADMIN-------------
         /// <summary>
         /// Deletes user
         /// </summary>
@@ -193,20 +207,24 @@ namespace MeFit.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult> DeleteUser(int id)
         {
+            //find user in DB
             var user = await _context.Users.Include(p => p.Profile).FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
             {
                 return NotFound();
             }
-
+            //check if user is owner
             var usernameFromToken = TakeUserNameFromToken();
             if (user.Username != usernameFromToken)
             {
                 return Forbid();
             }
+            //find users profile
+            var profile = await _context.Profiles.Include(p => p.Goals).FirstOrDefaultAsync(p => p.Id == user.ProfileId);
             try
             {
                 _context.Users.Remove(user);
+                _context.Profiles.Remove(profile);
                 await _context.SaveChangesAsync();
             }
             catch
