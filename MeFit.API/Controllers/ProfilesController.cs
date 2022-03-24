@@ -112,7 +112,7 @@ namespace MeFit.API.Controllers
             var userId = TakeIdFromUser(usernameToken).Result;
 
             var domainProfile = _mapper.Map<DAL.Models.Domain.Profile>(newProfile);
-            domainProfile.User.Id = userId;
+            //domainProfile.User.Id = userId;
             _context.Profiles.Add(domainProfile);
 
             try
