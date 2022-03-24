@@ -9,12 +9,17 @@
         programs: {
             type: Array,
             required: true
+        },
+        header: {
+            type: String,
+            required:false
         }
     });
-
+    const emits = defineEmits(["programListItemClicked"]);
     const onProgramListItemClicked = (event, id) => {
         console.log(`ProgramListItem with id ${id} was clicked...`)
         store.commit("setProgramDetailsId", id);
+        emits("programListItemClicked");
     }
 
 </script>
@@ -22,7 +27,7 @@
 <template>
     <div>
         <header>
-            <b>List of available programs:</b>
+            <b>{{ header }}</b>
         </header>
         <main>
             <ProgramListItem 

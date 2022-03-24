@@ -4,6 +4,7 @@
   import GoalList from "./GoalList.vue";
   import GoalsDetail from "./GoalsDetail.vue";
   import WorkoutList from "../Workouts/WorkoutList.vue";
+  import ProgramList from "../Programs/ProgramList.vue";
 
   const store = useStore();
   const today = new Date();
@@ -21,6 +22,16 @@
   //#region set new goal stuff
     const newGoalStartDateString = ref(today.toISOString().split('T')[0]);
     const workoutsInNewGoal = reactive([]);
+    const addProgram2NewGoal = () => {
+      console.log("Program to be added to Goal:", program.value);
+      for (const workoutId of program.value.workouts) {
+        const workoutOfProgram = store.getters.getWorkoutById(workoutId);
+        //--- add workout if it is not already contained in new goal
+        if(!workoutsInNewGoal.includes(workoutOfProgram)) {
+          workoutsInNewGoal.push(workoutOfProgram);
+        }
+      }
+    };
     const addWorkout2NewGoal = () => {
       //--- add workout if it is not already contained in new goal
       if(!workoutsInNewGoal.includes(workout.value)) {
@@ -35,13 +46,23 @@
       }
     };
     //--- get all Workouts from Store
+    const programs = computed(() => store.state.programs);
     const workouts = computed(() => store.state.workouts);
+    //--- get id of selected program
+    const programDetailsId = computed(() => store.state.programDetailsId);
     //--- get id of selected workout
     const workoutDetailsId = computed(() => store.state.workoutDetailsId);
     console.log(`selected workout id: ${workoutDetailsId.value}`);
+    //--- get selected program
+    const program = computed(() => store.getters.getProgramById(programDetailsId.value));
     //--- get selected workout
     const workout = computed(() => store.getters.getWorkoutById(workoutDetailsId.value));
     console.log(`selected workout: ${workout.value}`);
+    const OnAddProgram = (event, id) => {
+      console.log("ProgramListItem has been clicked:", id, event);
+      console.log("program:", program.value)
+      addProgram2NewGoal();
+    }
     const OnAddWorkOut = (event, id) => {
       console.log("WorkoutListItem has been clicked:", id, event);
       console.log("Workout:", workout.value)
@@ -95,10 +116,10 @@
       <GoalsDetail v-bind:goal="goal"></GoalsDetail>
     </section>
 
-    <section class="parentSection" title="set new Goal" v-if="currentGoals.length === 0">
-      No current goal...
-
-      <section title="new goal">
+    <!-- <section class="parentSection" title="set new Goal" v-if="currentGoals.length === 0"> -->
+    <section class="parentSection" title="set new Goal" v-if="currentGoals.length >= 0">
+      <span class="box1">No current goal...</span>
+      <section class="box2" title="new goal">
         define new goal:
         <WorkoutList 
           v-if="workoutsInNewGoal" 
@@ -107,7 +128,14 @@
           header="These workouts have been added to your new goal (click to remove)"
         ></WorkoutList>
       </section>
-      <section title="available workouts for new goal">
+      <section title="available programs for new goal">
+        <ProgramList 
+          v-bind:programs="programs" 
+          v-on:programListItemClicked="OnAddProgram"
+          header="You can add any of these programs to your new goal (click to add)"
+        ></ProgramList>
+      </section>
+      <section class="box3" title="available workouts for new goal">
         <WorkoutList 
           v-bind:workouts="workouts" 
           v-on:workoutListItemClicked="OnAddWorkOut"
@@ -118,7 +146,7 @@
         my new Goal will start on:
         <input type="date" v-model="newGoalStartDateString" v-bind:min="todayString" /> 
       </section>
-      <button v-on:click="onSetGoalClicked">Set Goal</button>
+      <button class="box5" v-on:click="onSetGoalClicked">Set Goal</button>
     </section>
     <section v-if="JSON.stringify(goals) === '[]'">
       We are sorry, but currently no goals are available.<br />
@@ -135,7 +163,7 @@
         <th>Goal</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody v-if="currentGoals.length > 0">
       <tr v-for="workout in currentGoals[0].workouts" :key="workout.id">
         
         <td>{{(store.getters.getWorkoutById(workout.workoutId).name)}}</td>
@@ -182,14 +210,21 @@
     border: 2px dashed;
     border-color: red;
   }
-  section section {
-    flex: 1 1 100%;  /*grow | shrink | basis */
-    border: 2px dashed;
-    border-color: blue;
-  }
   section.parentSection {
     display: grid;
     grid-template-columns: auto auto;
+  }
+  .box1 {
+    grid-column: 1 / 3;
+  }
+  .box2 {
+    grid-row: 2 / 4;
+  }
+  .box3 {
+    grid-column: 2;
+  }
+  .box5 {
+    grid-column: 1;
   }
   table.Table {
     width: 85%;
