@@ -22,15 +22,19 @@
 <template>
     <div>
         <header>
-            Exercise Page
+            Everything about exercises...
         </header>
         <main>
             <section v-if="JSON.stringify(exercises) !== '[]'" title="exerciseList">
-                <ExerciseList v-bind:exercises="exercises"></ExerciseList>
+                <ExerciseList 
+                    v-bind:exercises="exercises"
+                    header="Click on any of these exercises to view details..."
+                ></ExerciseList>
             </section>
             <section v-if="exercise !== undefined" title="exerciseDetails">
-                Details of exercise:
-                <ExerciseDetails v-bind:exercise="exercise"></ExerciseDetails>
+                <ExerciseDetails 
+                    v-bind:exercise="exercise"
+                ></ExerciseDetails>
             </section>
             <section v-if="JSON.stringify(exercises) === '[]'">
                 We are sorry, but currently no exercises are available.<br />
@@ -43,18 +47,16 @@
 <style scoped>
     header {
         font-size: larger;
+        padding: 50px 10px;
     }
     main {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         row-gap: 10px;
-        column-gap: 10px;
-        align-items:stretch;
-        
+        column-gap: 10px;        
     }
     section {
-        flex: 1 1 45%;  /*grow | shrink | basis */
-        border: 2px dashed;
+        border: 1px dashed;
         border-color: red;
     }
     img {

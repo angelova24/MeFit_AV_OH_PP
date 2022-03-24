@@ -9,5 +9,7 @@
 </template>
 
 <style scoped>
-
+    div {
+        padding: 50px 10px 0px 10px;
+    }
 </style>
