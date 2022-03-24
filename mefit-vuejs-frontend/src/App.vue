@@ -93,12 +93,25 @@
 
   const onLogout = event => {
     const options = {
-      redirectUri: window.location.protocol + "//" + window.location.host + baseUrl.value + "login"
+      redirectUri: window.location.protocol + "//" + window.location.host + "login"
     };
     console.log("current Url:", options.redirectUri);
     keycloak.value.logout(options)
       .then(parameter => {
         console.log("You have been logged out...", parameter);
+      });
+  }
+
+  const onChangePassword = event => {
+    const options = {
+      loginHint: store.state.userIdentity.email,
+      action: "UPDATE_PASSWORD",
+      //redirectUri: window.location.protocol + "//" + window.location.host + window.location.pathname
+    };
+    console.log("current options:", options);
+    keycloak.value.login(options)
+      .then(parameter => {
+        console.log("You are back from changing your password...", parameter);
       });
   }
 
@@ -108,7 +121,10 @@
   <div>
     <button v-on:click="generateToken">Generate Token</button>
     <button v-on:click="readData">Read data from Db</button>
-    <TheHeader v-on:logout="onLogout"></TheHeader>
+    <TheHeader 
+      v-on:logout="onLogout"
+      v-on:changepassword="onChangePassword"
+    ></TheHeader>
     <hr />
     <router-view></router-view>
     <hr />
