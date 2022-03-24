@@ -1,10 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MeFit.DAL.Models.DTOs.Profile
 {
-    public class ProfileCreateDTO
+    public class ProfileUpdateDTO
     {
+        public int Id { get; set; }
         public double Weight { get; set; }
         public double Height { get; set; }
         [MaxLength(100)]
@@ -22,6 +27,6 @@ namespace MeFit.DAL.Models.DTOs.Profile
         [MaxLength(70)]
         public string City { get; set; }
         [MaxLength(70)]
-        public string Country { get; set; }      
+        public string Country { get; set; }
     }
 }
