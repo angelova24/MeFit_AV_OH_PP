@@ -2,14 +2,27 @@
     import { computed } from "vue";
     import { useStore } from "vuex";
 
+
     const store = useStore();
     const profile = computed(() => store.state.profile);
+    const onAddProfile = () => {
+        const newProfile = profile.value
+        if (newProfile.id === 0) {
+            store.dispatch("addProfile", newProfile)
+        }
+        else{
+            store.dispatch("updateProfile", newProfile)    
+            console.log("profile updated")
+        }        
+    };
+    
 </script>
 
 <template>
     <div>
         <header>
             <h1> Profile Page </h1>
+            <h3>Before you start training you need a profile</h3>
         </header>
         <main>
             <section title="fitnessEvaluation" >
@@ -30,6 +43,11 @@
                     Disabilities:
                 </label>
                 <input id="disabilities" type="text" v-model="profile.disabilities" />
+               
+                <label for="fintessLevelEvaluation">
+                    FintessLevelEvaluation:
+                </label>
+                <input id="fintessLevelEvaluation" type="text" v-model="profile.fintessLevelEvaluation" />
             </section>
             <section title="addressData" >
                 <span>Your address data:</span>
@@ -54,7 +72,7 @@
                 </label>
                 <input id="country" type="text" v-model="profile.country" />
             </section>
-            <button v-on:click="updateProfile" type="submit">Save changes</button>
+            <button v-on:click="onAddProfile" type="submit">Save changes</button>
         </main>
     </div>
 </template>

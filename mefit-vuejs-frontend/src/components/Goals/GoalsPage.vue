@@ -76,7 +76,7 @@
       
     }
   //#endregion
-
+ //const workoutById = store.getter.getWorkoutById(workout.workoutId)
 </script>
 
 <template>
@@ -128,30 +128,20 @@
 
   <table class="Table">
     <thead>
-      <tr>
+      <tr>        
         <th>Current goal of current week</th>
         <th>Period</th>
         <th>Status</th>
+        <th>Goal</th>
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td
-         v-if="workoutsInNewGoal"
-         v-bind:workouts="workoutsInNewGoal"></td>
-        <td>Here goes period for workout 1</td>
-        <td><button>Completed</button></td>
-      </tr>
-      <tr>
-        <td>Workout 2</td>
-        <td>Here goes period for workout 2</td>
-        <td><button>Completed</button></td>
-      </tr>
-      <tr>
-        <td>Workout 3</td>
-        <td>Here goes period for workout 3</td>
-        <td><button>Completed</button></td>
-      </tr>
+      <tr v-for="workout in currentGoals[0].workouts" :key="workout.id">
+        
+        <td>{{(store.getters.getWorkoutById(workout.workoutId).name)}}</td>
+        <td>{{currentGoals[0].startDate.toDateString()}} -- {{currentGoals[0].endDate.toDateString()}}</td>
+        <td><button>Completed {{workout.complete}}</button></td>
+      </tr>      
     </tbody>
   </table>
   <br>
