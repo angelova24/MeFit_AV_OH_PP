@@ -93,6 +93,36 @@ namespace MeFit.API.Controllers
             return NoContent();
         }
 
+        // PUT: api/profile/5      
+        /// <summary>
+        /// Updates a profile by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="newProfile"></param>
+        /// <returns></returns>
+        [HttpPut("profile/{id}")]
+        public async Task<ActionResult> UpdatePutProfile(int id, [FromBody] ProfileUpdateDTO newProfile)
+        {
+            if (id != newProfile.Id)
+            {
+                return BadRequest();
+            }
+            var domainProfile = _mapper.Map<Profile>(newProfile);
+            _context.Entry(domainProfile).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return NoContent();
+        }
+
+
         // POST: api/profile
         /// <summary>
         /// Creates a new profile. Accepts appropriate parameters in the profile body as application/json
