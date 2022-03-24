@@ -38,7 +38,7 @@
                 <label for="medicalCondition">
                     Medical condition:
                 </label>
-                <input id="medicalCondition" type="text" v-model="profile.medicalCondition" />
+                <input id="medicalCondition" type="text" v-model="profile.medicalConditions" />
                 <label for="disabilities">
                     Disabilities:
                 </label>
