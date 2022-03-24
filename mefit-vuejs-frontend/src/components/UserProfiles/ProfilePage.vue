@@ -9,7 +9,7 @@
 <template>
     <div>
         <header>
-            Profile Page
+            <h1> Profile Page </h1>
         </header>
         <main>
             <section title="fitnessEvaluation" >
@@ -54,7 +54,7 @@
                 </label>
                 <input id="country" type="text" v-model="profile.country" />
             </section>
-            <button type="submit">Save changes</button>
+            <button v-on:click="updateProfile" type="submit">Save changes</button>
         </main>
     </div>
 </template>
