@@ -209,6 +209,14 @@ const store = createStore({
         setWorkoutDetailsId: (state, payload) => {
             state.workoutDetailsId = payload;
         },
+        setCompletedWorkout:(state, payload) =>{
+            const {goal, workout} = payload;
+            const storeGoal = state.goals.find(g => g.id === goal.id);
+            console.log(storeGoal)
+            const storeWorkout = storeGoal.workouts.find(w => w.workoutId === workout.workoutId)
+            console.log(storeWorkout)
+            storeWorkout.complete = true;
+        },
         addPrograms: (state, payload) => {
             for (const program of payload) {
                 state.programs.push(program);    
@@ -467,6 +475,27 @@ const store = createStore({
             else{                
                 console.log("updateProfile to DB done...", updatedProfile);                
                 store.commit("setProfile", updatedProfile);
+            }
+        },
+        updateGoalWorkout: async (store, goalWorkoutData) => {           
+            const {goal, workout} = goalWorkoutData;
+            console.log(goal);
+            console.log(workout);
+            const response = await fetch(`${apiUrl}/goal/${goal.id}/workout/${workout.workoutId}/SetCompleted`, {
+                method: "PATCH",
+                headers: {
+                    "Authorization": "Bearer " + store.state.token,
+                    "Content-Type": "application/json",
+                    
+                },                                
+            });
+            if(!response.ok)
+            {
+                console.log("updateGoalWorkout to DB failed...!!!", workout)                
+            }
+            else{                
+                console.log("updatedGoalWorkout in DB done...", workout);                
+                store.commit("setCompletedWorkout", goalWorkoutData);
             }
         }
     },

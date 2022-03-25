@@ -96,6 +96,11 @@
         });
       
     }
+    const onSetCompletedGoalWorkout = (workoutData) => {
+      console.log("button clicked")
+      store.dispatch("updateGoalWorkout", workoutData)      
+    } 
+    
   //#endregion
  //const workoutById = store.getter.getWorkoutById(workout.workoutId)
 </script>
@@ -157,7 +162,7 @@
   <table class="Table">
     <thead>
       <tr>        
-        <th>Current goal of current week</th>
+        <th>Current workouts</th>
         <th>Period</th>
         <th>Status</th>
         <th>Goal</th>
@@ -167,8 +172,8 @@
       <tr v-for="workout in currentGoals[0].workouts" :key="workout.id">
         
         <td>{{(store.getters.getWorkoutById(workout.workoutId).name)}}</td>
-        <td>{{currentGoals[0].startDate.toDateString()}} -- {{currentGoals[0].endDate.toDateString()}}</td>
-        <td><button>Completed {{workout.complete}}</button></td>
+        <td>{{currentGoals[0].startDate}} -- {{currentGoals[0].endDate}}</td>
+        <td><button v-on:click="onSetCompletedGoalWorkout({workout:workout, goal:currentGoals[0]})">Completed {{workout.complete}}</button></td>
       </tr>      
     </tbody>
   </table>
@@ -180,15 +185,9 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>Completed Workout 1</td>
-    </tr>
-    <tr>
-      <td>Completed Workout 2</td>
-    </tr>
-    <tr>
-      <td>Completed Workout 3</td>
-    </tr>
+    <tr v-for="workout in currentGoals[0].workouts" :key="workout.id">
+      <td v-if="workout.complete === true">{{(store.getters.getWorkoutById(workout.workoutId).name) + " is now completed"}}</td>
+    </tr>        
   </tbody>
 </table>
 </template>
