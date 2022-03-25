@@ -164,8 +164,7 @@
       <tr>        
         <th>Current workouts</th>
         <th>Period</th>
-        <th>Status</th>
-        <th>Goal</th>
+        <th>Status</th>        
       </tr>
     </thead>
     <tbody v-if="currentGoals.length > 0">
@@ -173,12 +172,13 @@
         
         <td>{{(store.getters.getWorkoutById(workout.workoutId).name)}}</td>
         <td>{{currentGoals[0].startDate}} -- {{currentGoals[0].endDate}}</td>
-        <td><button v-on:click="onSetCompletedGoalWorkout({workout:workout, goal:currentGoals[0]})">Completed {{workout.complete}}</button></td>
+        <td><button v-on:click="onSetCompletedGoalWorkout({workout:workout, goal:currentGoals[0]})">Complete !</button></td>
       </tr>      
     </tbody>
   </table>
+
   <br>
-  <table class="CompletedTable">
+  <table class="CompletedWorkoutsTable">
   <thead>
     <tr>
       <th>Recently Completed</th>
@@ -188,6 +188,19 @@
     <tr v-for="workout in currentGoals[0].workouts" :key="workout.id">
       <td v-if="workout.complete === true">{{(store.getters.getWorkoutById(workout.workoutId).name) + " is now completed"}}</td>
     </tr>        
+  </tbody>
+</table>
+<br>
+<table class="CompletedGoals">
+  <thead>
+    <tr>
+      <th>Completed Goals</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr v-bind:goals="goals">      
+      <td v-if="JSON.stringify(goals) !== '[]'">goals is empty</td>
+    </tr>      
   </tbody>
 </table>
 </template>
@@ -226,7 +239,7 @@
     grid-column: 1;
   }
   table.Table {
-    width: 85%;
+    width: 100%;
     background-color: #fefbfb;
     border-collapse: collapse;
     border-width: 2px;
@@ -247,8 +260,8 @@
     background-color: #cfcfcf;
   }
 
-  table.CompletedTable {
-    width: 85%;
+  table.CompletedWorkoutsTable {
+    width: 100%;
     text-align: center;
     background-color: #fefbfb;
     border-collapse: collapse;
@@ -258,14 +271,38 @@
     color: #000000;
   }
 
-  table.CompletedTable td, table.CompletedTable th {
+  table.CompletedWorkoutsTable td, table.CompletedWorkoutsTable th {
     border-width: 2px;
     border-color: #7e7d77;
     border-style:dashed;
     padding: 3px;
   }
 
-  table.CompletedTable thead {
+  table.CompletedWorkoutsTable thead {
+    background-color: #05e684;
+  }
+
+
+  /*  */
+  table.CompletedGoals {
+    width: 100%;
+    text-align: center;
+    background-color: #fefbfb;
+    border-collapse: collapse;
+    border-width: 2px;
+    border-color: #7e7d77;
+    border-style: dashed;
+    color: #000000;
+  }
+
+  table.CompletedGoals td, table.CompletedGoals th {
+    border-width: 2px;
+    border-color: #7e7d77;
+    border-style:dashed;
+    padding: 3px;
+  }
+
+  table.CompletedGoals thead {
     background-color: #05e684;
   }
 
