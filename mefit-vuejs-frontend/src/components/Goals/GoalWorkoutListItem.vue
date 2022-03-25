@@ -8,7 +8,7 @@
             required: true
         }
     });
-    const {goalworkout} = toRefs(props);
+    const { goalworkout } = toRefs(props);
     const store = useStore();
     const selectedGoalWorkoutId = computed(() => store.state.goalWorkoutDetailsId);
 
@@ -16,8 +16,9 @@
     const workout = computed(() => store.getters.getWorkoutById(goalworkout.value.workoutId));
     console.log("GoalWorkoutListItem: workout:", workout.value);
 
-    const onSetCompleteClicked = () => {
-
+    const onSetCompleteClicked = (goalWorkoutObj) => {
+        console.log("set goalWorkout complete:", goalWorkoutObj);
+        store.dispatch("setGoalWorkoutComplete", goalWorkoutObj);
     }
 
 </script>
@@ -29,7 +30,7 @@
                 <b>{{ workout.name }}</b> - Status: <i>{{ goalworkout.complete ? "completed" : "in progress" }}</i>
             </span>
             <span>
-                <button v-bind:click="onSetCompleteClicked">Set completed</button>
+                <button v-on:click="onSetCompleteClicked(goalworkout)">Set completed</button>
             </span>
         </header>
     </div>
