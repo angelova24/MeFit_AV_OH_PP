@@ -1,6 +1,6 @@
 <script setup>
 
-    import { computed } from "@vue/runtime-core";
+    import { computed } from "vue";
     import { useStore } from "vuex";
 
     const props = defineProps({
@@ -26,14 +26,14 @@
 
     header {
         padding: 10px;
-        background: lightgoldenrodyellow;
-        border: 1px solid lightcyan;
+        background: rgb(250, 250, 192);
+        border: 1px solid rgb(248, 248, 235);
     }
 
     header.selected {
         padding: 10px;
         background: rgb(250, 250, 135);
-        border: 1px solid lightcyan;   
+        border: 1px solid rgb(248, 248, 235);
     }
 
 </style>

@@ -229,7 +229,7 @@ const store = createStore({
             state.goalDetailsId = payload;
         },
         setGoalWorkoutDetailsId: (state, payload) => {
-            state.workoutDetailsId = payload;
+            state.goalWorkoutDetailsId = payload;
         },
     },
     actions: {
@@ -376,7 +376,7 @@ const store = createStore({
                 else
                 {
                     const goal = await response.json();
-                    goals.push(goal);                    
+                    goals.push(goal);       
                 }
             }
             store.commit("addGoals", goals);

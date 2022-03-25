@@ -32,7 +32,6 @@
                 ></WorkoutList>
             </section>
             <section v-if="workout != undefined" title="workoutDetails">
-                Details of workout:
                 <WorkoutDetails v-bind:workout="workout"></WorkoutDetails>
             </section>
             <section v-if="JSON.stringify(workouts) === '[]'">

@@ -40,8 +40,11 @@
 </template>
 
 <style scoped>
+    
     header {
-        color: white;
-        background-color: #333;
+        background: black;
+        color:white;
+        padding: 10px;
     }
+    
 </style>
