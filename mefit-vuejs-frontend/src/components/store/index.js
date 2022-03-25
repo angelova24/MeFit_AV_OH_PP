@@ -209,6 +209,14 @@ const store = createStore({
         setWorkoutDetailsId: (state, payload) => {
             state.workoutDetailsId = payload;
         },
+        setCompletedWorkout:(state, payload) =>{
+            const {goal, workout} = payload;
+            const storeGoal = state.goals.find(g => g.id === goal.id);
+            console.log(storeGoal)
+            const storeWorkout = storeGoal.workouts.find(w => w.workoutId === workout.workoutId)
+            console.log(storeWorkout)
+            storeWorkout.complete = true;
+        },
         addPrograms: (state, payload) => {
             for (const program of payload) {
                 state.programs.push(program);    
@@ -469,25 +477,25 @@ const store = createStore({
                 store.commit("setProfile", updatedProfile);
             }
         },
-        updateGoalWorkout: async (store, workout,goal) => {
-            let updatedGoalWorkout = goal;
+        updateGoalWorkout: async (store, goalWorkoutData) => {           
+            const {goal, workout} = goalWorkoutData;
             console.log(goal);
-            const response = await fetch(`${apiUrl}/goal/${goal.id}/${workout.id}/SetCompleted`, {
+            console.log(workout);
+            const response = await fetch(`${apiUrl}/goal/${goal.id}/workout/${workout.workoutId}/SetCompleted`, {
                 method: "PATCH",
                 headers: {
                     "Authorization": "Bearer " + store.state.token,
                     "Content-Type": "application/json",
                     
-                },                
-                body: JSON.stringify(goal)
+                },                                
             });
             if(!response.ok)
             {
-                console.log("updateGoalWorkout to DB failed...!!!", goal)                
+                console.log("updateGoalWorkout to DB failed...!!!", workout)                
             }
             else{                
-                console.log("updatedGoalWorkout in DB done...", updatedGoalWorkout);                
-                store.commit("setProfile", updatedGoalWorkout);
+                console.log("updatedGoalWorkout in DB done...", workout);                
+                store.commit("setCompletedWorkout", goalWorkoutData);
             }
         }
     },
