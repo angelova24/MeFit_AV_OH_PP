@@ -185,15 +185,9 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>Completed Workout 1</td>
-    </tr>
-    <tr>
-      <td>Completed Workout 2</td>
-    </tr>
-    <tr>
-      <td>Completed Workout 3</td>
-    </tr>
+    <tr v-for="workout in currentGoals[0].workouts" :key="workout.id">
+      <td v-if="workout.complete === true">{{(store.getters.getWorkoutById(workout.workoutId).name) + " is now completed"}}</td>
+    </tr>        
   </tbody>
 </table>
 </template>
