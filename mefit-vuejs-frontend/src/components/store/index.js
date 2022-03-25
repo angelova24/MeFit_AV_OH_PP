@@ -468,6 +468,27 @@ const store = createStore({
                 console.log("updateProfile to DB done...", updatedProfile);                
                 store.commit("setProfile", updatedProfile);
             }
+        },
+        updateGoalWorkout: async (store, workout,goal) => {
+            let updatedGoalWorkout = goal;
+            console.log(goal);
+            const response = await fetch(`${apiUrl}/goal/${goal.id}/${workout.id}/SetCompleted`, {
+                method: "PATCH",
+                headers: {
+                    "Authorization": "Bearer " + store.state.token,
+                    "Content-Type": "application/json",
+                    
+                },                
+                body: JSON.stringify(goal)
+            });
+            if(!response.ok)
+            {
+                console.log("updateGoalWorkout to DB failed...!!!", goal)                
+            }
+            else{                
+                console.log("updatedGoalWorkout in DB done...", updatedGoalWorkout);                
+                store.commit("setProfile", updatedGoalWorkout);
+            }
         }
     },
     getters: {

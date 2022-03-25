@@ -157,7 +157,7 @@
   <table class="Table">
     <thead>
       <tr>        
-        <th>Current goal of current week</th>
+        <th>Current workouts</th>
         <th>Period</th>
         <th>Status</th>
         <th>Goal</th>
@@ -168,7 +168,7 @@
         
         <td>{{(store.getters.getWorkoutById(workout.workoutId).name)}}</td>
         <td>{{currentGoals[0].startDate.toDateString()}} -- {{currentGoals[0].endDate.toDateString()}}</td>
-        <td><button>Completed {{workout.complete}}</button></td>
+        <td><button v.on:click="onSetCompletedGoalWorkout">Completed {{workout.complete}}</button></td>
       </tr>      
     </tbody>
   </table>
