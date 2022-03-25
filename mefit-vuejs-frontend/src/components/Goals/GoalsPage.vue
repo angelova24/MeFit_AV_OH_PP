@@ -96,6 +96,11 @@
         });
       
     }
+    const onSetCompletedGoalWorkout = (workoutData) => {
+      console.log("button clicked")
+      store.dispatch("updateGoalWorkout", workoutData)      
+    } 
+    
   //#endregion
  //const workoutById = store.getter.getWorkoutById(workout.workoutId)
 </script>
@@ -167,8 +172,8 @@
       <tr v-for="workout in currentGoals[0].workouts" :key="workout.id">
         
         <td>{{(store.getters.getWorkoutById(workout.workoutId).name)}}</td>
-        <td>{{currentGoals[0].startDate.toDateString()}} -- {{currentGoals[0].endDate.toDateString()}}</td>
-        <td><button v.on:click="onSetCompletedGoalWorkout">Completed {{workout.complete}}</button></td>
+        <td>{{currentGoals[0].startDate}} -- {{currentGoals[0].endDate}}</td>
+        <td><button v-on:click="onSetCompletedGoalWorkout({workout:workout, goal:currentGoals[0]})">Completed {{workout.complete}}</button></td>
       </tr>      
     </tbody>
   </table>
