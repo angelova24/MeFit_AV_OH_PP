@@ -26,9 +26,6 @@ namespace MeFit.API.Profiles
                 .ForMember(wdto => wdto.Sets, opt =>
                 opt.MapFrom(w => w.Sets))
                 .ReverseMap();
-
-            CreateMap<GoalWorkout, WorkoutCompleteDTO>()
-                .ReverseMap();
         }
     }
 }
