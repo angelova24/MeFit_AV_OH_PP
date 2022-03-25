@@ -119,19 +119,19 @@
 
 </script>
  
-<template>
+<template>  
   <div v-show="isLoading" class="important">
     Please wait while data is being processed...<br>
     <img src="./assets/Loading.gif" />
   </div>
   <div v-bind:class="{ loadInProgress: isLoading }">
     <header>
-      <button v-on:click="generateToken">Generate new user Token</button>
-      <button v-on:click="readData">Reload data from Db</button>
+      <!-- <button v-on:click="generateToken">Generate new user Token</button>
+      <button v-on:click="readData">Reload data from Db</button> -->
       <TheHeader 
         v-on:logout="onLogout"
         v-on:changepassword="onChangePassword"
-      ></TheHeader>
+      ></TheHeader>            
     </header>
     <hr />
     <main>
@@ -145,6 +145,7 @@
 </template>
 
 <style>
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
