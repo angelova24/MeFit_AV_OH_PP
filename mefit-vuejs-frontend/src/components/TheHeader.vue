@@ -31,7 +31,6 @@ const onSelectUserChange = (event) => {
 <template>
   <div>
     <nav>
-      Navigation Bar:
       <ul>
         <li>
           <router-link v-bind:to="baseUrl + 'dashboard'" active-class="active">

@@ -56,8 +56,9 @@
         column-gap: 10px;        
     }
     section {
-        border: 1px dashed;
-        border-color: red;
+        border: 1px groove;
+        border-color: lightskyblue;
+        box-shadow: 2px 2px 2px 1px grey;
     }
     img {
         width: 300px;

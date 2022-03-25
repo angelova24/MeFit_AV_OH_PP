@@ -57,6 +57,7 @@
     section {
         border: 1px dashed;
         border-color: white;
+        box-shadow: 2px 2px 2px 1px grey;
     }
     .box1 {
         grid-column: 1 / 3;
