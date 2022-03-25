@@ -1,5 +1,6 @@
 <script setup>
     import { computed, toRefs, ref, onMounted } from 'vue';
+    import { useStore } from "vuex";
 
     const props = defineProps({
         goal: {
@@ -23,10 +24,13 @@
         }
     });
 
+    const store = useStore();
+    const selectedGoalId = computed(() => store.state.goalDetailsId);
+
 </script>
 
 <template>
-    <div>
+    <div v-bind:class="{ selected: goal.id === selectedGoalId }">
         <header>
             {{ goalStartDateString }} - {{ goalEndDateString }}
         </header>
@@ -37,8 +41,17 @@
 </template>
 
 <style scoped>
+    
     div {
-        padding: 14px 16px;
-        border: 1px solid green;
+        padding: 10px;
+        background: rgb(250, 250, 192);
+        border: 1px solid rgb(248, 248, 235);
     }
+
+    div.selected {
+        padding: 10px;
+        background: rgb(250, 250, 135);
+        border: 1px solid rgb(248, 243, 235);
+    }
+
 </style>

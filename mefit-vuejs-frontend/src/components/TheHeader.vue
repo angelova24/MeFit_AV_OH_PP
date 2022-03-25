@@ -69,6 +69,16 @@ const onSelectUserChange = (event) => {
         </li>
       </ul>
     </nav>
+    <nav>
+      Contributor Area:
+      <ul>
+        <li>
+          <router-link v-bind:to="baseUrl + '/contribute/exercises'" active-class="active">
+            manage Exercises
+          </router-link>
+        </li>
+      </ul>
+    </nav>
   </div>
 </template>
 

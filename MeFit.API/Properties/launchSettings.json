@@ -24,8 +24,8 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "VaultUri": "https://vault-va-pp-oh.vault.azure.net/",
-        "AZURE_USERNAME": "oliver.hauck@ProserviaGermany.onmicrosoft.com"
+        "AZURE_USERNAME": "oliver.hauck@ProserviaGermany.onmicrosoft.com",
+        "VaultUri": "https://vault-va-pp-oh.vault.azure.net/"
       },
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "dotnetRunMessages": "true"
@@ -34,12 +34,12 @@
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
-      "publishAllPorts": true,
-      "useSSL": true,
       "environmentVariables": {
-        "VaultUri": "https://vault-va-pp-oh.vault.azure.net/",
-        "AZURE_USERNAME": "oliver.hauck@ProserviaGermany.onmicrosoft.com"
-      }
+        "AZURE_USERNAME": "oliver.hauck@ProserviaGermany.onmicrosoft.com",
+        "VaultUri": "https://vault-va-pp-oh.vault.azure.net/"
+      },
+      "publishAllPorts": true,
+      "useSSL": true
     }
   }
 }

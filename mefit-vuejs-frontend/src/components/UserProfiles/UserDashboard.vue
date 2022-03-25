@@ -22,17 +22,19 @@
 
 <template>
     <header>
-        Dashboard
+        Your MeFit Dashboard
     </header>
     <main>
-        <section title="calender">
-            <input type="date" v-bind:value="currentDate" />
+        <section class="box1" title="calender">
+            Today is the day: <input type="date" v-bind:value="currentDate" />
         </section>
         <section v-if="JSON.stringify(goals) !== '[]'" title="List of Goals">
-            <GoalList v-bind:goals="goals"></GoalList>
+            <GoalList 
+                v-bind:goals="goals"
+                header="click on any of your goals to view its details..."
+            ></GoalList>
         </section>
         <section v-if="goal !== undefined" title="Goal details">
-            Details of goal:
             <GoalsDetail v-bind:goal="goal"></GoalsDetail>
         </section>
         <section v-if="JSON.stringify(goals) === '[]'">
@@ -42,20 +44,31 @@
 </template>
 
 <style scoped>
+    
     header {
         font-size: larger;
+        padding: 50px 10px;
     }
     main {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         row-gap: 10px;
-        column-gap: 10px;
-        align-items:stretch;
-        
+        column-gap: 10px;        
+    }
+    .box1 {
+        grid-column: 1 / 3;
     }
     section {
-        flex: 1 1 45%;  /*grow | shrink | basis */
-        border: 2px dashed;
-        border-color: blue;
+        border: 1px groove;
+        border-color: yellow;
+        box-shadow: 2px 2px 2px 1px grey;
+        padding: 10px;
     }
+
+
+    input[type="date"] {
+        background-color: rgb(250, 250, 192);
+        font-size: large;
+    }
+
 </style>

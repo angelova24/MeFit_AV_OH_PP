@@ -9,6 +9,10 @@
         goalworkouts: {
             type: Array,
             required: true
+        },
+        header: {
+            type: String,
+            required: false
         }
     });
 
@@ -21,20 +25,26 @@
 
 <template>
     <div>
-        <header>
-            <b>List of goal's workouts:</b>
+        <header v-if="header">
+            <b>{{ header }}</b>
         </header>
         <main>
             <GoalWorkoutListItem 
                 v-for="goalworkout, index in goalworkouts" 
                 v-bind:goalworkout="goalworkout"
                 v-bind:key="index"
-                v-on:click="onGoalWorkoutListItemClicked($event, goalworkout.workoutId)">
+                v-on:click="onGoalWorkoutListItemClicked($event, goalworkout.id)">
             </GoalWorkoutListItem>
         </main>
     </div>
 </template>
 
 <style scoped>
+
+    header {
+        background: black;
+        color:white;
+        padding: 10px;
+    }
 
 </style>

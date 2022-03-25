@@ -25,14 +25,14 @@
 
     header {
         padding: 10px;
-        background: rgb(210, 236, 210);
-        border: 1px solid lightcyan;
+        background: rgb(219, 248, 219);
+        border: 1px solid rgb(236, 250, 222);
     }
 
     header.selected {
         padding: 10px;
         background: lightgreen;
-        border: 1px solid lightcyan;   
+        border: 1px solid rgb(236, 250, 222);
     }
     
 </style>

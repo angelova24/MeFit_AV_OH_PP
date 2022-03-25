@@ -209,12 +209,16 @@ const store = createStore({
         setWorkoutDetailsId: (state, payload) => {
             state.workoutDetailsId = payload;
         },
-        setCompletedWorkout:(state, payload) =>{
+        setCompletedWorkout: (state, payload) =>{
             const {goal, workout} = payload;
             const storeGoal = state.goals.find(g => g.id === goal.id);
-            console.log(storeGoal)
             const storeWorkout = storeGoal.workouts.find(w => w.workoutId === workout.workoutId)
-            console.log(storeWorkout)
+            storeWorkout.complete = true;
+        },
+        setGoalWorkoutComplete: (state, payload) =>{
+            const goalWorkout = payload;
+            const storeGoal = state.goals.find(g => g.id === goalWorkout.goalId);
+            const storeWorkout = storeGoal.workouts.find(w => w.workoutId === goalWorkout.workoutId)
             storeWorkout.complete = true;
         },
         addPrograms: (state, payload) => {
@@ -237,7 +241,7 @@ const store = createStore({
             state.goalDetailsId = payload;
         },
         setGoalWorkoutDetailsId: (state, payload) => {
-            state.workoutDetailsId = payload;
+            state.goalWorkoutDetailsId = payload;
         },
     },
     actions: {
@@ -384,7 +388,7 @@ const store = createStore({
                 else
                 {
                     const goal = await response.json();
-                    goals.push(goal);                    
+                    goals.push(goal);       
                 }
             }
             store.commit("addGoals", goals);
@@ -479,14 +483,11 @@ const store = createStore({
         },
         updateGoalWorkout: async (store, goalWorkoutData) => {           
             const {goal, workout} = goalWorkoutData;
-            console.log(goal);
-            console.log(workout);
             const response = await fetch(`${apiUrl}/goal/${goal.id}/workout/${workout.workoutId}/SetCompleted`, {
                 method: "PATCH",
                 headers: {
                     "Authorization": "Bearer " + store.state.token,
-                    "Content-Type": "application/json",
-                    
+                    "Content-Type": "application/json"
                 },                                
             });
             if(!response.ok)
@@ -496,6 +497,26 @@ const store = createStore({
             else{                
                 console.log("updatedGoalWorkout in DB done...", workout);                
                 store.commit("setCompletedWorkout", goalWorkoutData);
+            }
+        },
+        setGoalWorkoutComplete: async (store, goalWorkout) => {           
+            const response = await fetch(`${apiUrl}/goal/${goalWorkout.goalId}/workout/${goalWorkout.workoutId}/SetCompleted`, {
+                method: "PATCH",
+                headers: {
+                    "Authorization": "Bearer " + store.state.token,
+                    "Content-Type": "application/json"
+                },                                
+            })
+            .catch(reason => {
+                console.log("setGoalWorkoutComplete to DB failed!!!:", reason)
+            });
+            if(!response.ok)
+            {
+                console.log("setGoalWorkoutComplete to DB failed...!!!", goalWorkout)
+            }
+            else{                
+                console.log("setGoalWorkoutComplete in DB done...", goalWorkout);                
+                store.commit("setGoalWorkoutComplete", goalWorkout);
             }
         }
     },
