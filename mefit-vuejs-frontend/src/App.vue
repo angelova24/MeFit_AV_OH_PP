@@ -121,7 +121,7 @@
  
 <template>
   <div v-show="isLoading" class="important">
-    Please wait while data is being loaded...<br>
+    Please wait while data is being processed...<br>
     <img src="./assets/Loading.gif" />
   </div>
   <div v-bind:class="{ loadInProgress: isLoading }">

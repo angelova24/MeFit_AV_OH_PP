@@ -34,4 +34,5 @@ import { useStore } from "vuex";
         background: rgb(113, 204, 235);
         border: 1px solid lightcyan;   
     }
+    
 </style>

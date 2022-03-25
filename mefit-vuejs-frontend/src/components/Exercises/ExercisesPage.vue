@@ -45,6 +45,7 @@
 </template>
 
 <style scoped>
+    
     header {
         font-size: larger;
         padding: 50px 10px;
@@ -60,7 +61,5 @@
         border-color: lightskyblue;
         box-shadow: 2px 2px 2px 1px grey;
     }
-    img {
-        width: 300px;
-    }
+
 </style>

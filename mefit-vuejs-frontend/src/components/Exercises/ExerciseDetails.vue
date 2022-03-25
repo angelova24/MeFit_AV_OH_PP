@@ -41,6 +41,7 @@
 </template>
 
 <style scoped>
+
     header {
         font-size: larger;
         padding: 20px 10px;
@@ -72,4 +73,5 @@
     .noImage {
         width: 100px;
     }
+    
 </style>
