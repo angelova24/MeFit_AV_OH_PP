@@ -42,4 +42,10 @@
 
 <style scoped>
 
+    header {
+        background: black;
+        color:white;
+        padding: 10px;
+    }
+    
 </style>

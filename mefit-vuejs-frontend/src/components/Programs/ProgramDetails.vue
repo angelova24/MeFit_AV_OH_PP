@@ -31,13 +31,11 @@
 <template>
     <div v-if="program !== undefined">
         <header>
-            <b>{{ program.name }}</b>
+            <b>{{ program.name }}</b><br />
+            (Category: {{ program.category }})
         </header>
         <main>
-            <section title="category">
-                <b>Category:</b> {{ program.category }}
-            </section>
-            <section title="workouts">
+            <section title="Workouts contained in this Program">
                 This program comprises the following wokouts:
                 <WorkoutList v-if="workouts[0] !== undefined" v-bind:workouts="workouts"></WorkoutList>
             </section>
@@ -46,23 +44,24 @@
 </template>
 
 <style scoped>
+    
     header {
         font-size: larger;
+        padding: 20px 10px;
     }
     main {
-        display: flex;
-        flex-wrap: wrap;
-        row-gap: 10px;
+        display: grid;
+        grid-template-columns: 1fr;
+        row-gap: 20px;
         column-gap: 10px;
         align-items:stretch;
+        padding: 10px;
         
     }
     section {
-        flex: 1 1 45%;  /*grow | shrink | basis */
-        border: 2px dashed;
-        border-color: blue;
+        border: 1px dashed;
+        border-color: white;
+        box-shadow: 2px 2px 2px 1px grey;
     }
-    img {
-        width: 300px;
-    }
+
 </style>

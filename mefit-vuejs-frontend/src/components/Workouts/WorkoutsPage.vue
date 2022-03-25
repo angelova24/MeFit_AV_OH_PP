@@ -28,7 +28,7 @@
             <section v-if="JSON.stringify(workouts) !== '[]'" title="workoutList">
                 <WorkoutList 
                     v-bind:workouts="workouts"
-                    header="available Workouts:"
+                    header="Click on any of these workouts to view details..."
                 ></WorkoutList>
             </section>
             <section v-if="workout != undefined" title="workoutDetails">
