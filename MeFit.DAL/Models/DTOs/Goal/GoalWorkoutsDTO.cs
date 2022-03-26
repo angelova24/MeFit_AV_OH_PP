@@ -17,6 +17,6 @@ namespace MeFit.DAL.Models.DTOs.Goal
         public DateTime EndDate { get; set; }
         public bool Achieved { get; set; }
 
-        public List<WorkoutCompleteDTO> Workouts { get; set; }
+        public List<GoalWorkoutReadDTO> Workouts { get; set; }
     }
 }
