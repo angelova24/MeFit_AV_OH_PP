@@ -3,12 +3,13 @@ import { computed, ref } from "@vue/runtime-core";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
-const emits = defineEmits(["logout"]);
-
 const store = useStore();
+const router = useRouter();
 const username = computed(() => store.state.user.username);
 const baseUrl = computed(() => store.state.baseUrl);
-const router = useRouter();
+const isContributor = computed(() => store.state.user.isContributor);
+
+const emits = defineEmits(["logout", "changepassword"]);
 
 const selectedUserValue = ref("username");
 const onSelectUserChange = (event) => {
@@ -16,19 +17,22 @@ const onSelectUserChange = (event) => {
   switch (event.target.value) {
     case "showprofile":
       router.push(`${baseUrl.value}profile`);
-      selectedUserValue.value = "username";
       break;
     case "logout":
       emits("logout");
       break;
+    case "changepassword":
+      emits("changepassword");
+      break;
   }
+  selectedUserValue.value = "username";
 };
 </script>
 
-<template>
+<template> 
+<div id="headerImage"></div> 
   <div>
     <nav>
-      Navigation Bar:
       <ul>
         <li>
           <router-link v-bind:to="baseUrl + 'dashboard'" active-class="active">
@@ -57,19 +61,47 @@ const onSelectUserChange = (event) => {
         </li>
         <li style="float: right">
           <div>
-            <select class="custom-select" v-on:change="onSelectUserChange" v-model="selectedUserValue">
+            <select
+              class="custom-select"
+              v-on:change="onSelectUserChange"
+              v-model="selectedUserValue"
+            >
               <option value="username">logged in as: {{ username }}</option>
               <option value="showprofile">show my profile...</option>
+              <option value="changepassword">change password...</option>
               <option value="logout">log me out...</option>
             </select>
           </div>
         </li>
       </ul>
     </nav>
+    <nav v-if="isContributor">
+      Contributor Area:
+      <ul>
+        <li>
+          <router-link 
+            v-bind:to="baseUrl + 'contribute/exercises'" 
+            active-class="active"
+          >
+            manage Exercises
+          </router-link>
+        </li>
+      </ul>
+    </nav>
   </div>
+  
 </template>
 
 <style scoped>
+#headerImage {
+  border:none;
+  position: relative;
+  right: 30px;
+  padding:65px;
+  background-image: url("../../src/assets/MeFit.png");
+  background-repeat: no-repeat;
+  background-size: 400px;
+}
 .custom-select {
   margin: 0%;
   color: aliceblue;

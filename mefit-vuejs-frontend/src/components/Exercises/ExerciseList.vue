@@ -9,6 +9,10 @@
         exercises: {
             type: Array,
             required: true
+        },
+        header: {
+            type: String,
+            required: false
         }
     });
 
@@ -22,7 +26,7 @@
 <template>
     <div>
         <header>
-            <b>List of available exercises:</b>
+            <b>{{ header }}</b>
         </header>
         <main>
             <ExerciseListItem 
@@ -37,4 +41,10 @@
 
 <style scoped>
 
+    header {
+        background: black;
+        color:white;
+        padding: 10px;
+    }
+    
 </style>

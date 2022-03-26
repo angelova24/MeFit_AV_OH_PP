@@ -32,12 +32,10 @@
 <template>
     <div v-if="workout !== undefined">
         <header>
-            <b>{{ workout.name }}</b>
+            <b>{{ workout.name }}</b><br />
+            (Type: {{ workout.type }})
         </header>
         <main>
-            <section title="type">
-                <b>Type:</b> {{ workout.type }}
-            </section>
             <section title="exerciseSets">
                 This workout comprises the following sets of exercises:
                 <SetList v-if="sets[0] !== undefined" v-bind:sets="sets"></SetList>
@@ -48,23 +46,24 @@
 
 
 <style scoped>
+    
     header {
         font-size: larger;
+        padding: 20px 10px;
     }
     main {
-        display: flex;
-        flex-wrap: wrap;
-        row-gap: 10px;
+        display: grid;
+        grid-template-columns: 1fr;
+        row-gap: 20px;
         column-gap: 10px;
         align-items:stretch;
+        padding: 10px;
         
     }
     section {
-        flex: 1 1 45%;  /*grow | shrink | basis */
-        border: 2px dashed;
-        border-color: blue;
+        border: 1px dashed;
+        border-color: white;
+        box-shadow: 2px 2px 2px 1px grey;
     }
-    img {
-        width: 300px;
-    }
+
 </style>

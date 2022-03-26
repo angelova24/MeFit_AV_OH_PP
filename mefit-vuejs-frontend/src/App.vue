@@ -2,15 +2,18 @@
   import TheHeader from "./components/TheHeader.vue";
   import TheFooter from "./components/TheFooter.vue";
   import { useStore } from "vuex";
-  import { onMounted, toRefs, reactive, computed } from "vue";
+  import { onMounted, toRefs, reactive, computed, ref } from "vue";
   
   const props = defineProps(["keycloak"]);
   const { keycloak } = toRefs(props);
   const store = useStore();
   const baseUrl = computed(() => store.state.baseUrl);
-  
+  const isLoading = ref(false);
+
   const readData = () => {
+    store.commit("resetState");
     console.log("reading data from Db...");
+    isLoading.value = true;
     store.dispatch("fetchExcercises");
     store.dispatch("fetchSets");
     store.dispatch("fetchWorkouts");
@@ -18,8 +21,15 @@
     store.dispatch("fetchUser")
       .then(user => {
         console.log("User received in promise:", user)
-        store.dispatch("fetchProfile", user.profileId)
+        if (user.profileId !== 0) {
+          store.dispatch("fetchProfile", user.profileId)
           .then(profile => store.dispatch("fetchGoals", profile.goals))
+        }
+        else{
+          console.log("you dont have a profile")
+        }
+        setUser();
+        isLoading.value = false;
       });
   }
 
@@ -82,12 +92,11 @@
 
   const generateToken = () => { 
     updateToken(50000);
-
   }
 
   const onLogout = event => {
     const options = {
-      redirectUri: window.location.protocol + "//" + window.location.host + baseUrl.value + "login"
+      redirectUri: window.location.protocol + "//" + window.location.host + "login"
     };
     console.log("current Url:", options.redirectUri);
     keycloak.value.logout(options)
@@ -96,21 +105,48 @@
       });
   }
 
+  const onChangePassword = event => {
+    const options = {
+      loginHint: store.state.userIdentity.email,
+      action: "UPDATE_PASSWORD",
+      //redirectUri: window.location.protocol + "//" + window.location.host + window.location.pathname
+    };
+    console.log("current options:", options);
+    keycloak.value.login(options)
+      .then(parameter => {
+        console.log("You are back from changing your password...", parameter);
+      });
+  }
+
 </script>
  
-<template>
-  <div>
-    <button v-on:click="generateToken">Generate Token</button>
-    <button v-on:click="readData">Read data from Db</button>
-    <TheHeader v-on:logout="onLogout"></TheHeader>
+<template>  
+  <div v-show="isLoading" class="important">
+    Please wait while data is being processed...<br>
+    <img src="./assets/Loading.gif" />
+  </div>
+  <div v-bind:class="{ loadInProgress: isLoading }">
+    <header>
+      <!-- <button v-on:click="generateToken">Generate new user Token</button>
+      <button v-on:click="readData">Reload data from Db</button> -->
+      <TheHeader 
+        v-on:logout="onLogout"
+        v-on:changepassword="onChangePassword"
+      ></TheHeader>            
+    </header>
     <hr />
-    <router-view></router-view>
+    <main>
+      <router-view></router-view>
+    </main>
     <hr />
-    <TheFooter></TheFooter>
+    <footer>
+      <TheFooter></TheFooter>
+    </footer>
   </div>
 </template>
 
 <style>
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -119,4 +155,21 @@
   color: #2c3e50;
   margin-top: 60px;
 }
+
+.loadInProgress {
+  opacity: 0.3;
+}
+
+.important {
+  position: fixed;
+  left: 40%;
+  top: 30%;
+  background: white;
+  opacity: 1;
+  border: solid 2px black;
+  z-index: 10;
+  box-shadow: 5px 10px #888888;
+  padding: 30px;
+}
+
 </style>

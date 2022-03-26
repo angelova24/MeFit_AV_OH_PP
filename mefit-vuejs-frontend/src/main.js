@@ -31,7 +31,7 @@ keycloak.init({
         //alert(authenticated ? "authenticated" : "not authenticated");
     })
     .catch(error => {
-        alert("failed to initialize: " + error);
+        alert("failed to initialize:", error);
         console.log("failed to initialize:", error);
     });
 //#endregion

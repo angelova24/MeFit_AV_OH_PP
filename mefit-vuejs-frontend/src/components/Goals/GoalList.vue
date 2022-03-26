@@ -9,6 +9,10 @@
         goals: {
             type: Array,
             required: true
+        },
+        header: {
+            type: String,
+            required: false
         }
     });
 
@@ -22,7 +26,7 @@
 <template>
     <div>
         <header>
-            <b>List of goals:</b>
+            <b>{{ header }}</b>
         </header>
         <main>
             <GoalListItem 
@@ -36,5 +40,11 @@
 </template>
 
 <style scoped>
-
+    
+    header {
+        background: black;
+        color:white;
+        padding: 10px;
+    }
+    
 </style>

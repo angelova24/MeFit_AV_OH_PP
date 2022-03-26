@@ -19,5 +19,6 @@ namespace MeFit.DAL.Models.DTOs.Exercise
         public string ImageURL { get; set; }
         [MaxLength(200)]
         public string VideoURL { get; set; }
+        public int OwnerId { get; set; }
     }
 }
