@@ -28,6 +28,7 @@
         else{
           console.log("you dont have a profile")
         }
+        setUser();
         isLoading.value = false;
       });
   }
@@ -167,6 +168,7 @@
   border: solid 2px black;
   z-index: 10;
   box-shadow: 5px 10px #888888;
+  padding: 30px;
 }
 
 </style>

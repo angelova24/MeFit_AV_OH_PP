@@ -3,6 +3,7 @@ import UserDashboard from "../UserProfiles/UserDashboard.vue";
 import LoginPage from "../UserProfiles/LoginPage.vue";
 import GoalsPage from "../Goals/GoalsPage.vue";
 import ExercisesPage from "../Exercises/ExercisesPage.vue";
+import ExercisesManagePage from "../Exercises/ExercisesManagePage.vue";
 import WorkoutPage from "../Workouts/WorkoutsPage.vue";
 import ProgramsPage from "../Programs/ProgramsPage.vue";
 import ProfilePage from "../UserProfiles/ProfilePage.vue";
@@ -22,23 +23,27 @@ const routes = [
         component: LoginPage
     },
     {
-        path: `${baseUrl}/goals`,
+        path: `${baseUrl}goals`,
         component: GoalsPage
     },
     {
-        path: `${baseUrl}/exercises`,
+        path: `${baseUrl}exercises`,
         component: ExercisesPage
     },
     {
-        path: `${baseUrl}/workouts`,
+        path: `${baseUrl}contribute/exercises`,
+        component: ExercisesManagePage
+    },
+    {
+        path: `${baseUrl}workouts`,
         component: WorkoutPage
     },
     {
-        path: `${baseUrl}/programs`,
+        path: `${baseUrl}programs`,
         component: ProgramsPage
     },
     {
-        path: `${baseUrl}/profile`,
+        path: `${baseUrl}profile`,
         component: ProfilePage
     }
 ];

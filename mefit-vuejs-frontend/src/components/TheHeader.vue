@@ -3,12 +3,13 @@ import { computed, ref } from "@vue/runtime-core";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
-const emits = defineEmits(["logout", "changepassword"]);
-
 const store = useStore();
+const router = useRouter();
 const username = computed(() => store.state.user.username);
 const baseUrl = computed(() => store.state.baseUrl);
-const router = useRouter();
+const isContributor = computed(() => store.state.user.isContributor);
+
+const emits = defineEmits(["logout", "changepassword"]);
 
 const selectedUserValue = ref("username");
 const onSelectUserChange = (event) => {
@@ -69,11 +70,11 @@ const onSelectUserChange = (event) => {
         </li>
       </ul>
     </nav>
-    <nav>
+    <nav v-if="isContributor">
       Contributor Area:
       <ul>
         <li>
-          <router-link v-bind:to="baseUrl + '/contribute/exercises'" active-class="active">
+          <router-link v-bind:to="baseUrl + 'contribute/exercises'" active-class="active">
             manage Exercises
           </router-link>
         </li>

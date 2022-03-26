@@ -2,16 +2,17 @@
     import { useStore } from 'vuex';
     import { computed } from 'vue';
     import ExerciseList from './ExerciseList.vue';
-    import ExerciseDetails from './ExerciseDetails.vue';  
+    import ExerciseForm from './ExerciseForm.vue';  
 
     const store = useStore();
 
-    //--- get all Exercises from Store
-    const exercises = computed(() => store.state.exercises);
+    //--- get all Exercises from current user from Store
+
+    const exercises = computed(() => store.getters.getExercisesByOwnerId(store.state.user.id));
 
     //--- get id of selected exercise
     const exerciseDetailsId = computed(() => store.state.exerciseDetailsId);
-    console.log(`ExercisePage: selected exerciseid: ${exerciseDetailsId.value}`);
+    console.log(`ExerciseManagePage: selected exerciseid: ${exerciseDetailsId.value}`);
     //--- get selected exercise
     const exercise = computed(() => store.getters.getExerciseById(exerciseDetailsId.value));
     console.log(`ExercisePage: selected exercise: ${exercise.value}`);
@@ -25,20 +26,19 @@
             Manage exercises...
         </header>
         <main>
-            <section v-if="JSON.stringify(exercises) !== '[]'" title="exerciseList">
+            <section v-if="exercises.length !== 0" title="exerciseList">
                 <ExerciseList 
                     v-bind:exercises="exercises"
-                    header="Click on any of these exercises to view details..."
+                    header="These Exercises have already been added by you:"
                 ></ExerciseList>
             </section>
-            <section v-if="exercise !== undefined" title="exerciseDetails">
-                <ExerciseDetails 
-                    v-bind:exercise="exercise"
-                ></ExerciseDetails>
+            <section v-if="exercises.length === 0">
+                You have no exercises added yet...
             </section>
-            <section v-if="JSON.stringify(exercises) === '[]'">
-                We are sorry, but currently no exercises are available.<br />
-                Please try again later...
+            <section title="Details of Exercise">
+                <ExerciseForm>
+                    v-bind:exercise="exercise"
+                ></ExerciseForm>
             </section>
         </main>
     </div>

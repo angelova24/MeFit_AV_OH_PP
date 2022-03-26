@@ -266,6 +266,30 @@ const store = createStore({
                 console.log("Exercises received:", exercises);
             }
         },
+        addExercise: async (store, newExercise) => {
+            console.log("adding Exercise to Db:", newExercise);
+            let addedExercise = newExercise;
+            const response = await fetch(`${apiUrl}/exercise`, {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + store.state.token,
+                    "Content-Type": "application/json",
+                },                
+                body: JSON.stringify(newExercise)
+            })
+            .catch(reason => {
+                console.log("addExercise to DB failed, because:", reason);
+            });
+            if(!response.ok)
+            {
+                console.log("addExercise to DB failed...!!!", newExercise);
+            }
+            else{
+                addedExercise = await response.json();
+                console.log("addExercise to DB done...", addedExercise);                
+                store.commit("addExercise", addedExercise);   //--- mutation must be created, but missing ownerId in API endpoint yet... 
+            }
+        },
         fetchSets: async store => {
             const response = await fetch(`${apiUrl}/Sets`, {
                 method: "GET",
@@ -523,6 +547,9 @@ const store = createStore({
     getters: {
         getExerciseById: state => id => {
             return state.exercises.find(ex => ex.id === id);
+        },
+        getExercisesByOwnerId: state => id => {
+            return state.exercises.filter(ex => ex.ownerId === id);
         },
         getSetById: state => id => {
             return state.sets.find(s => s.id === id);
