@@ -29,7 +29,8 @@ const onSelectUserChange = (event) => {
 };
 </script>
 
-<template>
+<template> 
+<div id="headerImage"></div> 
   <div>
     <nav>
       <ul>
@@ -60,7 +61,11 @@ const onSelectUserChange = (event) => {
         </li>
         <li style="float: right">
           <div>
-            <select class="custom-select" v-on:change="onSelectUserChange" v-model="selectedUserValue">
+            <select
+              class="custom-select"
+              v-on:change="onSelectUserChange"
+              v-model="selectedUserValue"
+            >
               <option value="username">logged in as: {{ username }}</option>
               <option value="showprofile">show my profile...</option>
               <option value="changepassword">change password...</option>
@@ -74,16 +79,29 @@ const onSelectUserChange = (event) => {
       Contributor Area:
       <ul>
         <li>
-          <router-link v-bind:to="baseUrl + 'contribute/exercises'" active-class="active">
+          <router-link 
+            v-bind:to="baseUrl + 'contribute/exercises'" 
+            active-class="active"
+          >
             manage Exercises
           </router-link>
         </li>
       </ul>
     </nav>
   </div>
+  
 </template>
 
 <style scoped>
+#headerImage {
+  border:none;
+  position: relative;
+  right: 30px;
+  padding:65px;
+  background-image: url("../../src/assets/MeFit.png");
+  background-repeat: no-repeat;
+  background-size: 400px;
+}
 .custom-select {
   margin: 0%;
   color: aliceblue;
