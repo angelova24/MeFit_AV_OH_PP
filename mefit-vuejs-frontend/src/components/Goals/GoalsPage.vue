@@ -117,7 +117,7 @@ const onSetCompletedGoalWorkout = (workoutData) => {
         <GoalsDetail v-bind:goal="goal"></GoalsDetail>
       </section>
       <!-- <section class="parentSection" title="set new Goal" v-if="currentGoals.length === 0"> -->
-      <section title="set new Goal" v-if="currentGoals.length >= 0">        
+      <div title="set new Goal" v-if="currentGoals.length >= 0">        
         <section title="available programs for new goal">
           <ProgramList
             v-bind:programs="programs"
@@ -153,7 +153,7 @@ const onSetCompletedGoalWorkout = (workoutData) => {
         selected: {{ goalDetailsId }}
       </section>
         <button class="box5" v-on:click="onSetGoalClicked">Set Goal</button>
-      </section>
+      </div>
       <section v-if="JSON.stringify(goals) === '[]'">
         We are sorry, but currently no goals are available.<br />
         Please try again later...
@@ -238,14 +238,14 @@ section {
   border: 1px groove;
   border-color: lightskyblue;  
   width: 80%;
-  position: relative;
-  left: 10px;
+  position:relative;
+  left: 180px;
   background-color: aliceblue;  
 }
 body {
   background-image: url("../../src/assets/crossfitGreen.jpg");
   background-repeat: no-repeat;
-  background-size: 1900px 800px;
+  background-size: 1900px 900px;
   padding-bottom: 25px;
 }
 section.parentSection {
