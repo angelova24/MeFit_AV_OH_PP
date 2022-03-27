@@ -23,8 +23,8 @@ console.log(`selected program: ${program.value}`);
 <template>
   <body>
     <div>
-      <h3 id="h3tag">Everything about MeFit fitness programs...</h3>
       <main>
+        <h3 id="h3tag">Everything about MeFit fitness programs...</h3>
         <section v-if="JSON.stringify(programs) !== '[]'" title="programList">
           <ProgramList
             v-bind:programs="programs"
@@ -56,16 +56,17 @@ main {
 }
 section {
   border: 1px groove;
-  border-color: lightskyblue;  
+  border-color: lightskyblue;
   width: 70%;
   position: relative;
   left: 290px;
-  background-color: aliceblue;  
+  background-color: aliceblue;
 }
 body {
   background-image: url("../../src/assets/crossfitGreen.jpg");
   background-repeat: no-repeat;
-  background-size: 1900px 600px;
+  position: relative;
+  background-size: 2600px 1100px;
   padding-bottom: 25px;
 }
 #h3tag {

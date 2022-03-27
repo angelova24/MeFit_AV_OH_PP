@@ -61,14 +61,15 @@ section {
   box-shadow: 2px 2px 2px 1px grey;
   width: 80%;
   position: relative;
-  left: 180px;
+  left: 280px;
   background-color: aliceblue;  
 }
 body {
   background-image: url("../../src/assets/crossfitGreen.jpg");
-  background-size: 1900px 925px;
+  background-size: 2600px 1100px;
   background-repeat: no-repeat;
   padding-bottom: 25px;
+  position: relative;
 }
 
 #h3tag {
