@@ -65,7 +65,6 @@ section {
 body {
   background-image: url("../../src/assets/crossfitGreen.jpg");
   background-repeat: no-repeat;
-  position: relative;
   background-size: 2600px 1100px;
   padding-bottom: 25px;
 }
