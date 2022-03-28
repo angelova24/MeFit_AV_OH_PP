@@ -79,4 +79,18 @@ body {
   position: relative;
   left: 10px;
 }
+@media (max-width: 2559px) {
+  body {
+    background-size: 1900px 1100px;
+  }
+  section {
+  border: 1px groove;
+  border-color: lightskyblue;
+  box-shadow: 2px 2px 2px 1px grey;
+  width: 80%;
+  position: relative;
+  left: 200px;
+  background-color: aliceblue;  
+}    
+}
 </style>
