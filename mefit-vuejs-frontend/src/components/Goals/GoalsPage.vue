@@ -110,117 +110,145 @@ const onSetCompletedGoalWorkout = (workoutData) => {
 
 <template>
   <body>
-    <div>Goals Page</div>
-    <main>
-      <section v-if="goal !== undefined" title="goalDetails">
-        Details of goal:
-        <GoalsDetail v-bind:goal="goal"></GoalsDetail>
-      </section>
-      <!-- <section class="parentSection" title="set new Goal" v-if="currentGoals.length === 0"> -->
-      <section title="set new Goal" v-if="currentGoals.length >= 0">        
-        <section title="available programs for new goal">
-          <ProgramList
-            v-bind:programs="programs"
-            v-on:programListItemClicked="OnAddProgram"
-            header="You can add any of these programs to your new goal (click to add)"
-          ></ProgramList>
-        </section>        
-        <section class="box3" title="available workouts for new goal">
-          <WorkoutList
-            v-bind:workouts="workouts"
-            v-on:workoutListItemClicked="OnAddWorkOut"
-            header="You can add any of these workouts to your new goal (click to add)"
-          ></WorkoutList>
-        </section>
-        <section class="box2" title="new goal">          
-          <WorkoutList
-            v-if="workoutsInNewGoal"
-            v-bind:workouts="workoutsInNewGoal"
-            v-on:workoutListItemClicked="OnRemoveWorkOut"
-            header="These workouts have been added to your new goal (click to remove)"
-          ></WorkoutList>
-        </section>
-        <section title="set start date of new goal">
-          my new Goal will start on:
-          <input
-            type="date"
-            v-model="newGoalStartDateString"
-            v-bind:min="todayString"
-          />
-        </section>
-        <section v-if="JSON.stringify(goals) !== '[]'" title="GoalList">
-        <GoalList v-bind:goals="goals" header="your Goals:"></GoalList>
-        selected: {{ goalDetailsId }}
-      </section>
-        <button class="box5" v-on:click="onSetGoalClicked">Set Goal</button>
-      </section>
-      <section v-if="JSON.stringify(goals) === '[]'">
-        We are sorry, but currently no goals are available.<br />
-        Please try again later...
-      </section>
-    </main>
-
-    <table class="Table">
-      <thead>
-        <tr>
-          <th>Current workouts</th>
-          <th>Period</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody v-if="currentGoals.length > 0">
-        <tr v-for="workout in currentGoals[0].workouts" :key="workout.id">
-          <td>{{ store.getters.getWorkoutById(workout.workoutId).name }}</td>
-          <td>
-            {{ currentGoals[0].startDate }} -- {{ currentGoals[0].endDate }}
-          </td>
-          <td>
-            <button
-              v-on:click="
-                onSetCompletedGoalWorkout({
-                  workout: workout,
-                  goal: currentGoals[0],
-                })
-              "
-            >
-              Complete !
+    <h3 id="h3tag">Goals Page</h3>
+    <div class="styleWrapper">
+      <main>
+        <!-- <section class="parentSection" title="set new Goal" v-if="currentGoals.length === 0"> -->
+        <div title="set new Goal" v-if="currentGoals.length >= 0">
+          <section class="programList" title="available programs for new goal">
+          <a href="#">
+            <ProgramList
+              v-bind:programs="programs"
+              v-on:programListItemClicked="OnAddProgram"
+              header="You can add any of these programs to your new goal (click to add)"
+            ></ProgramList></a>
+          </section>
+          <section
+            class="availableWorkouts"            
+            title="available workouts for new goal"
+          >
+          <a href="#">
+            <WorkoutList
+              v-bind:workouts="workouts"
+              v-on:workoutListItemClicked="OnAddWorkOut"
+              header="You can add any of these workouts to your new goal (click to add)"
+            ></WorkoutList>
+          </a>
+          </section>
+          <section class="newGoalBox" title="new goal">
+            <a href="#">
+            <WorkoutList
+              v-if="workoutsInNewGoal"
+              v-bind:workouts="workoutsInNewGoal"
+              v-on:workoutListItemClicked="OnRemoveWorkOut"
+              header="These workouts have been added to your new goal (click to remove)"
+            ></WorkoutList></a>            
+          </section>
+          <section class="dateSection" title="set start date of new goal">
+            Select a start date for goal:
+            <input
+              type="date"
+              v-model="newGoalStartDateString"
+              v-bind:min="todayString"
+            />
+            <button class="setGoalButton" v-on:click="onSetGoalClicked">
+              Set Goal
             </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+          </section>
+          <br />
+          <br />
+          <section
+            v-if="JSON.stringify(goals) !== '[]'"
+            title="GoalList"
+            class="scrollList"
+          >
+            <a href="#">
+              <GoalList v-bind:goals="goals" header="Your goals:"></GoalList>
+            </a>
+          </section>
+          <br />
 
-    <br />
-    <table class="CompletedWorkoutsTable">
-      <thead>
-        <tr>
-          <th>Recently Completed</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="workout in currentGoals[0].workouts" :key="workout.id">
-          <td v-if="workout.complete === true">
-            {{
-              store.getters.getWorkoutById(workout.workoutId).name +
-              " is now completed"
-            }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <br />
-    <table class="CompletedGoals">
-      <thead>
-        <tr>
-          <th>Completed Goals</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-bind:goals="goals">
-          <td v-if="JSON.stringify(goals) !== '[]'">goals is empty</td>
-        </tr>
-      </tbody>
-    </table>
+          <section
+            v-if="goal !== undefined"
+            title="goalDetails"
+            class="goalDetails"
+          >
+            <h3>Details of goal:</h3>
+            <GoalsDetail v-bind:goal="goal"></GoalsDetail>
+          </section>
+        </div>
+        <section v-if="JSON.stringify(goals) === '[]'">
+          We are sorry, but currently no goals are available.<br />
+          Please try again later...
+        </section>
+        <table class="Table">
+          <thead>
+            <tr>
+              <th>Current workouts</th>
+              <th>Start date / Finish date</th>
+              <th>Ready?</th>
+            </tr>
+          </thead>
+          <tbody v-if="currentGoals.length > 0">
+            <tr v-for="workout in currentGoals[0].workouts" :key="workout.id">            
+              <td>
+                {{ store.getters.getWorkoutById(workout.workoutId).name }}
+              </td>
+              <td>
+                {{ currentGoals[0].startDate }} -- {{ currentGoals[0].endDate }}
+              </td>
+              <td>
+                <button
+                  v-on:click="
+                    onSetCompletedGoalWorkout({
+                      workout: workout,
+                      goal: currentGoals[0],
+                    })
+                  "
+                >
+                  Complete !
+                </button>
+              </td>
+            </tr>              
+          </tbody>
+        </table>
+        <table class="CompletedWorkoutsTable">
+          <thead>
+            <tr>
+              <th>Recently completed Workouts</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="workout in currentGoals[0].workouts" :key="workout.id">
+              <td v-if="workout.complete === true">
+                {{
+                  store.getters.getWorkoutById(workout.workoutId).name +
+                  " is now completed"
+                }}
+              </td>
+              <td v-else>
+                {{
+                  store.getters.getWorkoutById(workout.workoutId).name +
+                  " in process"
+                }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table class="CompletedGoals">
+          <thead>
+            <tr>
+              <th>Completed Goals</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-bind:goals="goals">
+              <td v-if="JSON.stringify(goals) !== '[]'">goals is empty</td>
+            </tr>
+          </tbody>
+        </table>
+      </main>
+    </div>
   </body>
 </template>
 
@@ -234,81 +262,111 @@ main {
   row-gap: 10px;
   column-gap: 10px;
 }
+#h3tag {
+  color: white;
+  position: relative;
+  top: 5px;
+  padding: 2px;
+}
+.scrollList a {
+  color: black;
+  text-decoration: none;
+}
+.availableWorkouts a {
+  color: black;
+  text-decoration: none;
+}
+.programList a {
+  color: black;
+  text-decoration: none;
+}
+.newGoalBox a {
+  color: black;
+  text-decoration: none;
+}
+.scrollList {
+  width: 1000px;
+  height: 150px;
+  overflow-y: auto;
+  position: relative;
+  bottom: 40px;
+  left: 800px;
+}
+.goalDetails {
+  width: 1000px;
+  height: 220px;
+  overflow-y: auto;
+  position: relative;
+  bottom: 58px;
+  left: 800px;
+  background-color: aliceblue;
+}
+.dateSection{
+  background: #050505;
+  color: #fefbfb;
+  padding: 5px;
+  width: 990px;
+}
 section {
   border: 1px groove;
-  border-color: lightskyblue;  
-  width: 80%;
+  border-color: lightskyblue;
+  width: 1000px;
   position: relative;
-  left: 10px;
-  background-color: aliceblue;  
+  left: 800px;
+  background-color: aliceblue;
 }
 body {
   background-image: url("../../src/assets/crossfitGreen.jpg");
   background-repeat: no-repeat;
-  background-size: 1900px 800px;
-  padding-bottom: 25px;
+  background-size: 2600px 1100px;
 }
-section.parentSection {
-  display: -moz-box;
-  width: 40%;
-  
-}
-.box1 {
-  grid-column: 1 / 3;
-  padding: 0%;
-}
-.box2 {
-  grid-row: 2 / 4;
-  background: #bac39a;
-  padding: 0%;
-}
-.box3 {
-  grid-column: 2;
-  padding: 0%;
-}
-.box5 {
+.setGoalButton {
   grid-column: 1;
-  padding: 0%;
-  width: 20%;
+  padding: 5px;
+  width: 10%;
+  position: relative;
+  left: 20px;
 }
 table.Table {
-  width: 100%;
+  width: 1000px;
   background-color: #fefbfb;
   border-collapse: collapse;
   border-width: 2px;
-  border-color: #7e7d77;
-  border-style: dashed;
+  border-style: double;
   color: #000000;
+  position: relative;
+  bottom: 58px;
+  left: 800px;
 }
 
-table.Table td,
-table.Table th {
+table.Table td {
   border-width: 2px;
-  border-color: #7e7d77;
-  border-style: dashed;
-  padding: 3px;
+  border-color: #252521;
+  border-style: double;
+  padding: 4px;
 }
-
 table.Table thead {
   background-color: #cfcfcf;
 }
-
 table.CompletedWorkoutsTable {
-  width: 100%;
+  width: 1000px;
   text-align: center;
   background-color: #fefbfb;
   border-collapse: collapse;
   border-width: 2px;
-  border-color: #7e7d77;
-  border-style: dashed;
+  border-color: #252521;
+  border-style: double;
   color: #000000;
+  position: relative;
+  bottom: 58px;
+  left: 800px;
 }
 
 table.CompletedWorkoutsTable td,
 table.CompletedWorkoutsTable th {
   border-width: 2px;
-  border-color: #7e7d77;
-  border-style: dashed;
+  border-color: #252521;
+  border-style: double;
   padding: 3px;
 }
 
@@ -318,25 +376,38 @@ table.CompletedWorkoutsTable thead {
 
 /*  */
 table.CompletedGoals {
-  width: 100%;
+  width: 1000px;
   text-align: center;
   background-color: #fefbfb;
   border-collapse: collapse;
   border-width: 2px;
-  border-color: #7e7d77;
-  border-style: dashed;
+  border-color: #252521;
+  border-style: double;
   color: #000000;
+  position: relative;
+  bottom: 58px;
+  left: 800px;
 }
 
 table.CompletedGoals td,
 table.CompletedGoals th {
   border-width: 2px;
-  border-color: #7e7d77;
-  border-style: dashed;
+  border-color: #252521;
+  border-style: double;
   padding: 3px;
 }
 
 table.CompletedGoals thead {
   background-color: #05e684;
+}
+
+@media (max-width: 2559px) {
+  body {
+    background-size: 1900px 1100px;
+  }
+  .styleWrapper {
+    position: relative;
+    right: 350px;
+  }
 }
 </style>
