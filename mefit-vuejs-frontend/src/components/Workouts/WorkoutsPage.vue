@@ -60,7 +60,7 @@ section {
   box-shadow: 2px 2px 2px 1px grey;
   width: 80%;
   position: relative;
-  left: 180px;
+  left: 260px;
   background-color: aliceblue;
 }
 body {
@@ -75,5 +75,14 @@ body {
   padding-top: 10px;
   position: relative;
   left: 10px;
+}
+@media (max-width: 2559px) {
+  body {
+    background-size: 1900px 1100px;
+  }
+  .styleWrapper{
+    position: relative;
+    right: 350px;
+  }   
 }
 </style>
