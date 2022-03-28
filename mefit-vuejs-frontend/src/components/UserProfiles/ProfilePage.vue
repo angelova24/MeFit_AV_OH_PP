@@ -82,11 +82,11 @@
 <style scoped>
 input[type=text], select {
   width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
+  padding: 10px 12px;
+  margin: 6px 0px;
   display: inline-block;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 12px;
   box-sizing: border-box;
 }
 
@@ -97,7 +97,7 @@ button {
   padding: 14px 20px;
   margin: 8px 0;
   border: none;
-  border-radius: 4px;
+  border-radius: 12px;
   cursor: pointer;
 }
 
@@ -108,7 +108,7 @@ input:hover {
 div {
   border-radius: 5px;
   background-color: #f2f2f2;
-  padding: 20px;
+  padding: 10px;
 }
     form {
         display:flex;
