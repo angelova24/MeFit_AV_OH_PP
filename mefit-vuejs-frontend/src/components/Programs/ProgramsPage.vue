@@ -25,11 +25,13 @@ console.log(`selected program: ${program.value}`);
     <div>
       <main>
         <h3 id="h3tag">Everything about MeFit fitness programs...</h3>
-        <section v-if="JSON.stringify(programs) !== '[]'" title="programList">
-          <ProgramList
+        <section v-if="JSON.stringify(programs) !== '[]'" title="programList" class="programList">
+          <a href="#">
+            <ProgramList
             v-bind:programs="programs"
             header="Click on any of these programs to view details..."
-          ></ProgramList>
+            ></ProgramList>
+          </a>
         </section>
         <section v-if="program !== undefined" title="programDetails">
           <ProgramDetails v-bind:program="program"></ProgramDetails>
@@ -67,6 +69,10 @@ body {
   background-repeat: no-repeat;
   background-size: 2600px 1100px;
   padding-bottom: 25px;
+}
+.programList a{
+  color: black;
+  text-decoration: none;
 }
 #h3tag {
   color: rgb(255, 255, 255);

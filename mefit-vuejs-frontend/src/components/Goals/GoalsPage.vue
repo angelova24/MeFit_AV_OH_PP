@@ -190,7 +190,7 @@ const onSetCompletedGoalWorkout = (workoutData) => {
             </tr>
           </thead>
           <tbody v-if="currentGoals.length > 0">
-            <tr v-for="workout in currentGoals[0].workouts" :key="workout.id">
+            <tr v-for="workout in currentGoals[0].workouts" :key="workout.id">            
               <td>
                 {{ store.getters.getWorkoutById(workout.workoutId).name }}
               </td>
@@ -209,7 +209,7 @@ const onSetCompletedGoalWorkout = (workoutData) => {
                   Complete !
                 </button>
               </td>
-            </tr>
+            </tr>              
           </tbody>
         </table>
         <table class="CompletedWorkoutsTable">
@@ -224,6 +224,12 @@ const onSetCompletedGoalWorkout = (workoutData) => {
                 {{
                   store.getters.getWorkoutById(workout.workoutId).name +
                   " is now completed"
+                }}
+              </td>
+              <td v-else>
+                {{
+                  store.getters.getWorkoutById(workout.workoutId).name +
+                  " in process"
                 }}
               </td>
             </tr>

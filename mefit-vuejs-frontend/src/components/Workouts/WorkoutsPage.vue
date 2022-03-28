@@ -25,11 +25,13 @@ console.log(`selected workout: ${workout.value}`);
     <div>
       <h3 id="h3tag">Everything about Workouts...</h3>
       <main>
-        <section v-if="JSON.stringify(workouts) !== '[]'" title="workoutList">
+        <section v-if="JSON.stringify(workouts) !== '[]'" title="workoutList" class="workoutList">
+          <a href="#">
           <WorkoutList
             v-bind:workouts="workouts"
             header="Click on any of these workouts to view details..."
           ></WorkoutList>
+          </a>
         </section>
         <section v-if="workout != undefined" title="workoutDetails">
           <WorkoutDetails v-bind:workout="workout"></WorkoutDetails>
@@ -68,6 +70,10 @@ body {
   background-size: 2600px 1100px;
   background-repeat: no-repeat;
   padding-bottom: 25px;
+}
+.workoutList a{
+  color: black;
+  text-decoration: none;
 }
 #h3tag {
   color:rgb(255, 255, 255);
