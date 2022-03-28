@@ -185,8 +185,8 @@ const onSetCompletedGoalWorkout = (workoutData) => {
           <thead>
             <tr>
               <th>Current workouts</th>
-              <th>Period</th>
-              <th>Status</th>
+              <th>Start date / Finish date</th>
+              <th>Ready?</th>
             </tr>
           </thead>
           <tbody v-if="currentGoals.length > 0">
@@ -215,7 +215,7 @@ const onSetCompletedGoalWorkout = (workoutData) => {
         <table class="CompletedWorkoutsTable">
           <thead>
             <tr>
-              <th>Recently Completed</th>
+              <th>Recently completed Workouts</th>
             </tr>
           </thead>
           <tbody>
