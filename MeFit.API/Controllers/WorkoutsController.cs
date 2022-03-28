@@ -101,6 +101,51 @@ namespace MeFit.API.Controllers
             return Ok(_mapper.Map<WorkoutSetDTO>(workout));
         }
 
+
+        // PATCH: api/workout/5 -------------CONTRIBUTOR ONLY!!!!! -------------
+        /// <summary>
+        /// Updates workout info
+        /// </summary>
+        /// <param name="id">ID of a workout</param>
+        /// <param name="newWorkout">Workout's new info</param>
+        /// <response code="204">Successfully changed workout</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Not allowed(not having the necessary permissions)</response>
+        /// <response code="404">No workout found</response>
+        /// <response code="500">Internal Server Error</response>
+        [HttpPatch("workout/{id}")]
+        [Authorize(Roles = "contributor, administrator")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> UpdateWorkout([FromRoute] int id, [FromBody] WorkoutUpdateDTO newWorkout)
+        {
+            Workout updatedWorkout = _mapper.Map<Workout>(newWorkout);
+            if (updatedWorkout.Id != id)
+            {
+                return BadRequest();
+            }
+            Workout domainWorkout = await _context.Workouts.FindAsync(id);
+            if (domainWorkout == null)
+            {
+                return NotFound();
+            }
+
+            domainWorkout.Name = updatedWorkout.Name;
+            domainWorkout.Type = updatedWorkout.Type;
+            domainWorkout.OwnerId = updatedWorkout.OwnerId;
+            
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return NoContent();
+        }
+
+
         // PATCH: api/workout/5/AddSets -------------CONTRIBUTOR ONLY!!!!! -------------
         /// <summary>
         /// Adds sets to a workout
@@ -180,7 +225,7 @@ namespace MeFit.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return CreatedAtAction("GetWorkoutById", new { id = domainWorkout.Id }, _mapper.Map <WorkoutReadDTO>(newWorkout));
+            return CreatedAtAction("GetWorkoutById", new { id = domainWorkout.Id }, _mapper.Map<WorkoutReadDTO>(domainWorkout));
         }
 
         // DELETE: api/workout/5 -------------CONTRIBUTOR ONLY!!!!! AND ONLY OWNED ONES!!! -------------

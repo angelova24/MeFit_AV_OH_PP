@@ -25,11 +25,13 @@ console.log(`selected workout: ${workout.value}`);
     <div>
       <h3 id="h3tag">Everything about Workouts...</h3>
       <main>
-        <section v-if="JSON.stringify(workouts) !== '[]'" title="workoutList">
+        <section v-if="JSON.stringify(workouts) !== '[]'" title="workoutList" class="workoutList">
+          <a href="#">
           <WorkoutList
             v-bind:workouts="workouts"
             header="Click on any of these workouts to view details..."
           ></WorkoutList>
+          </a>
         </section>
         <section v-if="workout != undefined" title="workoutDetails">
           <WorkoutDetails v-bind:workout="workout"></WorkoutDetails>
@@ -60,14 +62,18 @@ section {
   box-shadow: 2px 2px 2px 1px grey;
   width: 80%;
   position: relative;
-  left: 180px;
+  left: 260px;
   background-color: aliceblue;
 }
 body {
   background-image: url("../../src/assets/crossfitGreen.jpg");
-  background-size: 1900px 925px;
+  background-size: 2600px 1100px;
   background-repeat: no-repeat;
   padding-bottom: 25px;
+}
+.workoutList a{
+  color: black;
+  text-decoration: none;
 }
 #h3tag {
   color:rgb(255, 255, 255);
@@ -75,5 +81,19 @@ body {
   padding-top: 10px;
   position: relative;
   left: 10px;
+}
+@media (max-width: 2559px) {
+  body {
+    background-size: 1900px 1100px;
+  }
+  section {
+  border: 1px groove;
+  border-color: lightskyblue;
+  box-shadow: 2px 2px 2px 1px grey;
+  width: 80%;
+  position: relative;
+  left: 200px;
+  background-color: aliceblue;
+}    
 }
 </style>
