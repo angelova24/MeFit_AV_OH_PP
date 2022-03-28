@@ -5,9 +5,11 @@
 
     const store = useStore();
     const profile = computed(() => store.state.profile);
+    const userStore = computed(() => store.state.user)
     const onAddProfile = () => {
         const newProfile = profile.value
-        if (newProfile.id === 0) {
+        const user = userStore.value
+        if (user.profileId === 0) {
             store.dispatch("addProfile", newProfile)
         }
         else{
