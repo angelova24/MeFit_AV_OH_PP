@@ -16,6 +16,7 @@ import { useStore } from "vuex";
 <template>
     <div>
         <header v-bind:class="{ selected: exercise.id === selectedExerciseId }">
+            <!-- exercise.id: {{ exercise.id }}, selectedExerciseId: {{ selectedExerciseId }} -->
             {{ exercise.name }}
         </header>
     </div>

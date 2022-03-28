@@ -86,6 +86,14 @@ const onSelectUserChange = (event) => {
             manage Exercises
           </router-link>
         </li>
+        <li>
+          <router-link 
+            v-bind:to="baseUrl + 'contribute/workouts'" 
+            active-class="active"
+          >
+            manage Workouts
+          </router-link>
+        </li>
       </ul>
     </nav>
   </div>

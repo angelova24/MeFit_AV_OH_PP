@@ -1,9 +1,9 @@
 import { createStore } from "vuex";
 
-//const apiUrl = "https://localhost:5001/api";
+const apiUrl = "https://localhost:5001/api";
 //const apiUrl = "https://localhost:49153/api";
 //const apiUrl = "https://localhost:44390/api";
-const apiUrl = "https://mefitapi-va-pp-oh.azurewebsites.net/api";
+//const apiUrl = "https://mefitapi-va-pp-oh.azurewebsites.net/api";
 
 const store = createStore({
     state: {
@@ -193,6 +193,19 @@ const store = createStore({
                 state.exercises.push(exercise);    
             }
         },
+        addExercise: (state, payload) => {
+            state.exercises.push(payload);
+        },
+        updateExercise: (state, payload) => {
+            const updatedExercise = payload;
+            const storeExercise = state.exercises.find(ex => ex.id == updatedExercise.id);
+            storeExercise.name = updatedExercise.name;
+            storeExercise.description = updatedExercise.description;
+            storeExercise.targetMuscleGroup = updatedExercise.targetMuscleGroup;
+            storeExercise.imageUrl = updatedExercise.imageUrl;
+            storeExercise.videoUrl = updatedExercise.videoUrl;
+            storeExercise.ownerId = updatedExercise.ownerId;
+        },
         setExerciseDetailsId: (state, payload) => {
             state.exerciseDetailsId = payload;
         },
@@ -205,6 +218,13 @@ const store = createStore({
             for (const workout of payload) {
                 state.workouts.push(workout);    
             }
+        },
+        updateWorkout: (state, payload) => {
+            const updatedWorkout = payload;
+            const storeWorkout = state.workouts.find(w => w.id == updatedWorkout.id);
+            storeWorkout.name = updatedWorkout.name;
+            storeWorkout.type = updatedWorkout.type;
+            storeWorkout.ownerId = updatedWorkout.ownerId;
         },
         setWorkoutDetailsId: (state, payload) => {
             state.workoutDetailsId = payload;
@@ -290,6 +310,28 @@ const store = createStore({
                 store.commit("addExercise", addedExercise);   //--- mutation must be created, but missing ownerId in API endpoint yet... 
             }
         },
+        updateExercise: async (store, changedExercise) => {
+            console.log("modifying Exercise in Db:", changedExercise);
+            const response = await fetch(`${apiUrl}/exercise/${changedExercise.id}`, {
+                method: "PATCH",
+                headers: {
+                    "Authorization": "Bearer " + store.state.token,
+                    "Content-Type": "application/json",
+                },                
+                body: JSON.stringify(changedExercise)
+            })
+            .catch(reason => {
+                console.log("changedExercise in DB failed, because:", reason);
+            });
+            if(!response.ok)
+            {
+                console.log("changedExercise to DB failed...!!!", changedExercise);
+            }
+            else{
+                console.log("changedExercise in DB done...", changedExercise);                
+                store.commit("updateExercise", changedExercise);
+            }
+        },
         fetchSets: async store => {
             const response = await fetch(`${apiUrl}/Sets`, {
                 method: "GET",
@@ -328,6 +370,52 @@ const store = createStore({
                 store.commit("addWorkouts", workouts);
                 console.log("FetchWorkouts from Db done...");
                 console.log("Workouts received:", workouts);
+            }
+        },
+        addWorkout: async (store, newWorkout) => {
+            console.log("adding Workout to Db:", newWorkout);
+            let addedWorkout = newWorkout;
+            const response = await fetch(`${apiUrl}/Workout`, {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + store.state.token,
+                    "Content-Type": "application/json",
+                },                
+                body: JSON.stringify(newWorkout)
+            })
+            .catch(reason => {
+                console.log("addWorkout to DB failed, because:", reason);
+            });
+            if(!response.ok)
+            {
+                console.log("addWorkout to DB failed...!!!", newWorkout);
+            }
+            else{
+                addedWorkout = await response.json();
+                console.log("addWorkout to DB done...", addedWorkout);                
+                store.commit("addWorkout", addedWorkout);
+            }
+        },
+        updateWorkout: async (store, changedWorkout) => {
+            console.log("modifying Workout in Db:", changedWorkout);
+            const response = await fetch(`${apiUrl}/workout/${changedWorkout.id}`, {
+                method: "PATCH",
+                headers: {
+                    "Authorization": "Bearer " + store.state.token,
+                    "Content-Type": "application/json",
+                },                
+                body: JSON.stringify(changedWorkout)
+            })
+            .catch(reason => {
+                console.log("updateWorkout in DB failed, because:", reason);
+            });
+            if(!response.ok)
+            {
+                console.log("updateWorkout to DB failed...!!!", changedWorkout);
+            }
+            else{
+                console.log("updateWorkout in DB done...", changedWorkout);                
+                store.commit("updateWorkout", changedWorkout);
             }
         },
         fetchPrograms: async store => {
@@ -556,6 +644,9 @@ const store = createStore({
         },
         getWorkoutById: state => id => {
             return state.workouts.find(w => w.id === id);
+        },
+        getWorkoutsByOwnerId: state => id => {
+            return state.workouts.filter(ex => ex.ownerId === id);
         },
         getProgramById: state => id => {
             return state.programs.find(p => p.id === id);

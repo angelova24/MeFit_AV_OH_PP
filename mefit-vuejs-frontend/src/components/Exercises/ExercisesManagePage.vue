@@ -1,13 +1,14 @@
 <script setup>
     import { useStore } from 'vuex';
-    import { computed } from 'vue';
+    import { computed, onBeforeMount } from 'vue';
     import ExerciseList from './ExerciseList.vue';
     import ExerciseForm from './ExerciseForm.vue';  
+    import { useRouter } from 'vue-router';
 
     const store = useStore();
+    const router = useRouter();
 
     //--- get all Exercises from current user from Store
-
     const exercises = computed(() => store.getters.getExercisesByOwnerId(store.state.user.id));
 
     //--- get id of selected exercise
@@ -16,6 +17,12 @@
     //--- get selected exercise
     const exercise = computed(() => store.getters.getExerciseById(exerciseDetailsId.value));
     console.log(`ExercisePage: selected exercise: ${exercise.value}`);
+
+    onBeforeMount(() => {
+        if(!store.state.user.isContributor) {
+            router.push(store.state.baseUrl + "dashboard");
+        }
+    })
 
 </script>
 
@@ -26,17 +33,17 @@
             Manage exercises...
         </header>
         <main>
-            <section v-if="exercises.length !== 0" title="exerciseList">
+            <section v-if="exercises.length > 0" title="exerciseList">
                 <ExerciseList 
                     v-bind:exercises="exercises"
                     header="These Exercises have already been added by you:"
                 ></ExerciseList>
             </section>
-            <section v-if="exercises.length === 0">
+            <section v-if="exercises.length <= 0">
                 You have no exercises added yet...
             </section>
             <section title="Details of Exercise">
-                <ExerciseForm>
+                <ExerciseForm
                     v-bind:exercise="exercise"
                 ></ExerciseForm>
             </section>
