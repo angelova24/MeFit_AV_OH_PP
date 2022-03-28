@@ -82,7 +82,7 @@
 <style scoped>
 input[type=text], select {
   width: 100%;
-  padding: 10px 20px;
+  padding: 12px 20px;
   margin: 8px 0;
   display: inline-block;
   border: 1px solid #ccc;
@@ -90,7 +90,7 @@ input[type=text], select {
   box-sizing: border-box;
 }
 
-input[type=submit] {
+button[type=submit] {
   width: 100%;
   background-color: #4CAF50;
   color: white;
