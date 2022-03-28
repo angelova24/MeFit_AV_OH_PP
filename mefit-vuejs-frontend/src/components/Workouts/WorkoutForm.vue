@@ -1,6 +1,6 @@
 <script setup>
     
-    import { ref, toRefs, watch, computed } from 'vue';
+    import { reactive, ref, toRefs, watch, computed } from 'vue';
     import { useStore } from 'vuex';
     import SetList from '../Sets/SetList.vue';
     import ExerciseList from '../Exercises/ExerciseList.vue';
@@ -17,35 +17,39 @@
     });
     const store = useStore();
     const { workout } = toRefs(props);
-    const theWorkout = {
+    const theWorkout = reactive({
             id: 0,
             name: "",
             type: "",
-            ownerid: store.state.user.id
-    };
+            ownerid: store.state.user.id,
+            sets: []
+    });
     watch(workout, (value) => {
         if(value === undefined)
         {
-            theWorkout.id = 0;
-            theWorkout.name = "";
-            theWorkout.type = "";
-            theWorkout.ownerid = store.state.user.id;
+            theWorkout.value.id = 0;
+            theWorkout.value.name = "";
+            theWorkout.value.type = "";
+            theWorkout.value.ownerid = store.state.user.id;
+            theWorkout.value.sets = [];
         }
         else {
-            theWorkout.id = value.id;
-            theWorkout.name = value.name;
-            theWorkout.type = value.type;
-            theWorkout.ownerid = store.state.user.id;
+            theWorkout.value.id = value.id;
+            theWorkout.value.name = value.name;
+            theWorkout.value.type = value.type;
+            theWorkout.value.ownerid = store.state.user.id;
+            theWorkout.value.sets = value.sets;
         }
     })
+
     const onSaveWorkoutClicked = () => {
         if(theWorkout.id === 0) {
-            console.log("Saving new Workout:", theWorkout);
-            store.dispatch("addWorkout", theWorkout);
+            console.log("Saving new Workout:", theWorkout.value);
+            store.dispatch("addWorkout", theWorkout.value);
         }
         else {
-            console.log("updating Workout:", theWorkout);
-            store.dispatch("updateWorkout", theWorkout);
+            console.log("updating Workout:", theWorkout.value);
+            store.dispatch("updateWorkout", theWorkout.value);
         }
     }
     //--- get all Exercises from Store
@@ -53,12 +57,20 @@
 
     const exerciseRepetitions = ref(10);
     const addSet2Workout = () => {
-        const newSet = { 
-            exerciseRepetitions: exerciseRepetitions,
-            exerciseId: store.state.exerciseDetailsId,
-            ownerId: store.state.user.id
+        if(store.state.exerciseDetailsId > 0)
+        {
+            const newSet = { 
+                exerciseRepetitions: exerciseRepetitions.value,
+                exerciseId: store.state.exerciseDetailsId,
+                ownerId: store.state.user.id
+            };
+            store.commit("addSet", newSet);
+            console.log("theWorkout.sets:", theWorkout.sets);
+            theWorkout.sets.push(newSet);
         }
-        
+        else {
+            alert("Please select an exercise to add...")
+        }
     }
 </script>
 
@@ -81,6 +93,7 @@
             <section title="Workout Sets">
                 <SetList
                     header="ExerciseSets in this workout: (click to remove)"
+                    v-bind:sets="theWorkout.sets"
                 ></SetList>
                 <button 
                     class="alignCenter"

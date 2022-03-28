@@ -96,7 +96,7 @@
 
   const onLogout = event => {
     const options = {
-      redirectUri: window.location.protocol + "//" + window.location.host + "login"
+      // redirectUri: window.location.protocol + "//" + window.location.host + "login"
     };
     console.log("current Url:", options.redirectUri);
     keycloak.value.logout(options)

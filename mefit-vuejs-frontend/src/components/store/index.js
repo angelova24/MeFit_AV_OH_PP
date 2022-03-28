@@ -1,9 +1,9 @@
 import { createStore } from "vuex";
 
-//const apiUrl = "https://localhost:5001/api";
+const apiUrl = "https://localhost:5001/api";
 //const apiUrl = "https://localhost:49153/api";
 //const apiUrl = "https://localhost:44390/api";
-const apiUrl = "https://mefitapi-va-pp-oh.azurewebsites.net/api";
+//const apiUrl = "https://mefitapi-va-pp-oh.azurewebsites.net/api";
 
 const store = createStore({
     state: {
@@ -214,6 +214,9 @@ const store = createStore({
                 state.sets.push(set);    
             }
         },
+        addSet: (state, payload) => {
+            state.sets.push(payload);
+        },
         addWorkouts: (state, payload) => {
             for (const workout of payload) {
                 state.workouts.push(workout);    
@@ -225,6 +228,7 @@ const store = createStore({
             storeWorkout.name = updatedWorkout.name;
             storeWorkout.type = updatedWorkout.type;
             storeWorkout.ownerId = updatedWorkout.ownerId;
+            storeWorkout.sets = updatedWorkout.sets;
         },
         setWorkoutDetailsId: (state, payload) => {
             state.workoutDetailsId = payload;
@@ -392,8 +396,55 @@ const store = createStore({
             }
             else{
                 addedWorkout = await response.json();
-                console.log("addWorkout to DB done...", addedWorkout);                
+                console.log("addWorkout to DB done...", addedWorkout);
                 store.commit("addWorkout", addedWorkout);
+                //--- now add sets
+                const setIds = [];
+                for (const set of newWorkout.sets) {
+                    const response = await fetch(`${apiUrl}/set`, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": "Bearer " + store.state.token,
+                            "Content-Type": "application/json",
+                        },                
+                        body: JSON.stringify(set)
+                    })
+                    .catch(reason => {
+                        console.log("addSet to DB failed, because:", reason);
+                    });
+                    if(!response.ok)
+                    {
+                        console.log("addSet to DB failed...!!!", set);
+                    }
+                    else
+                    {
+                        const addedSet = await response.json();
+                        console.log("addSet to DB done:", addedSet);
+                        store.commit("addSet", addedSet);
+                        setIds.push(addedSet.id);
+                    }
+                }
+                //--- now set setIds for new workout
+                const response = await fetch(`${apiUrl}/workout/${addedWorkout.id}/AddSets`, {
+                    method: "PATCH",
+                    headers: {
+                        "Authorization": "Bearer " + store.state.token,
+                        "Content-Type": "application/json",
+                    },                
+                    body: JSON.stringify(setIds)
+                })
+                .catch(reason => {
+                    console.log("addWorkoutSets to DB failed, because:", reason);
+                });
+                if(!response.ok)
+                {
+                    console.log("addWorkoutSets to DB failed...!!!", setIds);
+                }
+                else
+                {
+                    console.log("addWorkoutSets to DB done:", setIds);
+                    store.commit("updateWorkout", { ...addedWorkout, sets: setIds });
+                }
             }
         },
         updateWorkout: async (store, changedWorkout) => {
@@ -662,12 +713,6 @@ const store = createStore({
         getCurrentGoals: state => {
             const currentGoals = state.goals.filter(g => (new Date(g.endDate) >= new Date()));
             console.log("current goals:", currentGoals);
-            // if(currentGoals !== undefined) {
-            //     for (const goal of currentGoals) {
-            //         goal.startDate = (new Date(goal.startDate));
-            //         goal.endDate = (new Date(goal.endDate));
-            //     }
-            // }
             return currentGoals;
         }
     }
