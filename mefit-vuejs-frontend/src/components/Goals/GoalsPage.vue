@@ -115,41 +115,45 @@ const onSetCompletedGoalWorkout = (workoutData) => {
       <main>
         <!-- <section class="parentSection" title="set new Goal" v-if="currentGoals.length === 0"> -->
         <div title="set new Goal" v-if="currentGoals.length >= 0">
-          <section title="available programs for new goal">
+          <section class="programList" title="available programs for new goal">
+          <a href="#">
             <ProgramList
               v-bind:programs="programs"
               v-on:programListItemClicked="OnAddProgram"
               header="You can add any of these programs to your new goal (click to add)"
-            ></ProgramList>
+            ></ProgramList></a>
           </section>
           <section
-            class="availableWorkouts"
+            class="availableWorkouts"            
             title="available workouts for new goal"
           >
+          <a href="#">
             <WorkoutList
               v-bind:workouts="workouts"
               v-on:workoutListItemClicked="OnAddWorkOut"
               header="You can add any of these workouts to your new goal (click to add)"
             ></WorkoutList>
+          </a>
           </section>
           <section class="newGoalBox" title="new goal">
+            <a href="#">
             <WorkoutList
               v-if="workoutsInNewGoal"
               v-bind:workouts="workoutsInNewGoal"
               v-on:workoutListItemClicked="OnRemoveWorkOut"
               header="These workouts have been added to your new goal (click to remove)"
-            ></WorkoutList>
-            <button class="setGoalButton" v-on:click="onSetGoalClicked">
-              Set Goal
-            </button>
+            ></WorkoutList></a>            
           </section>
-          <section title="set start date of new goal">
+          <section class="dateSection" title="set start date of new goal">
             Select a start date for goal:
             <input
               type="date"
               v-model="newGoalStartDateString"
               v-bind:min="todayString"
             />
+            <button class="setGoalButton" v-on:click="onSetGoalClicked">
+              Set Goal
+            </button>
           </section>
           <br />
           <br />
@@ -262,6 +266,18 @@ main {
   color: black;
   text-decoration: none;
 }
+.availableWorkouts a {
+  color: black;
+  text-decoration: none;
+}
+.programList a {
+  color: black;
+  text-decoration: none;
+}
+.newGoalBox a {
+  color: black;
+  text-decoration: none;
+}
 .scrollList {
   width: 1000px;
   height: 150px;
@@ -279,6 +295,12 @@ main {
   left: 800px;
   background-color: aliceblue;
 }
+.dateSection{
+  background: #050505;
+  color: #fefbfb;
+  padding: 5px;
+  width: 990px;
+}
 section {
   border: 1px groove;
   border-color: lightskyblue;
@@ -294,8 +316,10 @@ body {
 }
 .setGoalButton {
   grid-column: 1;
-  padding: 2px;
+  padding: 5px;
   width: 10%;
+  position: relative;
+  left: 20px;
 }
 table.Table {
   width: 1000px;
@@ -375,9 +399,9 @@ table.CompletedGoals thead {
   body {
     background-size: 1900px 1100px;
   }
-  .styleWrapper{
+  .styleWrapper {
     position: relative;
     right: 350px;
-  }   
+  }
 }
 </style>
