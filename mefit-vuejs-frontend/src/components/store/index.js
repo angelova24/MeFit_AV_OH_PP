@@ -222,6 +222,9 @@ const store = createStore({
                 state.workouts.push(workout);    
             }
         },
+        addWorkout: (state, payload) => {
+            state.workouts.push(payload);
+        },
         updateWorkout: (state, payload) => {
             const updatedWorkout = payload;
             const storeWorkout = state.workouts.find(w => w.id == updatedWorkout.id);
@@ -379,7 +382,7 @@ const store = createStore({
         addWorkout: async (store, newWorkout) => {
             console.log("adding Workout to Db:", newWorkout);
             let addedWorkout = newWorkout;
-            const response = await fetch(`${apiUrl}/Workout`, {
+            let response = await fetch(`${apiUrl}/Workout`, {
                 method: "POST",
                 headers: {
                     "Authorization": "Bearer " + store.state.token,
@@ -401,7 +404,7 @@ const store = createStore({
                 //--- now add sets
                 const setIds = [];
                 for (const set of newWorkout.sets) {
-                    const response = await fetch(`${apiUrl}/set`, {
+                    response = await fetch(`${apiUrl}/set`, {
                         method: "POST",
                         headers: {
                             "Authorization": "Bearer " + store.state.token,
@@ -425,7 +428,7 @@ const store = createStore({
                     }
                 }
                 //--- now set setIds for new workout
-                const response = await fetch(`${apiUrl}/workout/${addedWorkout.id}/AddSets`, {
+                response = await fetch(`${apiUrl}/workout/${addedWorkout.id}/AddSets`, {
                     method: "PATCH",
                     headers: {
                         "Authorization": "Bearer " + store.state.token,

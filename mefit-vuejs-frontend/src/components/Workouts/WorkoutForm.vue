@@ -27,29 +27,29 @@
     watch(workout, (value) => {
         if(value === undefined)
         {
-            theWorkout.value.id = 0;
-            theWorkout.value.name = "";
-            theWorkout.value.type = "";
-            theWorkout.value.ownerid = store.state.user.id;
-            theWorkout.value.sets = [];
+            theWorkout.id = 0;
+            theWorkout.name = "";
+            theWorkout.type = "";
+            theWorkout.ownerid = store.state.user.id;
+            theWorkout.sets = [];
         }
         else {
-            theWorkout.value.id = value.id;
-            theWorkout.value.name = value.name;
-            theWorkout.value.type = value.type;
-            theWorkout.value.ownerid = store.state.user.id;
-            theWorkout.value.sets = value.sets;
+            theWorkout.id = value.id;
+            theWorkout.name = value.name;
+            theWorkout.type = value.type;
+            theWorkout.ownerid = store.state.user.id;
+            theWorkout.sets = value.sets;
         }
     })
 
     const onSaveWorkoutClicked = () => {
         if(theWorkout.id === 0) {
-            console.log("Saving new Workout:", theWorkout.value);
-            store.dispatch("addWorkout", theWorkout.value);
+            console.log("Saving new Workout:", theWorkout);
+            store.dispatch("addWorkout", theWorkout);
         }
         else {
-            console.log("updating Workout:", theWorkout.value);
-            store.dispatch("updateWorkout", theWorkout.value);
+            console.log("updating Workout:", theWorkout);
+            store.dispatch("updateWorkout", theWorkout);
         }
     }
     //--- get all Exercises from Store
