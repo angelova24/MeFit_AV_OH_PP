@@ -16,7 +16,11 @@ console.log("store:", store);
 store.commit("setBaseUrl", baseUrl);
 const routes = [
     {
-        path: `${baseUrl}/dashboard`,
+        path: `${baseUrl}`,
+        component: UserDashboard
+    },
+    {
+        path: `${baseUrl}dashboard`,
         component: UserDashboard
     },
     {
@@ -65,10 +69,9 @@ router.beforeEach((to, from) => {
         return { path: `${baseUrl}dashboard`};
     }
     //--- ensure users without profiles are redirected to profilespage to enter data
-    if (store.state.profile.id === 0 && store.state.user.id != 0 && !to.fullPath.startsWith(baseUrl + "profile")) {
+    if ((Object.keys(store.state.profile).length === 0 || store.state.profile.id === 0) && store.state.user.id != 0 && !to.fullPath.startsWith(baseUrl + "profile")) {
         return { path: `${baseUrl}profile`};
     }
-    
 })
 
 export default router;
