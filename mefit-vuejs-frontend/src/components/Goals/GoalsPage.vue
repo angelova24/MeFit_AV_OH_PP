@@ -373,7 +373,7 @@ table.CompletedGoals thead {
 
 @media (max-width: 2559px) {
   body {
-    background-size: 2600px 1100px;
+    background-size: 1900px 1100px;
   }
   .styleWrapper{
     position: relative;
