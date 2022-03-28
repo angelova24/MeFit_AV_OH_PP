@@ -1,6 +1,6 @@
 # MeFit
 
-### [Open app in browser]()
+### [Open app in browser](https://www.mefit-va-pp-oh.net/mefitfe/)
 
 ## Table of Contents
 
