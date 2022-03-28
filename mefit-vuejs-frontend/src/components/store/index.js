@@ -1,9 +1,9 @@
 import { createStore } from "vuex";
 
-const apiUrl = "https://localhost:5001/api";
+//const apiUrl = "https://localhost:5001/api";
 //const apiUrl = "https://localhost:49153/api";
 //const apiUrl = "https://localhost:44390/api";
-//const apiUrl = "https://mefitapi-va-pp-oh.azurewebsites.net/api";
+const apiUrl = "https://mefitapi-va-pp-oh.azurewebsites.net/api";
 
 const store = createStore({
     state: {

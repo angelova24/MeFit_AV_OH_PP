@@ -8,6 +8,10 @@
         sets: {
             type: Array,
             required: true
+        },
+        header: {
+            type: String,
+            required: false
         }
     });
     const { sets } = toRefs(props);   
@@ -15,9 +19,11 @@
     //--- get exercises (name) for exerciseIds in all sets
     const viewSets = computed(() => {
         const tempViewSets = [];
-        for (const set of sets.value) {
-            const tempExercise = computed(() => store.getters.getExerciseById(set.exerciseId));
-            tempViewSets.push({ ...set, exerciseName: tempExercise.value.name });
+        if(sets.value !== undefined) {
+            for (const set of sets.value) {
+                const tempExercise = computed(() => store.getters.getExerciseById(set.exerciseId));
+                tempViewSets.push({ ...set, exerciseName: tempExercise.value.name });
+            }
         }
         return tempViewSets;
     });
@@ -27,7 +33,7 @@
 <template>
     <div>
         <header>
-            <b>List of sets:</b>
+            <b>{{ header }}</b>
         </header>
         <main>
 

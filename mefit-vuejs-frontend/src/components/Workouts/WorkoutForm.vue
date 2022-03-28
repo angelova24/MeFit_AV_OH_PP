@@ -1,7 +1,9 @@
 <script setup>
     
-    import { toRefs, watch } from 'vue';
+    import { ref, toRefs, watch, computed } from 'vue';
     import { useStore } from 'vuex';
+    import SetList from '../Sets/SetList.vue';
+    import ExerciseList from '../Exercises/ExerciseList.vue';
 
     const props = defineProps({
         workout: {
@@ -46,11 +48,22 @@
             store.dispatch("updateWorkout", theWorkout);
         }
     }
+    //--- get all Exercises from Store
+    const exercises = computed(() => store.state.exercises);
 
+    const exerciseRepetitions = ref(10);
+    const addSet2Workout = () => {
+        const newSet = { 
+            exerciseRepetitions: exerciseRepetitions,
+            exerciseId: store.state.exerciseDetailsId,
+            ownerId: store.state.user.id
+        }
+        
+    }
 </script>
 
 <template>
-    <div>
+    <div class="root">
         <header>
             <b>{{ header }}</b><br />
         </header>
@@ -65,7 +78,24 @@
                 <option value="Competent">Competent</option>
                 <option value="Professional">Professional</option>              
             </select>
-            <button v-on:click="onSaveWorkoutClicked">Save Workout</button>
+            <section title="Workout Sets">
+                <SetList
+                    header="ExerciseSets in this workout: (click to remove)"
+                ></SetList>
+                <button 
+                    class="alignCenter"
+                    v-on:click="addSet2Workout"
+                >&lt;--</button>
+                <div class="alignCenter">
+                    <label>Number of repetitions:</label>
+                    <input type="text" v-model="exerciseRepetitions" />
+                </div>
+                <ExerciseList
+                    header="available Exercises:"
+                    v-bind:exercises="exercises"
+                ></ExerciseList>
+            </section>
+            <button class="saveButton" v-on:click="onSaveWorkoutClicked">Save Workout</button>
         </main>
     </div>
 </template>
@@ -78,26 +108,24 @@
     }
     main {
         display: grid;
-        grid-template-columns: 1fr 3fr;
+        grid-template-columns: 1fr 2fr;
         row-gap: 20px;
         column-gap: 10px;
-        align-items:stretch;
         padding: 10px;
-        /* border: solid;         */
     }
-    .exerciseImage {
-        width: 300px;
-    }
-    .noImage {
-        width: 100px;
-    }
-    label {
-        text-align: right;
-    }
-    button {
+    section {
+        display:grid;
+        grid-template-columns: 6fr 1fr 2fr 6fr;
+        column-gap: 10px;
         grid-column: 1 / 3;
     }
-    div {
+    .alignCenter {
+        align-self: center;
+    }
+    .saveButton {
+        grid-column: 1 / 3;
+    }
+    .root {
         padding: 0px 20px 50px 20px;
     }
     
