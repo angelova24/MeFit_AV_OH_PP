@@ -13,7 +13,7 @@ namespace MeFit.DAL.Models.DTOs.Workout
         [Required, MaxLength(70)]
         public string Name { get; set; }
         public string Type { get; set; }
-
+        public int OwnerId { get; set; }
         public List<int> Sets { get; set; }
         public List<int> Programs { get; set; }
         public List<int> Goals { get; set; }

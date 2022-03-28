@@ -146,21 +146,31 @@ namespace MeFit.API.Controllers
         [HttpPatch("exercise/{id}")]
         [Authorize(Roles = "contributor, administrator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> UpdateExercise([FromRoute] int id, [FromBody] JsonPatchDocument<Exercise> newExercise)
+        public async Task<IActionResult> UpdateExercise([FromRoute] int id, [FromBody] ExerciseUpdateDTO newExercise)
         {
-            var exercise = await _context.Exercises.FindAsync(id);
-            if (exercise == null)
+            Exercise updatedExercise = _mapper.Map<Exercise>(newExercise);
+            if(updatedExercise.Id != id)
+            {
+                return BadRequest();
+            }
+            Exercise domainExercise = await _context.Exercises.FindAsync(id);
+            if (domainExercise == null)
             {
                 return NotFound();
             }
 
-            newExercise.ApplyTo(exercise, ModelState);
+            domainExercise.Name = updatedExercise.Name;
+            domainExercise.Description = updatedExercise.Description;
+            domainExercise.TargetMuscleGroup = updatedExercise.TargetMuscleGroup;
+            domainExercise.ImageURL = updatedExercise.ImageURL;
+            domainExercise.VideoURL = updatedExercise.VideoURL;
+            domainExercise.OwnerId = updatedExercise.OwnerId;
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }

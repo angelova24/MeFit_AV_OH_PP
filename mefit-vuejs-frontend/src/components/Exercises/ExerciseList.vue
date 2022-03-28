@@ -18,7 +18,14 @@
 
     const onExerciseListItemClicked = (event, id) => {
         console.log(`ExerciseListItem with id ${id} was clicked...`)
-        store.commit("setExerciseDetailsId", id);
+        if(id !== store.state.exerciseDetailsId) {
+            //--- clicked item is not the one currently selected
+            store.commit("setExerciseDetailsId", id);
+        }
+        else {
+            //--- clicked item is the one that is currently selected, so unselect it
+            store.commit("setExerciseDetailsId", 0);
+        }
     }
 
 </script>
