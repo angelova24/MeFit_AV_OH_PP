@@ -111,7 +111,7 @@ const onSetCompletedGoalWorkout = (workoutData) => {
 <template>
   <body>
     <h3 id="h3tag">Goals Page</h3>
-    <div id="styleWrapper">
+    <div class="styleWrapper">
       <main>
         <!-- <section class="parentSection" title="set new Goal" v-if="currentGoals.length === 0"> -->
         <div title="set new Goal" v-if="currentGoals.length >= 0">
@@ -153,7 +153,7 @@ const onSetCompletedGoalWorkout = (workoutData) => {
           </section>
           <br />
           <br />
-          <div
+          <section
             v-if="JSON.stringify(goals) !== '[]'"
             title="GoalList"
             class="scrollList"
@@ -161,17 +161,17 @@ const onSetCompletedGoalWorkout = (workoutData) => {
             <a href="#">
               <GoalList v-bind:goals="goals" header="Your goals:"></GoalList>
             </a>
-          </div>
+          </section>
           <br />
 
-          <div
+          <section
             v-if="goal !== undefined"
             title="goalDetails"
             class="goalDetails"
           >
             <h3>Details of goal:</h3>
             <GoalsDetail v-bind:goal="goal"></GoalsDetail>
-          </div>
+          </section>
         </div>
         <section v-if="JSON.stringify(goals) === '[]'">
           We are sorry, but currently no goals are available.<br />
@@ -371,16 +371,13 @@ table.CompletedGoals thead {
   background-color: #05e684;
 }
 
-@media only screen and(max-width: 1199px) {
-  #styleWrapper {
-    position: relative;
-    right: 100px;
+@media (max-width: 2559px) {
+  body {
+    background-size: 2600px 1100px;
   }
-}
-@media only screen and(min-width: 1200px){
-  #styleWrapper {
+  .styleWrapper{
     position: relative;
-    left: 100px;
-  }
+    right: 350px;
+  }   
 }
 </style>
