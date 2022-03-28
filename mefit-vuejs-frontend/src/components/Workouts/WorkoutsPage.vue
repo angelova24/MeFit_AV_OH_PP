@@ -80,9 +80,14 @@ body {
   body {
     background-size: 1900px 1100px;
   }
-  .styleWrapper{
-    position: relative;
-    right: 350px;
-  }   
+  section {
+  border: 1px groove;
+  border-color: lightskyblue;
+  box-shadow: 2px 2px 2px 1px grey;
+  width: 80%;
+  position: relative;
+  left: 200px;
+  background-color: aliceblue;
+}    
 }
 </style>

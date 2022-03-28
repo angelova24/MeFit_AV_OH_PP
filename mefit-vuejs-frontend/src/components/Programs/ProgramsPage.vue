@@ -59,7 +59,7 @@ section {
   border-color: lightskyblue;
   width: 70%;
   position: relative;
-  left: 290px;
+  left: 380px;
   background-color: aliceblue;
 }
 body {
@@ -74,5 +74,18 @@ body {
   padding-top: 10px;
   position: relative;
   left: 10px;
+}
+@media (max-width: 2559px) {
+  body {
+    background-size: 1900px 1100px;
+  }
+  section {
+  border: 1px groove;
+  border-color: lightskyblue;
+  width: 70%;
+  position: relative;
+  left: 300px;
+  background-color: aliceblue;
+} 
 }
 </style>
