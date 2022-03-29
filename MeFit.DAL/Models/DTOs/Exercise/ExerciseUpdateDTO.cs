@@ -2,7 +2,7 @@
 
 namespace MeFit.DAL.Models.DTOs.Exercise
 {
-    public class ExerciseReadDTO
+    public class ExerciseUpdateDTO
     {
         public int Id { get; set; }
         [Required, MaxLength(70)]

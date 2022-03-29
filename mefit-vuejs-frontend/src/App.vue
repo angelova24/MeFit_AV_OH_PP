@@ -2,11 +2,13 @@
   import TheHeader from "./components/TheHeader.vue";
   import TheFooter from "./components/TheFooter.vue";
   import { useStore } from "vuex";
-  import { onMounted, toRefs, reactive, computed, ref } from "vue";
+  import { toRefs, computed, ref } from "vue";
+  import { useRouter } from "vue-router";
   
   const props = defineProps(["keycloak"]);
   const { keycloak } = toRefs(props);
   const store = useStore();
+  const router = useRouter();
   const baseUrl = computed(() => store.state.baseUrl);
   const isLoading = ref(false);
 
@@ -26,7 +28,8 @@
           .then(profile => store.dispatch("fetchGoals", profile.goals))
         }
         else{
-          console.log("you dont have a profile")
+          console.log("you dont have a profile");
+          router.push(baseUrl.value + "profile");
         }
         setUser();
         isLoading.value = false;
@@ -96,7 +99,7 @@
 
   const onLogout = event => {
     const options = {
-      redirectUri: window.location.protocol + "//" + window.location.host + "login"
+      //redirectUri: window.location.protocol + "/" + window.location.host + baseUrl.value
     };
     console.log("current Url:", options.redirectUri);
     keycloak.value.logout(options)

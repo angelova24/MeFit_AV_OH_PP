@@ -5,9 +5,11 @@
 
     const store = useStore();
     const profile = computed(() => store.state.profile);
+    const userStore = computed(() => store.state.user)
     const onAddProfile = () => {
         const newProfile = profile.value
-        if (newProfile.id === 0) {
+        const user = userStore.value
+        if (user.profileId === 0) {
             store.dispatch("addProfile", newProfile)
         }
         else{
@@ -25,8 +27,8 @@
             <h3>Before you start training you need a profile</h3>
         </header>
         <main>
-            <section title="fitnessEvaluation" >
-                <span>Your current fitness evaluation:</span>
+           <span>Your current fitness evaluation:</span>
+            <form title="fitnessEvaluation" >                
                 <label for="weight">
                     Weight:
                 </label>
@@ -48,8 +50,8 @@
                     FintessLevelEvaluation:
                 </label>
                 <input id="fintessLevelEvaluation" type="text" v-model="profile.fintessLevelEvaluation" />
-            </section>
-            <section title="addressData" >
+            </form>
+            <form title="addressData" >
                 <span>Your address data:</span>
                 <label for="addressLine1">
                     Address line 1:
@@ -71,36 +73,50 @@
                     Country:
                 </label>
                 <input id="country" type="text" v-model="profile.country" />
-            </section>
+            </form>
             <button v-on:click="onAddProfile" type="submit">Save changes</button>
         </main>
     </div>
 </template>
 
 <style scoped>
-    section {
-        display: flex;
+input[type=text], select {
+  width: 100%;
+  padding: 10px 12px;
+  margin: 6px 0px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+button {
+  width: 100%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+input:hover {
+  background-color: #c0cac1;
+}
+
+div {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 10px;
+}
+    form {
+        display:flex;
         flex-wrap: wrap;
-        row-gap: 10px;
-        column-gap: 10px;
+        row-gap: 5px;
+        column-gap: 5px;
         align-items:stretch;
-        margin-bottom: 20px;
-    }
-    label {
-        flex: 1 1 45%;  /*grow | shrink | basis */
-        border: 1px dashed;
-        border-color: blue;
-    }
-    input {
-        flex: 1 1 45%;  /*grow | shrink | basis */
-        border: 1px dashed;
-        border-color: red;
-    }
-    span {
-        flex: 1 1 95%;  /*grow | shrink | basis */
-        border: 1px dashed;
-        border-color: green;
-        text-align: left;
+        margin-bottom: 10px;
     }
     header {
         margin-bottom: 20px;

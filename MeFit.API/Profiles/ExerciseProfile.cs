@@ -11,6 +11,8 @@ namespace MeFit.API.Profiles
                 .ReverseMap();
             CreateMap<Exercise, ExerciseReadDTO>()
                 .ReverseMap();
+            CreateMap<Exercise, ExerciseUpdateDTO>()
+                .ReverseMap();
         }
     }
 }

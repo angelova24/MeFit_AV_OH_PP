@@ -23,13 +23,15 @@ console.log(`selected program: ${program.value}`);
 <template>
   <body>
     <div>
-      <h3 id="h3tag">Everything about MeFit fitness programs...</h3>
       <main>
-        <section v-if="JSON.stringify(programs) !== '[]'" title="programList">
-          <ProgramList
+        <h3 id="h3tag">Everything about MeFit fitness programs...</h3>
+        <section v-if="JSON.stringify(programs) !== '[]'" title="programList" class="programList">
+          <a href="#">
+            <ProgramList
             v-bind:programs="programs"
             header="Click on any of these programs to view details..."
-          ></ProgramList>
+            ></ProgramList>
+          </a>
         </section>
         <section v-if="program !== undefined" title="programDetails">
           <ProgramDetails v-bind:program="program"></ProgramDetails>
@@ -56,17 +58,21 @@ main {
 }
 section {
   border: 1px groove;
-  border-color: lightskyblue;  
+  border-color: lightskyblue;
   width: 70%;
   position: relative;
-  left: 290px;
-  background-color: aliceblue;  
+  left: 380px;
+  background-color: aliceblue;
 }
 body {
   background-image: url("../../src/assets/crossfitGreen.jpg");
   background-repeat: no-repeat;
-  background-size: 1900px 600px;
+  background-size: 2600px 1100px;
   padding-bottom: 25px;
+}
+.programList a{
+  color: black;
+  text-decoration: none;
 }
 #h3tag {
   color: rgb(255, 255, 255);
@@ -74,5 +80,18 @@ body {
   padding-top: 10px;
   position: relative;
   left: 10px;
+}
+@media (max-width: 2559px) {
+  body {
+    background-size: 1900px 1100px;
+  }
+  section {
+  border: 1px groove;
+  border-color: lightskyblue;
+  width: 70%;
+  position: relative;
+  left: 300px;
+  background-color: aliceblue;
+} 
 }
 </style>
