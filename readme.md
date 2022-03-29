@@ -23,9 +23,9 @@ relevant exercise.
 
 ## Documentation
 
-- [User Manual]()
+- [User Manual](https://github.com/angelova24/MeFit_AV_OH_PP/blob/main/DOCS/user_manual_mefit.pdf)
 - [API documentation](https://mefitapi-va-pp-oh.azurewebsites.net/)
-- [Database diagram]()
+- [Database diagram](https://github.com/angelova24/MeFit_AV_OH_PP/blob/main/DOCS/db_diagram.JPG)
 
 ## Prerequisites
 
