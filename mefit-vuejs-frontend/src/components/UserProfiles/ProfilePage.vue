@@ -21,7 +21,7 @@
 </script>
 
 <template>
-    <div>
+    <div class="styleDiv">
         <header>
             <h1> Profile Page </h1>
             <h3>Before you start training you need a profile</h3>
@@ -80,6 +80,10 @@
 </template>
 
 <style scoped>
+.styleDiv{
+    margin: 20px 900px;
+    border-radius: 30px;
+}
 input[type=text], select {
   width: 100%;
   padding: 10px 12px;
@@ -91,7 +95,7 @@ input[type=text], select {
 }
 
 button {
-  width: 100%;
+  width: 50%;
   background-color: #4CAF50;
   color: white;
   padding: 14px 20px;
