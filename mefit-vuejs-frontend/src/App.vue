@@ -26,6 +26,9 @@
         if (user.profileId !== 0) {
           store.dispatch("fetchProfile", user.profileId)
           .then(profile => store.dispatch("fetchGoals", profile.goals))
+          .then(() => {
+            router.push(baseUrl.value + "dashboard");  
+          })
         }
         else{
           console.log("you dont have a profile");

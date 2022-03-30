@@ -633,8 +633,7 @@ const store = createStore({
                 method: "PUT",
                 headers: {
                     "Authorization": "Bearer " + store.state.token,
-                    "Content-Type": "application/json",
-                    
+                    "Content-Type": "application/json"                    
                 },                
                 body: JSON.stringify(profile)
             });
