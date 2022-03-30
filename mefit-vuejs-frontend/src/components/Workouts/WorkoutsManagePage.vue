@@ -26,7 +26,7 @@
 
 
 <template>
-    <div>
+    <div class="backgroundImage">
         <header>
             Manage workouts...
         </header>
@@ -53,18 +53,29 @@
     
     header {
         font-size: larger;
+        font-weight: bold;
         padding: 50px 10px;
+        color:white;
     }
     main {
         display: grid;
-        grid-template-columns: 1fr 2fr;
+        grid-template-columns: 1fr 1fr;
         row-gap: 10px;
-        column-gap: 10px;        
+        column-gap: 10px;
     }
+
     section {
         border: 1px groove;
-        border-color: lightskyblue;
-        box-shadow: 2px 2px 2px 1px grey;
+        border-color: grey;
+        background-color: white;
+    }
+
+    .backgroundImage {
+        background-image: url("../../src/assets/crossfitGreen.jpg");
+        background-repeat: no-repeat;
+        /* background-size: 2600px 1100px; */
+        padding: 0px 50px 25px 50px;
+        height: 900px;
     }
 
 </style>

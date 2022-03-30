@@ -26,14 +26,14 @@ import { useStore } from "vuex";
 
     header {
         padding: 10px;
-        background: lightblue;
-        border: 1px solid lightcyan;
+        background: whitesmoke;
+        border: 1px black solid;
     }
 
     header.selected {
         padding: 10px;
-        background: rgb(113, 204, 235);
-        border: 1px solid lightcyan;   
+        background: lightgrey;
+        border: black solid;
     }
     
 </style>

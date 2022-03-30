@@ -98,7 +98,7 @@
                 <button 
                     class="alignCenter"
                     v-on:click="addSet2Workout"
-                >&lt;--</button>
+                ><nobr>&lt;--</nobr></button>
                 <div class="alignCenter">
                     <label>Number of repetitions:</label>
                     <input type="text" v-model="exerciseRepetitions" />

@@ -21,10 +21,11 @@ console.log(`ExercisePage: selected exercise: ${exercise.value}`);
 
 
 <template>
-  <body>
-    <div>
+    <div class="backgroundImage">
+      <header>
+        Everything about exercises...
+      </header>
       <main>
-        <h3 id="h3tag">Everything about exercises...</h3>
         <section v-if="JSON.stringify(exercises) !== '[]'" title="exerciseList" class="exerciseList">
           <a href="#">
           <ExerciseList
@@ -42,60 +43,35 @@ console.log(`ExercisePage: selected exercise: ${exercise.value}`);
         </section>
       </main>
     </div>
-  </body>
 </template>
 
 <style scoped>
-header {
-  font-size: larger;
-  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
-  padding: auto;
-}
-main {
-  display: -moz-box;
-  grid-template-columns: 1fr 1fr;
-  row-gap: 10px;
-  column-gap: 10px;
-}
-section {
-  border: 1px groove;
-  border-color: lightskyblue;
-  box-shadow: 2px 2px 2px 1px grey;
-  width: 80%;
-  position: relative;
-  left: 280px;
-  background-color: aliceblue;  
-}
-body {
-  background-image: url("../../src/assets/crossfitGreen.jpg");
-  background-size: 2600px 1100px;
-  background-repeat: no-repeat;
-  padding-bottom: 25px;
-  position: relative;
-}
-.exerciseList a{
-  color: black;
-  text-decoration: none;
-}
-#h3tag {
-  color:rgb(255, 255, 255);
-  padding: 1px;
-  padding-top: 10px;
-  position: relative;
-  left: 10px;
-}
-@media (max-width: 2559px) {
-  body {
-    background-size: 1900px 1100px;
+
+  header {
+    font-size: larger;
+    font-weight: bold;
+    padding: 50px 10px;
+    color:white;
   }
+  main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 10px;
+    column-gap: 10px;
+  }
+
   section {
-  border: 1px groove;
-  border-color: lightskyblue;
-  box-shadow: 2px 2px 2px 1px grey;
-  width: 80%;
-  position: relative;
-  left: 200px;
-  background-color: aliceblue;  
-}    
-}
+    border: 1px groove;
+    border-color: grey;
+    background-color: white;
+  }
+
+  .backgroundImage {
+    background-image: url("../../src/assets/crossfitGreen.jpg");
+    background-repeat: no-repeat;
+    /* background-size: 2600px 1100px; */
+    padding: 0px 50px 25px 50px;
+    height: 900px;
+  }
+
 </style>

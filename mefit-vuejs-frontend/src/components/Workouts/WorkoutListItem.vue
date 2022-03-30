@@ -23,16 +23,16 @@
 
 <style scoped>
 
-    header {
+    div {
         padding: 10px;
-        background: rgb(219, 248, 219);
-        border: 1px solid rgb(236, 250, 222);
+        background: whitesmoke;
+        border: 1px black solid;
     }
 
-    header.selected {
+    div.selected {
         padding: 10px;
-        background: lightgreen;
-        border: 1px solid rgb(236, 250, 222);
+        background: lightgrey;
+        border: black solid;
     }
     
 </style>

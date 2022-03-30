@@ -40,15 +40,16 @@
 
     header {
         padding: 10px;
-        background: rgb(235, 220, 235);
-        border: 1px solid rgb(248, 238, 248);
+        background: whitesmoke;
+        border: 1px black solid;
     }
 
     header.selected {
         padding: 10px;
-        background: rgb(216, 195, 216);
-        border: 1px solid rgb(248, 238, 248);
+        background: lightgrey;
+        border: black solid;
     }
+
     span {
         padding: 0px 30px;
     }

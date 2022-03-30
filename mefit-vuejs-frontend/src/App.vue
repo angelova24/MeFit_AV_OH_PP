@@ -160,6 +160,7 @@
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  padding: 0px 50px;
 }
 
 .loadInProgress {
@@ -172,9 +173,9 @@
   top: 30%;
   background: white;
   opacity: 1;
-  border: solid 2px black;
+  border: solid 2px grey;
   z-index: 10;
-  box-shadow: 5px 10px #888888;
+  box-shadow: lightgrey;
   padding: 30px;
 }
 

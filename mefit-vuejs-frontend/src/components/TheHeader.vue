@@ -114,10 +114,10 @@ const onSelectUserChange = (event) => {
   margin: 0%;
   color: aliceblue;
   padding: 14px 16px;
-  background-color: #333;
+  background-color: grey;
 }
 .select-selected {
-  background-color: #04aa6d;
+  background-color: lightgray;
 }
 .select-selected:after {
   position: absolute;
@@ -134,7 +134,7 @@ ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #333;
+  background-color: grey;
 }
 
 li {
@@ -155,10 +155,10 @@ li a {
 }
 
 li a:hover:not(.active) {
-  background-color: #111;
+  background-color: rgba(136, 134, 134, 0.253);
 }
 
 .active {
-  background-color: #04aa6d;
+  background-color: lightgrey;
 }
 </style>

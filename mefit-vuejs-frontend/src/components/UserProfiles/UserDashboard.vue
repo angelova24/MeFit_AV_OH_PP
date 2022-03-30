@@ -21,26 +21,28 @@
 </script>
 
 <template>
-    <header>
-        Your MeFit Dashboard
-    </header>
-    <main>
-        <section class="box1" title="calender">
-            Today is the day: <input type="date" v-bind:value="currentDate" />
-        </section>
-        <section v-if="JSON.stringify(goals) !== '[]'" title="List of Goals">
-            <GoalList 
-                v-bind:goals="goals"
-                header="click on any of your goals to view its details..."
-            ></GoalList>
-        </section>
-        <section v-if="goal !== undefined" title="Goal details">
-            <GoalsDetail v-bind:goal="goal"></GoalsDetail>
-        </section>
-        <section v-if="JSON.stringify(goals) === '[]'">
-            Ooops, it seems you have no goals setup so far...
-        </section>
-    </main>
+    <div class="backgroundImage"> 
+        <header>
+            Your MeFit Dashboard
+        </header>
+        <main>
+            <section class="box1" title="calender">
+                Today is the day: <input type="date" v-bind:value="currentDate" />
+            </section>
+            <section v-if="JSON.stringify(goals) !== '[]'" title="List of Goals">
+                <GoalList 
+                    v-bind:goals="goals"
+                    header="click on any of your goals to view its details..."
+                ></GoalList>
+            </section>
+            <section v-if="goal !== undefined" title="Goal details">
+                <GoalsDetail v-bind:goal="goal"></GoalsDetail>
+            </section>
+            <section v-if="JSON.stringify(goals) === '[]'">
+                Ooops, it seems you have no goals setup so far...
+            </section>
+        </main>
+    </div>
 </template>
 
 <style scoped>
@@ -48,6 +50,8 @@
     header {
         font-size: larger;
         padding: 50px 10px;
+        color:white;
+        font-weight: bold;
     }
     main {
         display: grid;
@@ -60,14 +64,22 @@
     }
     section {
         border: 1px groove;
-        border-color: yellow;
-        box-shadow: 2px 2px 2px 1px grey;
+        border-color: grey;
+        box-shadow: 2px 2px 2px 1px lightgrey;
         padding: 10px;
+        background: white;
+    }
+
+    .backgroundImage {
+        background-image: url("../../src/assets/crossfitGreen.jpg");
+        background-repeat: no-repeat;
+        padding: 0px 50px 25px 50px;
+        height: 900px;
     }
 
 
     input[type="date"] {
-        background-color: rgb(250, 250, 192);
+        background-color: whitesmoke;
         font-size: large;
     }
 
